@@ -1,0 +1,37 @@
+<div>
+  <h1>Profile</h1>
+  <div class="mb-4">
+    <h3>Boosts</h3>
+    <button id="restoreEnergy" class="btn btn-success">Restore Energy</button>
+  </div>
+  <div class="mb-4">
+    <h3>Upgrades</h3>
+    <button id="increaseTapPower" class="btn btn-primary">Increase Tap Power (Cost: 10 coins)</button>
+  </div>
+</div>
+
+<script>
+  function profileInit() {
+    const restoreEnergyButton = document.getElementById('restoreEnergy');
+    const increaseTapPowerButton = document.getElementById('increaseTapPower');
+
+    restoreEnergyButton.addEventListener('click', () => {
+      energy = 500 * Math.pow(2, level - 1);
+      energyDisplay.textContent = energy;
+      energyProgress.style.width = `${(energy / (500 * Math.pow(2, level - 1))) * 100}%`;
+      updateEnergy(userId, energy);
+    });
+
+    increaseTapPowerButton.addEventListener('click', () => {
+      const cost = 10;
+      if (coins >= cost) {
+        coins -= cost;
+        tapPower++;
+        coinsDisplay.textContent = coins;
+        updateUser(userId, coins, tapPower);
+      } else {
+        alert('Not enough coins!');
+      }
+    });
+  }
+</script>

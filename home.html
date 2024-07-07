@@ -1,0 +1,171 @@
+<div>
+  <h1>Welcome to Aura Clicker</h1>
+  <div>
+    <!-- Уровень + полоса прогресса -->
+    <div class="mb-4">
+      <h3>Level: <span id="levelName">Novice Soul</span> (<span id="level">1</span>)</h3>
+      <div class="progress">
+        <div id="levelProgress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+
+    <!-- Энергия персонажа (усталость души) -->
+    <div class="mb-4">
+      <h3>Energy: <span id="energy">500</span></h3>
+      <div class="progress">
+        <div id="energyProgress" class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="500" aria-valuemin="0" aria-valuemax="1000"></div>
+      </div>
+    </div>
+
+    <!-- Балансы монет + пассивный доход в час -->
+    <div class="mb-4">
+      <h3>Coins: <span id="coins">0</span></h3>
+      <p>Passive income per hour: <span id="passiveIncome">10</span></p>
+    </div>
+
+    <!-- Кнопка для кликера -->
+    <div class="buttons-container mb-4">
+      <button id="tapButton" class="btn btn-primary tap-button">Tap</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function homeInit(userId) {
+    let energy = 500;
+    let level = 1;
+    let coins = 0;
+    let passiveIncome = 10;
+    let progress = 0;
+    let tapPower = 1;
+
+    const levels = [
+      'Novice Soul',
+      'Seeker Soul',
+      'Traveler Soul',
+      'Adept Soul',
+      'Sage Soul',
+      'Guardian Soul',
+      'Ascended Soul'
+    ];
+
+    const levelRequirements = [
+      0,
+      100000,
+      1000000,
+      10000000,
+      50000000,
+      250000000,
+      1000000000
+    ];
+
+    const images = [
+      '1.webp',
+      '2.webp',
+      '3.webp',
+      '4.webp',
+      '5.webp',
+      '6.webp',
+      '7.webp'
+    ];
+
+    const energyDisplay = document.getElementById('energy');
+    const levelDisplay = document.getElementById('level');
+    const levelNameDisplay = document.getElementById('levelName');
+    const coinsDisplay = document.getElementById('coins');
+    const passiveIncomeDisplay = document.getElementById('passiveIncome');
+    const levelProgress = document.getElementById('levelProgress');
+    const energyProgress = document.getElementById('energyProgress');
+    const tapButton = document.getElementById('tapButton');
+
+    // Инициализация данных
+    document.body.style.backgroundImage = `url(${images[level - 1]})`;
+    levelNameDisplay.textContent = levels[level - 1];
+
+    function loadUserData(userId) {
+      fetch(`/api/user/${userId}`)
+        .then(response => response.json())
+        .then(data => {
+          energy = data.energy;
+          coins = data.coins;
+          tapPower = data.tap_power;
+          // Обновление отображения
+          energyDisplay.textContent = energy;
+          energyProgress.style.width = `${(energy / (500 * Math.pow(2, level - 1))) * 100}%`;
+          coinsDisplay.textContent = coins;
+        })
+        .catch(error => console.error('Ошибка загрузки данных пользователя:', error));
+    }
+
+    function updateEnergy(userId, newEnergy) {
+      fetch(`/api/user/${userId}/energy`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ energy: newEnergy })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Ошибка обновления энергии');
+        }
+      })
+      .catch(error => console.error('Ошибка обновления энергии:', error));
+    }
+
+    function updateUser(userId, newCoins, newTapPower) {
+      fetch(`/api/user/${userId}/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ coins: newCoins, tap_power: newTapPower })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Ошибка обновления данных пользователя');
+        }
+      })
+      .catch(error => console.error('Ошибка обновления данных пользователя:', error));
+    }
+
+    // Загрузка данных пользователя при инициализации
+    loadUserData(userId);
+
+    setInterval(() => {
+      if (energy < 500 * Math.pow(2, level - 1)) {
+        energy++;
+        energyDisplay.textContent = energy;
+        energyProgress.style.width = `${(energy / (500 * Math.pow(2, level - 1))) * 100}%`;
+        updateEnergy(userId, energy);
+      }
+    }, 1000);
+
+    setInterval(() => {
+      coins += passiveIncome / 60;
+      coinsDisplay.textContent = Math.floor(coins);
+    }, 60000);
+
+    tapButton.addEventListener('click', () => {
+      if (energy > 0) {
+        coins += tapPower;
+        energy--;
+        if (coins >= levelRequirements[level]) {
+          if (level < levels.length) {
+            level++;
+            energy = 500 * Math.pow(2, level - 1);
+          }
+        }
+        document.body.style.backgroundImage = `url(${images[level - 1]})`;
+        levelNameDisplay.textContent = levels[level - 1];
+        levelDisplay.textContent = level;
+        levelProgress.style.width = `${(coins / levelRequirements[level]) * 100}%`;
+        coinsDisplay.textContent = Math.floor(coins);
+        energyDisplay.textContent = energy;
+        energyProgress.style.width = `${(energy / (500 * Math.pow(2, level - 1))) * 100}%`;
+        updateEnergy(userId, energy);
+        updateUser(userId, coins, tapPower);
+      }
+    });
+  }
+</script>

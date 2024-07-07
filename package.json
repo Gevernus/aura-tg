@@ -1,0 +1,19 @@
+{
+  "name": "aura-clicker",
+  "version": "1.0.0",
+  "description": "Aura Clicker Game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "crypto": "^1.0.1",
+    "express": "^4.19.2",
+    "mysql2": "^2.3.3",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,55 @@
+<div>
+  <h1>Referrals</h1>
+  <div id="referralList"></div>
+</div>
+
+<script>
+  function referralsInit() {
+    const userId = 1; // Замените на фактический идентификатор пользователя
+    fetch(`/api/user/${userId}/referrals`)
+      .then(response => response.json())
+      .then(data => {
+        const referralList = document.getElementById('referralList');
+        referralList.innerHTML = '';
+        data.forEach(referral => {
+          const referralDiv = document.createElement('div');
+          referralDiv.classList.add('referral');
+          referralDiv.innerHTML = `
+            <p>Invitee ID: ${referral.invitee_id}</p>
+            <p>Status: ${referral.status}</p>
+            <p>Registered At: ${new Date(referral.registered_at).toLocaleString()}</p>
+            <p>Last Active At: ${new Date(referral.last_active_at).toLocaleString()}</p>
+            ${referral.status === 'accepted' ? '<button class="claimButton" data-id="' + referral.id + '">Claim</button>' : ''}
+          `;
+          referralList.appendChild(referralDiv);
+        });
+
+        document.querySelectorAll('.claimButton').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const referralId = e.target.getAttribute('data-id');
+            claimReferralBonus(referralId);
+          });
+        });
+      })
+      .catch(error => console.error('Ошибка загрузки списка рефералов:', error));
+  }
+
+  function claimReferralBonus(referralId) {
+    const userId = 1; // Замените на фактический идентификатор пользователя
+    const bonus = 10; // Здесь можно установить бонус за реферала
+    fetch(`/api/user/${userId}/claim`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ referralId, bonus })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Ошибка получения бонуса');
+      }
+      referralsInit(); // Обновляем список рефералов после получения бонуса
+    })
+    .catch(error => console.error('Ошибка получения бонуса:', error));
+  }
+</script>

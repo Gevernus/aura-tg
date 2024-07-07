@@ -1,0 +1,40 @@
+<div>
+  <h1>Shop</h1>
+  <div id="shopList"></div>
+</div>
+<script>
+  function shopInit() {
+    // Загрузка данных магазина из API
+    // Заглушка данных магазина для примера
+    const shopData = [
+      { id: 1, name: "Item 1", price: 100 },
+      { id: 2, name: "Item 2", price: 200 },
+      { id: 3, name: "Item 3", price: 300 }
+    ];
+
+    const shopList = document.getElementById('shopList');
+    shopList.innerHTML = '';
+    shopData.forEach(item => {
+      const itemDiv = document.createElement('div');
+      itemDiv.classList.add('shop-item');
+      itemDiv.innerHTML = `
+        <h4>${item.name}</h4>
+        <p>Price: ${item.price}</p>
+        <button class="buyButton" data-id="${item.id}">Buy</button>
+      `;
+      shopList.appendChild(itemDiv);
+    });
+
+    document.querySelectorAll('.buyButton').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const itemId = e.target.getAttribute('data-id');
+        buyItem(itemId);
+      });
+    });
+  }
+
+  function buyItem(itemId) {
+    // Логика покупки предмета
+    console.log(`Buying item with ID: ${itemId}`);
+  }
+</script>
