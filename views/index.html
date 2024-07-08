@@ -61,24 +61,6 @@
   </style>
 </head>
 <body>
-  <div class="container text-center mt-5" id="content">
-    <!-- Контент страницы будет загружаться сюда -->
-    <div id="authSection">
-      <h2>Enter your username</h2>
-      <form id="checkUserForm">
-        <input type="text" id="checkUsername" placeholder="Enter your username" required>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-      <div id="registerSection" style="display: none;">
-        <h2>Register</h2>
-        <form id="registerForm">
-          <input type="text" id="username" placeholder="Enter your username" required>
-          <button type="submit" class="btn btn-primary">Register</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
   <!-- Bottom Navigation -->
   <nav class="navbar navbar-expand-sm bg-light navbar-light nav-bottom">
     <ul class="navbar-nav nav-justified w-100">
@@ -116,78 +98,7 @@
   </nav>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      let userId;
-
-      function loadPage(page) {
-        $.ajax({
-          url: page + '.html',
-          method: 'GET',
-          success: function(data) {
-            $('#content').html(data);
-            if (typeof window[page + 'Init'] === 'function') {
-              window[page + 'Init'](userId);
-            }
-          }
-        });
-      }
-
-      $('a[data-page]').click(function(e) {
-        e.preventDefault();
-        const page = $(this).data('page');
-        loadPage(page);
-      });
-
-      $('#checkUserForm').submit(function(e) {
-        e.preventDefault();
-        const username = $('#checkUsername').val();
-        $.ajax({
-          url: '/api/check-user',
-          method: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify({ username }),
-          success: function(data) {
-            if (data.exists) {
-              userId = data.user.id;
-              localStorage.setItem('userId', userId); // Сохранение userId в localStorage
-              loadPage('home');
-            } else {
-              $('#registerSection').show();
-              $('#username').val(username);
-            }
-          },
-          error: function(error) {
-            console.error('Ошибка при проверке пользователя:', error);
-          }
-        });
-      });
-
-      $('#registerForm').submit(function(e) {
-        e.preventDefault();
-        const username = $('#username').val();
-        $.ajax({
-          url: '/api/register',
-          method: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify({ username }),
-          success: function(data) {
-            userId = data.id;
-            localStorage.setItem('userId', userId); // Сохранение userId в localStorage
-            loadPage('home');
-          },
-          error: function(error) {
-            console.error('Ошибка при регистрации:', error);
-          }
-        });
-      });
-
-      // Check if user is already logged in
-      if (localStorage.getItem('userId')) {
-        userId = localStorage.getItem('userId');
-        loadPage('home');
-      }
-    });
-  </script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="../dist/app.js"></script>
 </body>
 </html>

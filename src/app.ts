@@ -7,6 +7,7 @@ import 'dotenv/config';
 import userRoutes from './routes/user';
 import referralRoutes from './routes/referral';
 import config from './config/database';
+import webApp from 'telegram-webapps-types'
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -17,7 +18,6 @@ export const AppDataSource = new DataSource(config);
 
 AppDataSource.initialize().then(() => {
     console.log('Connected to PostgreSQL database');
-
     // Routes
     app.use('/api', userRoutes);
     app.use('/api', referralRoutes);
