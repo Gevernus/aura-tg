@@ -11,14 +11,8 @@
     "migration:run": "npm run typeorm migration:run -- -d src/config/database.ts"
   },
   "dependencies": {
-   "body-parser": "^1.20.2",
-    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "mysql2": "^3.10.2",
-    "node-telegram-bot-api": "^0.66.0",
-    "pg": "^8.12.0",
-    "reflect-metadata": "^0.2.2",
     "telegram-webapps-types": "^1.0.5",
     "typeorm": "^0.3.20"
   },
