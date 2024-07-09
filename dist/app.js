@@ -8,6 +8,7 @@ require("reflect-metadata");
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const typeorm_1 = require("typeorm");
 require("dotenv/config");
 const user_1 = __importDefault(require("./routes/user"));
@@ -24,6 +25,17 @@ exports.AppDataSource.initialize().then(() => {
     app.use('/api', referral_1.default);
     // Static content route
     app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
+    app.use(express_1.default.static(path_1.default.join(__dirname, '../dist')));
+    const viewsDir = path_1.default.join(__dirname, '../views');
+    // Read all HTML files from the views directory
+    const htmlFiles = fs_1.default.readdirSync(viewsDir).filter((file) => file.endsWith('.html'));
+    // Serve each HTML file found as a route
+    htmlFiles.forEach((file) => {
+        console.log(`/${path_1.default.parse(file).name}`);
+        app.get(`/${path_1.default.parse(file).name}`, (req, res) => {
+            res.sendFile(path_1.default.join(viewsDir, file));
+        });
+    });
     // Default route to redirect to index.html
     app.get('*', (req, res) => {
         res.sendFile(path_1.default.join(__dirname, '../views', 'index.html'));
