@@ -76,4 +76,25 @@ router.post('/user/:id/update', async (req, res) => {
     }
 });
 
+router.post('/telegram-user', async (req, res) => {
+    const userData: WebAppUser = req.body;
+    try {
+        const result = await User.createQueryBuilder()
+            .insert()
+            .values(userData)
+            .orUpdate(
+                ["first_name", "last_name", "username", "language_code", "energy", "coins", "tap_power"],
+                ["id"]
+            )
+            .returning("*")
+            .execute();
+        const user = result.raw[0]
+        console.log('User updated:', user);
+        return res.status(200).json({ message: "User data saved successfully", user });
+    } catch (error) {
+        console.error(`Error saving user: ${userData}`, error);
+        return res.status(500).json({ message: "Error saving user data" });
+    }
+});
+
 export default router;

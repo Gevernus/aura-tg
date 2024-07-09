@@ -1,13 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from "typeorm"
+import { Entity, Column, OneToMany, BaseEntity } from "typeorm"
 import { Referral } from "./Referral"
 
 @Entity()
 export class User extends BaseEntity {
-    @PrimaryGeneratedColumn()
+    @Column({ primary: true })
     id!: number
 
-    @Column({ unique: true })
-    username!: string
+    @Column()
+    first_name!: string;
+
+    @Column({ nullable: true })
+    last_name!: string;
+
+    @Column()
+    username!: string;
+
+    @Column({ nullable: true })
+    language_code!: string;
 
     @Column({ default: 0 })
     energy!: number
