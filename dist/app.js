@@ -40,6 +40,12 @@ exports.AppDataSource.initialize().then(() => {
     app.get('*', (req, res) => {
         res.sendFile(path_1.default.join(__dirname, '../views', 'index.html'));
     });
+    app.post('/api/telegram-user', (req, res) => {
+        const user = req.body;
+        console.log('Received Telegram user:', user);
+        // Here you can save the user to your database or perform any other operations
+        res.sendStatus(200);
+    });
     // Start the server
     app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);

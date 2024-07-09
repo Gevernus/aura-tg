@@ -8,7 +8,6 @@ import 'dotenv/config';
 import userRoutes from './routes/user';
 import referralRoutes from './routes/referral';
 import config from './config/database';
-import webApp from 'telegram-webapps-types'
 
 
 const app = express();
@@ -43,6 +42,13 @@ AppDataSource.initialize().then(() => {
     // Default route to redirect to index.html
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../views', 'index.html'));
+    });
+
+    app.post('/api/telegram-user', (req, res) => {
+        const user: WebAppUser = req.body;
+        console.log('Received Telegram user:', user);
+        // Here you can save the user to your database or perform any other operations
+        res.sendStatus(200);
     });
 
     // Start the server
