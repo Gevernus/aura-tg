@@ -15,8 +15,8 @@ const Referral_1 = require("./Referral");
 let User = class User extends typeorm_1.BaseEntity {
 };
 __decorate([
-    (0, typeorm_1.Column)({ primary: true }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryColumn)(),
+    __metadata("design:type", String)
 ], User.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -35,13 +35,25 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "language_code", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 0 }),
+    (0, typeorm_1.Column)({ default: 500 }),
     __metadata("design:type", Number)
 ], User.prototype, "energy", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 1 }),
+    __metadata("design:type", Number)
+], User.prototype, "level", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: 0 }),
     __metadata("design:type", Number)
 ], User.prototype, "coins", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 10 }),
+    __metadata("design:type", Number)
+], User.prototype, "passive_income", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], User.prototype, "progress", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: 1 }),
     __metadata("design:type", Number)

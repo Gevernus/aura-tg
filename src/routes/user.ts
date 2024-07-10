@@ -27,7 +27,7 @@ router.post('/register', async (req, res) => {
 });
 
 router.get('/user/:id', async (req, res) => {
-    const userId = parseInt(req.params.id);
+    const userId = req.params.id;
     try {
         const user = await User.findOne({ where: { id: userId } });
         if (user) {
@@ -42,7 +42,7 @@ router.get('/user/:id', async (req, res) => {
 });
 
 router.post('/user/:id/energy', async (req, res) => {
-    const userId = parseInt(req.params.id);
+    const userId = req.params.id;
     const { energy } = req.body;
     try {
         const user = await User.findOne({ where: { id: userId } });
@@ -59,15 +59,17 @@ router.post('/user/:id/energy', async (req, res) => {
 });
 
 router.post('/user/:id/update', async (req, res) => {
-    const userId = parseInt(req.params.id);
-    const { coins, tap_power } = req.body;
+    const userId = req.params.id;
+    const userData = req.body;
+    console.log('UserData is ', userData)
     try {
         const user = await User.findOne({ where: { id: userId } });
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        user.coins = coins;
-        user.tap_power = tap_power;
+        user.coins = userData.coins;
+        user.tap_power = userData.tap_power;
+        user.energy = userData.energy;
         await user.save();
         res.json({ message: 'User data updated successfully' });
     } catch (error) {
@@ -76,19 +78,21 @@ router.post('/user/:id/update', async (req, res) => {
     }
 });
 
-router.post('/telegram-user', async (req, res) => {
-    const userData: WebAppUser = req.body;
+router.post('/user', async (req, res) => {
+    const userData: User = req.body;
     try {
+        let user;
         const result = await User.createQueryBuilder()
             .insert()
             .values(userData)
-            .orUpdate(
-                ["first_name", "last_name", "username", "language_code", "energy", "coins", "tap_power"],
-                ["id"]
-            )
+            .orIgnore()
             .returning("*")
             .execute();
-        const user = result.raw[0]
+        if (result.raw.length > 0) {
+            user = result.raw[0];
+        } else {
+            user = await User.findOne({ where: { id: userData.id } });
+        }
         console.log('User updated:', user);
         return res.status(200).json({ message: "User data saved successfully", user });
     } catch (error) {

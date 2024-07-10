@@ -6,7 +6,7 @@ import { AppDataSource } from '../app';
 const router = Router();
 
 router.get('/user/:id/referrals', async (req, res) => {
-    const userId = parseInt(req.params.id);
+    const userId = req.params.id;
 
     try {
         const referrals = await Referral.find({
@@ -20,7 +20,7 @@ router.get('/user/:id/referrals', async (req, res) => {
 });
 
 router.post('/user/:id/claim', async (req, res) => {
-    const userId = parseInt(req.params.id);
+    const userId = req.params.id;
     const { referralId, bonus } = req.body;
 
     await AppDataSource.transaction(async transactionalEntityManager => {
@@ -29,14 +29,14 @@ router.post('/user/:id/claim', async (req, res) => {
             throw new Error('User not found');
         }
 
-        user.coins += bonus;
-        await user.save();
-
         const referral = await Referral.findOne({ where: { id: referralId } });
         if (!referral) {
             throw new Error('Referral not found');
         }
 
+        user.coins += parseInt(bonus, 10);
+        await user.save();
+        
         referral.status = 'claimed';
         await referral.save();
     }).then(() => {

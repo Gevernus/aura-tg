@@ -1,30 +1,29 @@
 // public/telegram.js
-function sendTelegramUserToServer() {
+async function getUser() {
+    let user;
     if (window.Telegram && window.Telegram.WebApp) {
-        let user = window.Telegram.WebApp.initDataUnsafe.user;
+        user = window.Telegram.WebApp.initDataUnsafe.user;
         if (!user) {
             console.log('Telegram WebApp not available, using mock data');
             user = { id: 1, first_name: 'Test', last_name: 'User', username: 'test' };
         }
-        fetch('/api/telegram-user', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user),
-        }).then(response => {
+        try {
+            const response = await fetch('/api/user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(user),
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();
-        })
-        .then(data => {
-                console.log('Success:', data);
-        })
-        .catch(error => {
-                console.error('Error:', error);
-        });
+            const data = await response.json();
+            return data.user;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
     } else {
         console.log('Telegram file not included')
     }
+    return user;
 }
-
-window.addEventListener('load', sendTelegramUserToServer);

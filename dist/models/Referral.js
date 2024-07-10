@@ -20,7 +20,7 @@ __decorate([
 ], Referral.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Referral.prototype, "inviterId", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => User_1.User, user => user.referrals),

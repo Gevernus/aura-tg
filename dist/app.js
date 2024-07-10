@@ -14,6 +14,7 @@ require("dotenv/config");
 const user_1 = __importDefault(require("./routes/user"));
 const referral_1 = __importDefault(require("./routes/referral"));
 const database_1 = __importDefault(require("./config/database"));
+const config_1 = __importDefault(require("./config/config"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8000;
@@ -29,6 +30,13 @@ exports.AppDataSource.initialize().then(() => {
     // API Routes (should come before static and catch-all routes)
     app.use('/api', user_1.default);
     app.use('/api', referral_1.default);
+    app.get('/content/:pageName', (req, res) => {
+        const pageName = req.params.pageName;
+        res.sendFile(path_1.default.join(__dirname, '../views', pageName + '.html'));
+    });
+    app.get('/config', (req, res) => {
+        res.json(config_1.default);
+    });
     // Static content routes
     app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
     app.use(express_1.default.static(path_1.default.join(__dirname, '../dist')));

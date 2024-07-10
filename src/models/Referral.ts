@@ -7,7 +7,7 @@ export class Referral extends BaseEntity {
     id!: number
 
     @Column()
-    inviterId!: number
+    inviterId!: string
 
     @ManyToOne(() => User, user => user.referrals)
     inviter!: User

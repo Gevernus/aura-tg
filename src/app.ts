@@ -7,7 +7,8 @@ import { DataSource } from "typeorm";
 import 'dotenv/config';
 import userRoutes from './routes/user';
 import referralRoutes from './routes/referral';
-import config from './config/database';
+import dbConfig from './config/database';
+import config from './config/config';
 import cors from 'cors';
 
 
@@ -16,7 +17,7 @@ const port = process.env.PORT || 8000;
 
 app.use(bodyParser.json());
 
-export const AppDataSource = new DataSource(config);
+export const AppDataSource = new DataSource(dbConfig);
 
 AppDataSource.initialize().then(() => {
     console.log('Connected to database');
@@ -29,6 +30,15 @@ AppDataSource.initialize().then(() => {
     // API Routes (should come before static and catch-all routes)
     app.use('/api', userRoutes);
     app.use('/api', referralRoutes);
+
+    app.get('/content/:pageName', (req, res) => {
+        const pageName = req.params.pageName;
+        res.sendFile(path.join(__dirname, '../views', pageName + '.html'));
+    });
+
+    app.get('/config', (req, res) => {
+        res.json(config);
+    });
 
     // Static content routes
     app.use(express.static(path.join(__dirname, '../public')));

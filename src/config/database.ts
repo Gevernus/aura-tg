@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file
 dotenv.config();
 
-const config: DataSourceOptions = {
+const dbConfig: DataSourceOptions = {
     type: "postgres",
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT || '5432', 10),
@@ -18,4 +18,4 @@ const config: DataSourceOptions = {
     logging: process.env.NODE_ENV === 'development'
 };
 
-export default config;
+export default dbConfig;

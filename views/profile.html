@@ -1,4 +1,4 @@
-<div>
+<div id="page-content">
   <h1>Profile</h1>
   <div class="mb-4">
     <h3>Boosts</h3>
@@ -11,28 +11,26 @@
 </div>
 
 <script>
-  function profileInit() {
+  function init(data, config, updateDataCallback) {
     const restoreEnergyButton = document.getElementById('restoreEnergy');
     const increaseTapPowerButton = document.getElementById('increaseTapPower');
 
     restoreEnergyButton.addEventListener('click', () => {
-      energy = 500 * Math.pow(2, level - 1);
-      energyDisplay.textContent = energy;
-      energyProgress.style.width = `${(energy / (500 * Math.pow(2, level - 1))) * 100}%`;
-      updateEnergy(userId, energy);
+      data.energy = 500 * Math.pow(2, data.level - 1);
+      energyDisplay.textContent = data.energy;
+      energyProgress.style.width = `${(data.energy / (500 * Math.pow(2, data.level - 1))) * 100}%`;
+      updateDataCallback(data);
     });
 
     increaseTapPowerButton.addEventListener('click', () => {
-      const cost = 10;
-      if (coins >= cost) {
-        coins -= cost;
-        tapPower++;
-        coinsDisplay.textContent = coins;
-        updateUser(userId, coins, tapPower);
+      if (data.coins >= config.cost) {
+        data.coins -= config.cost;
+        data.tapPower++;
+        coinsDisplay.textContent = data.coins;
+        updateDataCallback(data);
       } else {
         alert('Not enough coins!');
       }
     });
   }
-  profileInit();
 </script>

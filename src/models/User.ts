@@ -1,10 +1,10 @@
-import { Entity, Column, OneToMany, BaseEntity } from "typeorm"
+import { Entity, Column, OneToMany, BaseEntity, PrimaryColumn } from "typeorm"
 import { Referral } from "./Referral"
 
 @Entity()
 export class User extends BaseEntity {
-    @Column({ primary: true })
-    id!: number
+    @PrimaryColumn()
+    id!: string;
 
     @Column()
     first_name!: string;
@@ -18,11 +18,20 @@ export class User extends BaseEntity {
     @Column({ nullable: true })
     language_code!: string;
 
-    @Column({ default: 0 })
+    @Column({ default: 500 })
     energy!: number
+
+    @Column({ default: 1 })
+    level!: number
 
     @Column({ default: 0 })
     coins!: number
+
+    @Column({ default: 10 })
+    passive_income!: number
+
+    @Column({ default: 0 })
+    progress!: number
 
     @Column({ default: 1 })
     tap_power!: number

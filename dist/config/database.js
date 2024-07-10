@@ -8,7 +8,7 @@ const Referral_1 = require("../models/Referral");
 const dotenv_1 = __importDefault(require("dotenv"));
 // Load environment variables from .env file
 dotenv_1.default.config();
-const config = {
+const dbConfig = {
     type: "postgres",
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT || '5432', 10),
@@ -19,5 +19,5 @@ const config = {
     synchronize: process.env.NODE_ENV !== 'production',
     logging: process.env.NODE_ENV === 'development'
 };
-exports.default = config;
+exports.default = dbConfig;
 //# sourceMappingURL=database.js.map

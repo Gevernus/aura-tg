@@ -1,21 +1,13 @@
-<div>
+<div id="page-content">
   <h1>Tasks</h1>
   <div id="tasksList"></div>
 </div>
 
 <script>
-  function tasksInit() {
-    // Загрузка данных задач из API
-    // Заглушка данных задач для примера
-    const tasksData = [
-      { id: 1, description: "Task 1", reward: 100 },
-      { id: 2, description: "Task 2", reward: 200 },
-      { id: 3, description: "Task 3", reward: 300 }
-    ];
-
+  function init(data, config, updateDataCallback) {
     const tasksList = document.getElementById('tasksList');
     tasksList.innerHTML = '';
-    tasksData.forEach(task => {
+    data.tasksData.forEach(task => {
       const taskDiv = document.createElement('div');
       taskDiv.classList.add('task-item');
       taskDiv.innerHTML = `
@@ -29,14 +21,8 @@
     document.querySelectorAll('.completeButton').forEach(button => {
       button.addEventListener('click', (e) => {
         const taskId = e.target.getAttribute('data-id');
-        completeTask(taskId);
+        console.log(`Completing task with ID: ${taskId}`);
       });
     });
   }
-
-  function completeTask(taskId) {
-    // Логика выполнения задачи
-    console.log(`Completing task with ID: ${taskId}`);
-  }
-  tasksInit();
 </script>
