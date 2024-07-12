@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { User } from '../models/User';
 import { Referral } from '../models/Referral';
 import { AppDataSource } from '../app';
+import { State } from '../models/State';
 
 const router = Router();
 
@@ -24,9 +25,9 @@ router.post('/user/:id/claim', async (req, res) => {
     const { referralId, bonus } = req.body;
 
     await AppDataSource.transaction(async transactionalEntityManager => {
-        const user = await User.findOne({ where: { id: userId } });
-        if (!user) {
-            throw new Error('User not found');
+        const state = await State.findOne({ where: { id: userId } });
+        if (!state) {
+            throw new Error('State not found');
         }
 
         const referral = await Referral.findOne({ where: { id: referralId } });
@@ -34,9 +35,9 @@ router.post('/user/:id/claim', async (req, res) => {
             throw new Error('Referral not found');
         }
 
-        user.coins += parseInt(bonus, 10);
-        await user.save();
-        
+        state.coins += parseInt(bonus, 10);
+        await state.save();
+
         referral.status = 'claimed';
         await referral.save();
     }).then(() => {

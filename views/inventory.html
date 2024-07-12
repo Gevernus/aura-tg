@@ -2,19 +2,3 @@
   <h1>Inventory</h1>
   <div id="inventoryList"></div>
 </div>
-
-<script>
-  function init(data, config, updateDataCallback) {
-    const inventoryList = document.getElementById('inventoryList');
-    inventoryList.innerHTML = '';
-    data.inventoryData.forEach(item => {
-      const itemDiv = document.createElement('div');
-      itemDiv.classList.add('inventory-item');
-      itemDiv.innerHTML = `
-        <h4>${item.name}</h4>
-        <p>${item.description}</p>
-      `;
-      inventoryList.appendChild(itemDiv);
-    });
-  }
-</script>

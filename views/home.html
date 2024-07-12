@@ -22,7 +22,7 @@
     <!-- Балансы монет + пассивный доход в час -->
     <div class="mb-4">
       <h3>Coins: <span id="coins">0</span></h3>
-      <p>Passive income per hour: <span id="passiveIncome">10</span></p>
+      <p>Passive income: <span id="passiveIncome">10</span></p>
     </div>
 
     <!-- Кнопка для кликера -->
@@ -31,66 +31,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  function init(data, config, updateDataCallback) {
-    console.log('Init with data: ', data);
-    const energyDisplay = document.getElementById('energy');
-    const levelDisplay = document.getElementById('level');
-    const levelNameDisplay = document.getElementById('levelName');
-    const coinsDisplay = document.getElementById('coins');
-    const passiveIncomeDisplay = document.getElementById('passiveIncome');
-    const levelProgress = document.getElementById('levelProgress');
-    const energyProgress = document.getElementById('energyProgress');
-    const tapButton = document.getElementById('tapButton');
-
-    function updateUI() {
-      document.body.style.backgroundImage = `url(/images/${config.images[data.level - 1]})`
-      levelNameDisplay.textContent = config.levels[data.level - 1];
-      levelDisplay.textContent = data.level;
-      energyDisplay.textContent = Math.floor(data.energy);
-      energyProgress.style.width = `${(data.energy / (500 * Math.pow(2, data.level - 1))) * 100}%`;
-      coinsDisplay.textContent = Math.floor(data.coins);
-      passiveIncomeDisplay.textContent = data.passiveIncome;
-      levelProgress.style.width = `${(data.coins / config.levelRequirements[data.level]) * 100}%`;
-    }
-
-    function localUpdateData() {
-      updateUI();
-      updateDataCallback(data);
-    }
-
-    setInterval(() => {
-      if (data.energy < 500 * Math.pow(2, data.level - 1)) {
-        data.energy++;
-        energyDisplay.textContent = energy;
-        energyProgress.style.width = `${(energy / (500 * Math.pow(2, level - 1))) * 100}%`;
-        localUpdateData();
-      }
-    }, 1000);
-
-    // setInterval(() => {
-    //   console.log('Update coins with passiveIncome ', data.passiveIncome)
-    //   data.coins += data.passiveIncome / 60;
-    //   coinsDisplay.textContent = Math.floor(data.coins);
-    //   localUpdateData();
-    // }, 60000);
-
-    tapButton.addEventListener('click', () => {
-      if (data.energy > 0) {
-        data.coins += data.tap_power;
-        data.energy--;
-        console.log('Update coins with tap power ', data.tap_power, data.coins);
-        if (data.coins >= config.levelRequirements[level]) {
-          if (data.level < config.levels.length) {
-            data.level++;
-            data.energy = 500 * Math.pow(2, data.level - 1);
-          }
-        }
-        localUpdateData();
-      }
-    });
-
-    updateUI();
-  }
-</script>

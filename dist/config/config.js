@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 exports.config = {
+    initialEnergy: 500,
+    initialPassiveIncome: 1,
     levels: [
         'Novice Soul',
         'Seeker Soul',

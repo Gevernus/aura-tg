@@ -1,4 +1,6 @@
 export const config = {
+    initialEnergy: 500,
+    initialPassiveIncome: 1,
     levels: [
         'Novice Soul',
         'Seeker Soul',

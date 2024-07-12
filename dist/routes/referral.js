@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const User_1 = require("../models/User");
 const Referral_1 = require("../models/Referral");
 const app_1 = require("../app");
+const State_1 = require("../models/State");
 const router = (0, express_1.Router)();
 router.get('/user/:id/referrals', async (req, res) => {
     const userId = req.params.id;
@@ -22,16 +22,16 @@ router.post('/user/:id/claim', async (req, res) => {
     const userId = req.params.id;
     const { referralId, bonus } = req.body;
     await app_1.AppDataSource.transaction(async (transactionalEntityManager) => {
-        const user = await User_1.User.findOne({ where: { id: userId } });
-        if (!user) {
-            throw new Error('User not found');
+        const state = await State_1.State.findOne({ where: { id: userId } });
+        if (!state) {
+            throw new Error('State not found');
         }
         const referral = await Referral_1.Referral.findOne({ where: { id: referralId } });
         if (!referral) {
             throw new Error('Referral not found');
         }
-        user.coins += parseInt(bonus, 10);
-        await user.save();
+        state.coins += parseInt(bonus, 10);
+        await state.save();
         referral.status = 'claimed';
         await referral.save();
     }).then(() => {

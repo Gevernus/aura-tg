@@ -18,24 +18,6 @@ export class User extends BaseEntity {
     @Column({ nullable: true })
     language_code!: string;
 
-    @Column({ default: 500 })
-    energy!: number
-
-    @Column({ default: 1 })
-    level!: number
-
-    @Column({ default: 0 })
-    coins!: number
-
-    @Column({ default: 10 })
-    passive_income!: number
-
-    @Column({ default: 0 })
-    progress!: number
-
-    @Column({ default: 1 })
-    tap_power!: number
-
     @OneToMany(() => Referral, referral => referral.inviter)
     referrals!: Referral[]
 }

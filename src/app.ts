@@ -7,9 +7,11 @@ import { DataSource } from "typeorm";
 import 'dotenv/config';
 import userRoutes from './routes/user';
 import referralRoutes from './routes/referral';
+import stateRoutes from './routes/state';
 import dbConfig from './config/database';
-import config from './config/config';
 import cors from 'cors';
+import mime from "mime";
+import { access } from 'fs/promises';
 
 
 const app = express();
@@ -30,14 +32,35 @@ AppDataSource.initialize().then(() => {
     // API Routes (should come before static and catch-all routes)
     app.use('/api', userRoutes);
     app.use('/api', referralRoutes);
+    app.use('/api', stateRoutes);
 
-    app.get('/content/:pageName', (req, res) => {
-        const pageName = req.params.pageName;
-        res.sendFile(path.join(__dirname, '../views', pageName + '.html'));
-    });
+    app.get('/views/:fileName', async (req, res) => {
+        const fileName = req.params.fileName;
+        const filePath = path.join(__dirname, '../views', fileName);
 
-    app.get('/config', (req, res) => {
-        res.json(config);
+        try {
+            // Check if file exists
+            await access(filePath);
+
+            // Determine the MIME type
+            const mimeType = mime.lookup(filePath) || 'application/octet-stream';
+
+            // Set the correct Content-Type
+            res.type(mimeType);
+
+            // Send the file
+            res.sendFile(filePath);
+        } catch (error: unknown) {
+            console.error(`Error serving file ${fileName}:`, error);
+
+            if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+                // ENOENT error code means "Error NO ENTry" or "Error NO ENTity", which indicates that the file or directory doesn't exist
+                res.status(404).send('File not found');
+            } else {
+                // For any other error, send a 500 Internal Server Error
+                res.status(500).send('Internal Server Error');
+            }
+        }
     });
 
     // Static content routes

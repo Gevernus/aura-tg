@@ -9,28 +9,3 @@
     <button id="increaseTapPower" class="btn btn-primary">Increase Tap Power (Cost: 10 coins)</button>
   </div>
 </div>
-
-<script>
-  function init(data, config, updateDataCallback) {
-    const restoreEnergyButton = document.getElementById('restoreEnergy');
-    const increaseTapPowerButton = document.getElementById('increaseTapPower');
-
-    restoreEnergyButton.addEventListener('click', () => {
-      data.energy = 500 * Math.pow(2, data.level - 1);
-      energyDisplay.textContent = data.energy;
-      energyProgress.style.width = `${(data.energy / (500 * Math.pow(2, data.level - 1))) * 100}%`;
-      updateDataCallback(data);
-    });
-
-    increaseTapPowerButton.addEventListener('click', () => {
-      if (data.coins >= config.cost) {
-        data.coins -= config.cost;
-        data.tapPower++;
-        coinsDisplay.textContent = data.coins;
-        updateDataCallback(data);
-      } else {
-        alert('Not enough coins!');
-      }
-    });
-  }
-</script>

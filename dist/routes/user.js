@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const User_1 = require("../models/User");
+const State_1 = require("../models/State");
 const router = (0, express_1.Router)();
 router.post('/check-user', async (req, res) => {
     const { username } = req.body;
@@ -46,12 +47,12 @@ router.post('/user/:id/energy', async (req, res) => {
     const userId = req.params.id;
     const { energy } = req.body;
     try {
-        const user = await User_1.User.findOne({ where: { id: userId } });
-        if (!user) {
+        const state = await State_1.State.findOne({ where: { id: userId } });
+        if (!state) {
             return res.status(404).json({ error: 'User not found' });
         }
-        user.energy = energy;
-        await user.save();
+        state.energy = energy;
+        await state.save();
         res.json({ message: 'User energy updated successfully' });
     }
     catch (error) {
@@ -64,14 +65,14 @@ router.post('/user/:id/update', async (req, res) => {
     const userData = req.body;
     console.log('UserData is ', userData);
     try {
-        const user = await User_1.User.findOne({ where: { id: userId } });
-        if (!user) {
+        const state = await State_1.State.findOne({ where: { id: userId } });
+        if (!state) {
             return res.status(404).json({ error: 'User not found' });
         }
-        user.coins = userData.coins;
-        user.tap_power = userData.tap_power;
-        user.energy = userData.energy;
-        await user.save();
+        state.coins = userData.coins;
+        state.tap_power = userData.tap_power;
+        state.energy = userData.energy;
+        await state.save();
         res.json({ message: 'User data updated successfully' });
     }
     catch (error) {
@@ -79,29 +80,27 @@ router.post('/user/:id/update', async (req, res) => {
         res.status(500).json({ error: 'Error updating user data' });
     }
 });
-router.post('/user', async (req, res) => {
-    const userData = req.body;
-    try {
-        let user;
-        const result = await User_1.User.createQueryBuilder()
-            .insert()
-            .values(userData)
-            .orIgnore()
-            .returning("*")
-            .execute();
-        if (result.raw.length > 0) {
-            user = result.raw[0];
-        }
-        else {
-            user = await User_1.User.findOne({ where: { id: userData.id } });
-        }
-        console.log('User updated:', user);
-        return res.status(200).json({ message: "User data saved successfully", user });
-    }
-    catch (error) {
-        console.error(`Error saving user: ${userData}`, error);
-        return res.status(500).json({ message: "Error saving user data" });
-    }
-});
+// router.post('/user', async (req, res) => {
+//     const userData: User = req.body;
+//     try {
+//         let user;
+//         const result = await User.createQueryBuilder()
+//             .insert()
+//             .values(userData)
+//             .orIgnore()
+//             .returning("*")
+//             .execute();
+//         if (result.raw.length > 0) {
+//             user = result.raw[0];
+//         } else {
+//             user = await User.findOne({ where: { id: userData.id } });
+//         }
+//         console.log('User updated:', user);
+//         return res.status(200).json({ message: "User data saved successfully", user });
+//     } catch (error) {
+//         console.error(`Error saving user: ${userData}`, error);
+//         return res.status(500).json({ message: "Error saving user data" });
+//     }
+// });
 exports.default = router;
 //# sourceMappingURL=user.js.map

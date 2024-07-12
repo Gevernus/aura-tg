@@ -9,37 +9,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.ShopItem = void 0;
 const typeorm_1 = require("typeorm");
-const Referral_1 = require("./Referral");
-let User = class User extends typeorm_1.BaseEntity {
+const State_1 = require("./State");
+let ShopItem = class ShopItem extends typeorm_1.BaseEntity {
 };
 __decorate([
     (0, typeorm_1.PrimaryColumn)(),
     __metadata("design:type", String)
-], User.prototype, "id", void 0);
+], ShopItem.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "first_name", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", String)
-], User.prototype, "last_name", void 0);
+], ShopItem.prototype, "type", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "username", void 0);
+], ShopItem.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "language_code", void 0);
+], ShopItem.prototype, "description", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Referral_1.Referral, referral => referral.inviter),
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], ShopItem.prototype, "price", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 1 }),
+    __metadata("design:type", Number)
+], ShopItem.prototype, "tap_power", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => State_1.State, state => state.shopItems),
     __metadata("design:type", Array)
-], User.prototype, "referrals", void 0);
-User = __decorate([
+], ShopItem.prototype, "states", void 0);
+ShopItem = __decorate([
     (0, typeorm_1.Entity)()
-], User);
-exports.User = User;
-//# sourceMappingURL=User.js.map
+], ShopItem);
+exports.ShopItem = ShopItem;
+//# sourceMappingURL=ShopItem.js.map
