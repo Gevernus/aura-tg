@@ -1,33 +1,63 @@
 <div>
-  <h1>Welcome to Aura Clicker</h1>
+  <div class="header">
+    <h1>Welcome to Aura Clicker</h1>
+  </div>
   <div id="page-content">
-    <!-- Уровень + полоса прогресса -->
-    <div class="mb-4">
-      <h3>Level: <span id="levelName">Novice Soul</span> (<span id="level">1</span>)</h3>
+    <div class="info-area">
+      <div class="info-row">
+        <span>Level: <span id="levelName">Novice Soul</span> (<span id="level">1</span>)</span>
+        <span>Energy: <span id="energy">500</span></span>
+      </div>
       <div class="progress">
-        <div id="levelProgress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
-          aria-valuemin="0" aria-valuemax="100"></div>
+        <div id="levelProgress" class="progress-bar level-progress" style="width: 50%;"></div>
+      </div>
+      <div class="info-row">
+        <span>Coins: <span id="coins">1941</span></span>
+        <span>Passive income: <span id="passiveIncome">1</span></span>
+      </div>
+      <div class="progress">
+        <div id="energyProgress" class="progress-bar energy-progress" style="width: 100%;"></div>
       </div>
     </div>
 
-    <!-- Энергия персонажа (усталость души) -->
-    <div class="mb-4">
-      <h3>Energy: <span id="energy">500</span></h3>
-      <div class="progress">
-        <div id="energyProgress" class="progress-bar bg-success" role="progressbar" style="width: 100%;"
-          aria-valuenow="500" aria-valuemin="0" aria-valuemax="1000"></div>
-      </div>
+    <div class="button-grid">
+      <a href="inventory" class="button top-left" data-page="inventory">
+        <img src="/images/inventory.webp" alt="Inventory">
+        <span>Inventory</span>
+      </a>
+      <a href="profile" class="button top-center" data-page="profile">
+        <img src="/images/profile.webp" alt="Profile">
+        <span>Profile</span>
+      </a>
+      <a href="cards" class="button top-right" data-page="cards">
+        <img src="/images/cards.webp" alt="Cards">
+        <span>Cards</span>
+      </a>
+      <a href="boosters" class="button middle-left" data-page="boosters">
+        <img src="/images/boosters.webp" alt="Boosters">
+        <span>Boosters</span>
+      </a>
+      <a class="button middle-center">
+        <img src="/images/taps.webp">
+      </a>
+      <a href="tasks" class="button middle-right" data-page="tasks">
+        <img src="/images/tasks.webp" alt="Tasks">
+        <span>Tasks</span>
+      </a>
+      <a href="monsters" class="button bottom-left" data-page="monsters">
+        <img src="/images/monsters.webp" alt="Monsters">
+        <span>Monsters</span>
+      </a>
+      <a href="roadmap" class="button bottom-center" data-page="roadmap">
+        <img src="/images/roadMap.webp" alt="RoadMap">
+        <span>RoadMap</span>
+      </a>
+      <a href="rating" class="button bottom-right" data-page="rating">
+        <img src="/images/rating.webp" alt="Rating">
+        <span>Rating</span>
+      </a>
     </div>
 
-    <!-- Балансы монет + пассивный доход в час -->
-    <div class="mb-4">
-      <h3>Coins: <span id="coins">0</span></h3>
-      <p>Passive income: <span id="passiveIncome">10</span></p>
-    </div>
-
-    <!-- Кнопка для кликера -->
-    <div class="buttons-container mb-4">
-      <button id="tapButton" class="btn btn-primary tap-button">Tap</button>
-    </div>
+    <!-- <button class="center-button" id="tapButton"></button> -->
   </div>
 </div>

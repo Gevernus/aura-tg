@@ -28,5 +28,9 @@
         document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerSecond;
 
         document.body.style.backgroundImage = `url(/images/${config.images[levelComponent.level - 1]})`;
+        document.body.style.backgroundSize = 'cover';  // equivalent to object-fit: cover;
+        document.body.style.backgroundPosition = 'center';  // centers the image
+        document.body.style.width = '100%';
+        document.body.style.height = '100vh';
     }
 })
