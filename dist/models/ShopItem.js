@@ -15,13 +15,9 @@ const State_1 = require("./State");
 let ShopItem = class ShopItem extends typeorm_1.BaseEntity {
 };
 __decorate([
-    (0, typeorm_1.PrimaryColumn)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", String)
 ], ShopItem.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], ShopItem.prototype, "type", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
@@ -31,13 +27,25 @@ __decorate([
     __metadata("design:type", String)
 ], ShopItem.prototype, "description", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 0 }),
-    __metadata("design:type", Number)
-], ShopItem.prototype, "price", void 0);
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], ShopItem.prototype, "rarity", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: 1 }),
     __metadata("design:type", Number)
-], ShopItem.prototype, "tap_power", void 0);
+], ShopItem.prototype, "price", void 0);
+__decorate([
+    (0, typeorm_1.Column)("decimal", { precision: 5, scale: 2, default: 0 }),
+    __metadata("design:type", Number)
+], ShopItem.prototype, "passive_bonus", void 0);
+__decorate([
+    (0, typeorm_1.Column)("int", { nullable: true, default: 0 }),
+    __metadata("design:type", Number)
+], ShopItem.prototype, "tap_bonus", void 0);
+__decorate([
+    (0, typeorm_1.Column)("int", { nullable: true, default: 0 }),
+    __metadata("design:type", Number)
+], ShopItem.prototype, "stamina_bonus", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => State_1.State, state => state.shopItems),
     __metadata("design:type", Array)
