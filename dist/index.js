@@ -1,7 +1,7 @@
 import { ClickSystem, PassiveIncomeSystem, UpgradeSystem, StorageSystem, TelegramSystem, UISystem, EnergySystem } from './systems.js';
 import { SystemManager } from './systemManager.js';
 import { Entity } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, ShopComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, ShopComponent, MonstersComponent } from './components.js';
 
 let lastTime = 0;
 const targetFPS = 60;
@@ -16,6 +16,7 @@ async function initApp() {
     const state = await storageSystem.getState();
     const config = await storageSystem.getConfig();
     const user = await storageSystem.getUser();
+    const monsters = await storageSystem.getMonsters();
     systemManager.addSystem(telegramSystem);
     systemManager.addSystem(storageSystem)
 
@@ -30,7 +31,8 @@ async function initApp() {
     gameEntity.addComponent(new InputComponent());
     gameEntity.addComponent(new InventoryComponent(state.inventory));
     gameEntity.addComponent(new ReferralsComponent(user.referrals));
-    gameEntity.addComponent(new ShopComponent(state.shopItems));
+    gameEntity.addComponent(new MonstersComponent(state.monsters));
+    // gameEntity.addComponent(new ShopComponent(state.shopItems));
 
     storageSystem.setEntity(gameEntity);
     const uiSystem = new UISystem(gameEntity);
@@ -57,6 +59,7 @@ async function initApp() {
         tick(currentTime);
     });
     console.log('Frame requested')
+    eruda.init();
 }
 
 function tick(currentTime) {

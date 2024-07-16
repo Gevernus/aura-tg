@@ -11,47 +11,37 @@
 </head>
 
 <body>
-    <div id="content" class="container mt-3">
-        <!-- Dynamic content will be loaded here -->
+    <div id="main">
+        <div id="content" class="container mt-3">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+
+        <div class="button-grid bottom-center nav-link">
+            <a class="button" data-page="profile">
+                <img src="/images/profile.webp" alt="Profile">
+                <span>Profile</span>
+            </a>
+            <a class="button nav-link" data-page="shop">
+                <img src="/images/shop.webp" alt="Shop">
+                <span>Shop</span>
+            </a>
+            <a class="button nav-link" data-page="home">
+                <img src="/images/taps.webp">
+            </a>
+            <a class="button nav-link" data-page="tasks">
+                <img src="/images/tasks.webp" alt="Tasks">
+                <span>Tasks</span>
+            </a>
+            <a class="button nav-link" data-page="roadmap">
+                <img src="/images/roadMap.webp" alt="RoadMap">
+                <span>RoadMap</span>
+            </a>
+        </div>
     </div>
-    <!-- Bottom Navigation -->
-    <!-- <nav class="navbar navbar-expand-sm bg-light navbar-light nav-bottom">
-        <ul class="navbar-nav nav-justified w-100">
-            <li class="nav-item">
-                <a class="nav-link text-center" href="home" data-page="home">
-                    <i class="fas fa-home"></i><br>Home
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-center" href="inventory" data-page="inventory">
-                    <i class="fas fa-boxes"></i><br>Inventory
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-center" href="shop" data-page="shop">
-                    <i class="fas fa-shopping-cart"></i><br>Shop
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-center" href="profile" data-page="profile">
-                    <i class="fas fa-user"></i><br>Profile
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-center" href="tasks" data-page="tasks">
-                    <i class="fas fa-tasks"></i><br>Tasks
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-center" href="referrals" data-page="referrals">
-                    <i class="fas fa-users"></i><br>Referrals
-                </a>
-            </li>
-        </ul>
-    </nav> -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script type="module" src="/systemManager.js"></script>
     <script type="module" src="/ecs.js"></script>
     <script type="module" src="/systems.js"></script>

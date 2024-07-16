@@ -2,8 +2,7 @@
     init: function (entity) {
         this.entity = entity;
         const inputComponent = entity.getComponent('InputComponent');
-
-        document.getElementById('tapButton').addEventListener('click', () => {
+        document.getElementById('tap-button').addEventListener('click', () => {
             inputComponent.addInput("tap");
         });
     },

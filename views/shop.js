@@ -1,9 +1,8 @@
 ({
     init: function (entity) {
-        const shopComponent = entity.getComponent('ShopComponent');
-        const shopList = document.getElementById('shopList');
-        shopList.innerHTML = '';
-        if (!shopComponent.shopItems) {
+        const monstersComponent = entity.getComponent('MonstersComponent');
+        const monsters = document.getElementById('monsters-container');
+        if (!monstersComponent.items) {
             return;
         }
         shopComponent.shopItems.forEach(item => {

@@ -42,6 +42,12 @@ export class ShopComponent {
     }
 }
 
+export class MonstersComponent {
+    constructor(items = []) {
+        this.items = items;
+    }
+}
+
 export class ReferralsComponent {
     constructor(referrals = []) {
         this.referrals = referrals;

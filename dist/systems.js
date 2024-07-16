@@ -154,6 +154,24 @@ export class StorageSystem extends System {
         return this.user;
     }
 
+    async getMonsters() {
+        try {
+            const response = await fetch('api/monsters', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
+            return response.json();
+        } catch (error) {
+            console.error('Error saving state:', error);
+        }
+    }
+
     async saveState() {
         if (!this.entity) {
             console.error('No entity provided to save state');
