@@ -31,7 +31,7 @@ async function initApp() {
     gameEntity.addComponent(new InputComponent());
     gameEntity.addComponent(new InventoryComponent(state.inventory));
     gameEntity.addComponent(new ReferralsComponent(user.referrals));
-    gameEntity.addComponent(new MonstersComponent(state.monsters));
+    // gameEntity.addComponent(new MonstersComponent(state.monsters));
     // gameEntity.addComponent(new ShopComponent(state.shopItems));
 
     storageSystem.setEntity(gameEntity);

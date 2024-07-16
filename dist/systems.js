@@ -155,21 +155,21 @@ export class StorageSystem extends System {
     }
 
     async getMonsters() {
-        try {
-            const response = await fetch('api/monsters', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        // try {
+        //     const response = await fetch('api/monsters', {
+        //         method: 'GET',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //     });
 
-            if (!response.ok) {
-                throw new Error('Failed to save state');
-            }
-            return response.json();
-        } catch (error) {
-            console.error('Error saving state:', error);
-        }
+        //     if (!response.ok) {
+        //         throw new Error('Failed to save state');
+        //     }
+        //     return response.json();
+        // } catch (error) {
+        //     console.error('Error saving state:', error);
+        // }
     }
 
     async saveState() {
