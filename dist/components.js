@@ -58,7 +58,7 @@ class MonsterData {
         this.rarity = rarity;
         this.effect = effect;
         this.image = image;
-        update(level, incomePerLevel, basePrice);
+        this.update(level, incomePerLevel, basePrice);
     }
 
     update(level, incomePerLevel, basePrice) {
