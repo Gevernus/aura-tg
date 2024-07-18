@@ -2,26 +2,23 @@
   <div class="header">
     <h1>Shop</h1>
   </div>
-  <div id="monsters-container">
-    <span>Monsters</span>
-    
+  <div class="info-area">
+    <div class="info-row">
+      <span>Coins: <span id="coins">0</span></span>
+      <span>Passive income: <span id="passiveIncome">1</span></span>
+    </div>
   </div>
-  <!-- <div>Свет</div>\
-  <div id="vse_svet"></div>
-  <div>Тьма</div>
-  <div id="vse_tma"></div>
-  <div>Воздух</div>
-  <div id="vse_vozdux"></div>
-  <div>Вода</div>
-  <div id="vse_voda"></div>
-  <div>Земля</div>
-  <div id="vse_zemly"></div>
-  <div>Огонь</div>
-  <div id="vse_ogon"></div>
-  <div>Pay pack</div>
-  <div src=""></div>
-  <div id="predmet_za_starz"></div>
-  <div>
-    <buuton id="pay_pack">pay</buuton>
-  </div> -->
+  <div id="shop-tabs">
+    <button class="tab-button active" data-tab="monsters">Monsters</button>
+    <button class="tab-button" data-tab="cards">Cards</button>
+  </div>
+
+  <div id="shop-content">
+    <div id="monsters-container" class="tab-content active scrollable-container grid-container">
+      <!-- Monster items will be dynamically inserted here -->
+    </div>
+    <div id="cards-container" class="tab-content scrollable-container grid-container">
+      <!-- Card items will be dynamically inserted here -->
+    </div>
+  </div>
 </div>

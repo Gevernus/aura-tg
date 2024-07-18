@@ -3,6 +3,8 @@ import { User } from '../models/User';
 import config from '../config/config';
 import { State } from '../models/State';
 import { Inventory } from '../models/Inventory';
+import { Monster } from '../models/Monster';
+import { UserMonster } from '../models/UserMonster';
 
 const router = Router();
 
@@ -10,7 +12,7 @@ router.post('/user', async (req, res) => {
     const userData: User = req.body;
     try {
         let user;
-        let state;
+        let state: State | null;
         const result = await User.createQueryBuilder()
             .insert()
             .values(userData)
@@ -27,6 +29,16 @@ router.post('/user', async (req, res) => {
             inventory.id = user.id;;
             state.inventory = inventory;
             await state.save();
+
+            const monsters = await Monster.find();
+            monsters.forEach(monster => {
+                const userMonster = UserMonster.create();
+                userMonster.user_id = state ? state.id : "";
+                userMonster.monster_id = monster.id;
+                userMonster.level = 0;
+                userMonster.monster = monster;
+                userMonster.save();
+            });
         } else {
             user = await User.findOne({ where: { id: userData.id } });
             state = await State.findOne({ where: { id: userData.id } });

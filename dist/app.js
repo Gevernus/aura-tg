@@ -14,6 +14,7 @@ require("dotenv/config");
 const user_1 = __importDefault(require("./routes/user"));
 const referral_1 = __importDefault(require("./routes/referral"));
 const state_1 = __importDefault(require("./routes/state"));
+const monster_1 = __importDefault(require("./routes/monster"));
 const database_1 = __importDefault(require("./config/database"));
 const cors_1 = __importDefault(require("cors"));
 const mime_1 = __importDefault(require("mime"));
@@ -33,6 +34,32 @@ exports.AppDataSource.initialize().then(() => {
     app.use('/api', user_1.default);
     app.use('/api', referral_1.default);
     app.use('/api', state_1.default);
+    app.use('/api', monster_1.default);
+    app.get('/dist/:fileName', async (req, res) => {
+        const fileName = req.params.fileName;
+        const filePath = path_1.default.join(__dirname, '../dist', fileName);
+        try {
+            // Check if file exists
+            await (0, promises_1.access)(filePath);
+            // Determine the MIME type
+            const mimeType = mime_1.default.lookup(filePath) || 'application/octet-stream';
+            // Set the correct Content-Type
+            res.type(mimeType);
+            // Send the file
+            res.sendFile(filePath);
+        }
+        catch (error) {
+            console.error(`Error serving file ${fileName}:`, error);
+            if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+                // ENOENT error code means "Error NO ENTry" or "Error NO ENTity", which indicates that the file or directory doesn't exist
+                res.status(404).send('File not found');
+            }
+            else {
+                // For any other error, send a 500 Internal Server Error
+                res.status(500).send('Internal Server Error');
+            }
+        }
+    });
     app.get('/views/:fileName', async (req, res) => {
         const fileName = req.params.fileName;
         const filePath = path_1.default.join(__dirname, '../views', fileName);
@@ -82,6 +109,7 @@ exports.AppDataSource.initialize().then(() => {
     app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
     });
+    console.log('App started');
 }).catch(error => console.log('TypeORM connection error: ', error));
 exports.default = app;
 //# sourceMappingURL=app.js.map

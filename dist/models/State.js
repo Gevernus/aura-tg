@@ -40,7 +40,7 @@ __decorate([
     __metadata("design:type", Number)
 ], State.prototype, "coins", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 10 }),
+    (0, typeorm_1.Column)({ default: 0 }),
     __metadata("design:type", Number)
 ], State.prototype, "passive_income", void 0);
 __decorate([

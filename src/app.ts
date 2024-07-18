@@ -8,6 +8,7 @@ import 'dotenv/config';
 import userRoutes from './routes/user';
 import referralRoutes from './routes/referral';
 import stateRoutes from './routes/state';
+import monsterRoutes from './routes/monster';
 import dbConfig from './config/database';
 import cors from 'cors';
 import mime from "mime";
@@ -33,7 +34,34 @@ AppDataSource.initialize().then(() => {
     app.use('/api', userRoutes);
     app.use('/api', referralRoutes);
     app.use('/api', stateRoutes);
+    app.use('/api', monsterRoutes);
+    app.get('/dist/:fileName', async (req, res) => {
+        const fileName = req.params.fileName;
+        const filePath = path.join(__dirname, '../dist', fileName);
+        try {
+            // Check if file exists
+            await access(filePath);
 
+            // Determine the MIME type
+            const mimeType = mime.lookup(filePath) || 'application/octet-stream';
+
+            // Set the correct Content-Type
+            res.type(mimeType);
+
+            // Send the file
+            res.sendFile(filePath);
+        } catch (error: unknown) {
+            console.error(`Error serving file ${fileName}:`, error);
+
+            if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+                // ENOENT error code means "Error NO ENTry" or "Error NO ENTity", which indicates that the file or directory doesn't exist
+                res.status(404).send('File not found');
+            } else {
+                // For any other error, send a 500 Internal Server Error
+                res.status(500).send('Internal Server Error');
+            }
+        }
+    });
     app.get('/views/:fileName', async (req, res) => {
         const fileName = req.params.fileName;
         const filePath = path.join(__dirname, '../views', fileName);
@@ -91,6 +119,8 @@ AppDataSource.initialize().then(() => {
     app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
     });
+
+    console.log('App started');
 }).catch(error => console.log('TypeORM connection error: ', error));
 
 export default app;

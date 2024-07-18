@@ -9,45 +9,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Monster = void 0;
+exports.UserMonster = void 0;
 const typeorm_1 = require("typeorm");
-const UserMonster_1 = require("./UserMonster");
-let Monster = class Monster extends typeorm_1.BaseEntity {
+const Monster_1 = require("./Monster");
+let UserMonster = class UserMonster extends typeorm_1.BaseEntity {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Monster.prototype, "id", void 0);
+], UserMonster.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Monster.prototype, "name", void 0);
+], UserMonster.prototype, "user_id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Monster.prototype, "type", void 0);
+    __metadata("design:type", Number)
+], UserMonster.prototype, "monster_id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Monster.prototype, "description", void 0);
+    __metadata("design:type", Number)
+], UserMonster.prototype, "level", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Monster.prototype, "rarity", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Monster.prototype, "effect", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Monster.prototype, "image", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => UserMonster_1.UserMonster, userMonster => userMonster.monster),
-    __metadata("design:type", Array)
-], Monster.prototype, "userMonsters", void 0);
-Monster = __decorate([
+    (0, typeorm_1.ManyToOne)(() => Monster_1.Monster, monster => monster.userMonsters),
+    (0, typeorm_1.JoinColumn)({ name: "monster_id" }),
+    __metadata("design:type", Monster_1.Monster)
+], UserMonster.prototype, "monster", void 0);
+UserMonster = __decorate([
     (0, typeorm_1.Entity)()
-], Monster);
-exports.Monster = Monster;
-//# sourceMappingURL=Monster.js.map
+], UserMonster);
+exports.UserMonster = UserMonster;
+//# sourceMappingURL=UserMonster.js.map

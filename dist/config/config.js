@@ -30,7 +30,29 @@ exports.config = {
         'background.webp',
         'background.webp',
         'background.webp'
-    ]
+    ],
+    cardConfigs: {
+        ["Обычное"]: {
+            basePrice: 100,
+            incomePerLevel: 5
+        },
+        ["Редкое"]: {
+            basePrice: 500,
+            incomePerLevel: 30
+        },
+        ["ОченьРедкое"]: {
+            basePrice: 2000,
+            incomePerLevel: 150
+        },
+        ["Эпическое"]: {
+            basePrice: 10000,
+            incomePerLevel: 750
+        },
+        ["Легендарное"]: {
+            basePrice: 50000,
+            incomePerLevel: 3750
+        }
+    }
 };
 exports.default = exports.config;
 //# sourceMappingURL=config.js.map

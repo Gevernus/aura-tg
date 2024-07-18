@@ -8,6 +8,8 @@ const User_1 = require("../models/User");
 const config_1 = __importDefault(require("../config/config"));
 const State_1 = require("../models/State");
 const Inventory_1 = require("../models/Inventory");
+const Monster_1 = require("../models/Monster");
+const UserMonster_1 = require("../models/UserMonster");
 const router = (0, express_1.Router)();
 router.post('/user', async (req, res) => {
     const userData = req.body;
@@ -31,6 +33,15 @@ router.post('/user', async (req, res) => {
             ;
             state.inventory = inventory;
             await state.save();
+            const monsters = await Monster_1.Monster.find();
+            monsters.forEach(monster => {
+                const userMonster = UserMonster_1.UserMonster.create();
+                userMonster.user_id = state ? state.id : "";
+                userMonster.monster_id = monster.id;
+                userMonster.level = 0;
+                userMonster.monster = monster;
+                userMonster.save();
+            });
         }
         else {
             user = await User_1.User.findOne({ where: { id: userData.id } });

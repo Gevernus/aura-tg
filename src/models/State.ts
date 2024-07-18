@@ -22,7 +22,7 @@ export class State extends BaseEntity {
     @Column({ default: 0 })
     coins!: number
 
-    @Column({ default: 10 })
+    @Column({ default: 0 })
     passive_income!: number
 
     @Column({ default: 0 })

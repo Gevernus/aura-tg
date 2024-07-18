@@ -1,19 +1,34 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+}
+
 .header {
     background: rgba(0, 0, 0, 0.5);
-    padding: 5px 10px;
     border-radius: 10px;
-    margin-bottom: 5px;
     color: #ffffff;
+    padding: 15px 10px 5px 10px;
 }
 
 h1 {
     font-size: 1.2em;
-    margin: 0;
+}
+
+#shop-content {
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
 .container {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
+    gap: 20px;
 }
 
 #page-content {
@@ -22,6 +37,7 @@ h1 {
     height: 100%;
     width: 100%;
     color: #ffffff;
+    margin: 0 auto;
 }
 
 #main {
@@ -29,15 +45,14 @@ h1 {
     flex-direction: column;
     height: 100%;
     width: 100%;
-    padding-bottom: 10px;
 }
 
 .info-area {
     background: rgba(0, 0, 0, 0.5);
-    padding: 5px 10px;
     border-radius: 10px;
-    margin-bottom: 5px;
     color: #ffffff;
+    padding: 5px;
+    margin: 10px 0px 10px 0px;
 }
 
 .info-row {
@@ -47,6 +62,7 @@ h1 {
     margin-bottom: 2px;
     font-size: 0.9em;
     color: #ffffff;
+    padding: 10px 10px 10px 10px;
 }
 
 .progress {
@@ -70,12 +86,12 @@ h1 {
     background: #2ecc71;
 }
 
-.button-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(1, 1fr);
-    gap: 10px;
-    margin-top: auto;
+.button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 20px 0;
+    gap: 5px;
 }
 
 .button {
@@ -87,35 +103,186 @@ h1 {
     color: white;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
-    padding: 5px;
+    padding: 5px 10px 5px 10px;
 }
 
 .button img {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
 }
 
 .button span {
     font-size: 0.8em;
-    margin-top: 2px;
+    margin-top: 1px;
+}
+
+.tap-button-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #tap-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 220px;
-    height: 220px;
+    width: 70vw;
+    height: 70vw;
+    max-width: 260px;
+    max-height: 260px;
     border-radius: 50%;
     background: url('/images/taps.webp') no-repeat center center;
     background-size: cover;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
-    transform: translate(-50%, -50%);
+    transition: all 0.1s;
 }
 
 #tap-button:active {
-    transform: translate(-50%, -50%) scale(1.05);
+    transform: scale(1.03);
     filter: brightness(1.2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+    outline: none;
+    border: none;
+}
+
+#tap-button:focus {
+    outline: none;
+    border: none;
+}
+
+#shop-tabs {
+    display: flex;
+    justify-content: center;
+}
+
+.tab-button {
+    width: 100%;
+    background-color: #16213e;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+    border-radius: 10px 10px 0 0;
+}
+
+#tab-button:focus {
+    outline: none;
+    border: none;
+}
+
+.tab-button.active {
+    background-color: #0f3460;
+}
+
+.tab-content {
+    display: none
+}
+
+.tab-content.active {
+    display: grid;
+}
+
+.scrollable-container {
+    height: calc(60vh);
+    width: 100%;
+    overflow-y: auto;
+    border: 1px solid #0f3460;
+    padding: 10px;
+    border-radius: 0 0 10px 10px;
+}
+
+.grid-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.shop-item {
+    background-color: #1e2732;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.shop-item h4 {
+    margin: 5px 0;
+    font-size: 12px;
+    text-align: center;
+}
+
+.monster-image {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 20%;
+    margin-bottom: 8px;
+}
+
+.level-price-container {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 100%;
+    gap: 25px;
+}
+
+.monster-income,
+.monster-price {
+    margin: 2px 0;
+    text-align: center;
+    color: #a0a0a0;
+}
+
+.monster-level {
+    text-align: center;
+    font-weight: bold;
+    color: #4a4ae9;
+}
+
+.buy-button {
+    background-color: rgb(180, 153, 4);
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 12px;
+    width: 80px;
+}
+
+.buy-button:hover,
+.buy-button:focus,
+.buy-button:active {
+    background-color: rgb(126, 108, 3);
+}
+
+.buy-button:hover:not(:disabled),
+.buy-button:focus:not(:disabled),
+.buy-button:active:not(:disabled) {
+    background-color: rgb(126, 108, 3);
+}
+
+.buy-button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+@media (min-aspect-ratio: 1/1) {
+    #tap-button {
+        width: 40vh;
+        height: 40vh;
+    }
+}
+
+@media screen and (orientation: portrait) {
+    html {
+        /* Force the content to stay in portrait mode */
+        transform: rotate(0deg);
+    }
 }

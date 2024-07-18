@@ -25,8 +25,15 @@ export class EnergyComponent {
 }
 
 export class PassiveIncomeComponent {
-    constructor(incomePerSecond = 0) {
-        this.incomePerSecond = incomePerSecond;
+    constructor(monsters = []) {
+        this.incomePerHour = 0;
+        this.calculate(monsters);
+    }
+
+    calculate(monsters) {
+        for (const monster of monsters) {
+            this.incomePerHour += monster.incomePerHour;
+        }
     }
 }
 
@@ -42,9 +49,66 @@ export class ShopComponent {
     }
 }
 
+class MonsterData {
+    constructor(id, name, type, description, rarity, effect, image, level, baseIncomePerHour, basePrice) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.rarity = rarity;
+        this.effect = effect;
+        this.image = image;
+        this.level = level;
+        this.incomePerHour = baseIncomePerHour * level;
+        this.price = Math.round(basePrice * Math.pow(1.30, level));
+    }
+}
+
 export class MonstersComponent {
-    constructor(items = []) {
-        this.items = items;
+    constructor(data = [], config) {
+        this.config = config;
+        this.updateItems(data);
+    }
+
+    updateItems(data) {
+        this.items = data.map(item => new MonsterData(
+            item.id,
+            item.name,
+            item.type,
+            item.description,
+            item.rarity,
+            item.effect,
+            item.image,
+            item.userMonsters[0].level,
+            this.config.cardConfigs[item.rarity].incomePerLevel,
+            this.config.cardConfigs[item.rarity].basePrice,
+        ));
+    }
+
+    updateItem(data) {
+        this.items = this.items.map(existingItem => {
+            if (existingItem.id === data.id) {
+                return new MonsterData(
+                    data.id,
+                    data.name,
+                    data.type,
+                    data.description,
+                    data.rarity,
+                    data.effect,
+                    data.image,
+                    data.userMonsters[0].level,
+                    this.config.cardConfigs[data.rarity].incomePerLevel,
+                    this.config.cardConfigs[data.rarity].basePrice
+                );
+            }
+            return existingItem;
+        });
+    }
+
+    getMonsterById(id) {
+        const result = this.items.find(monster => monster.id == id);
+        console.log(`Result: ${result}`);
+        return result;
     }
 }
 
@@ -54,18 +118,15 @@ export class ReferralsComponent {
     }
 }
 
-export class UpgradeComponent {
-    constructor(name, cost, type, value) {
-        this.name = name;
-        this.cost = cost;
-        this.type = type; // 'click' or 'passive'
-        this.value = value;
-    }
-}
-
 export class ConfigComponent {
     constructor(config) {
         this.config = config;
+    }
+}
+
+export class UserComponent {
+    constructor(user) {
+        this.user = user;
     }
 }
 
@@ -74,10 +135,11 @@ export class InputComponent {
         this.inputQueue = [];
     }
 
-    addInput(inputType) {
+    addInput(inputType, data = {}) {
         this.inputQueue.push({
             type: inputType,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            data,
         });
         console.log("Input added:", inputType);
     }
@@ -113,16 +175,10 @@ export class ViewComponent {
             this.template = await htmlResponse.text();
 
             // Load JavaScript logic
-            const jsResponse = await fetch(`/views/${this.name}.js`);
-            if (jsResponse.ok) {
-                const jsCode = await jsResponse.text();
-
-                // Using Function to evaluate the code in a controlled scope
-                this.logic = new Function('return ' + jsCode)();
-
-                if (typeof this.logic.init !== 'function' || typeof this.logic.render !== 'function') {
-                    throw new Error(`View ${this.name} must export init and render functions`);
-                }
+            // const jsResponse = await fetch(`/views/${this.name}.js`);
+            this.logic = await import(`/views/${this.name}.js`);
+            if (typeof this.logic.init !== 'function' || typeof this.logic.render !== 'function') {
+                throw new Error(`View ${this.name} must export init and render functions`, this.logic);
             }
         } catch (error) {
             console.error(`Error loading view ${this.name}:`, error);

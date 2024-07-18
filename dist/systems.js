@@ -1,5 +1,5 @@
 import { System } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent, MonstersComponent, ConfigComponent, UserComponent } from './components.js';
 
 export class ClickSystem extends System {
     update(deltaTime) {
@@ -30,7 +30,7 @@ export class PassiveIncomeSystem extends System {
         if (this.entity.hasComponent(CoinsComponent) && this.entity.hasComponent(PassiveIncomeComponent)) {
             let coins = this.entity.getComponent(CoinsComponent);
             let passiveIncome = this.entity.getComponent(PassiveIncomeComponent);
-            coins.amount += passiveIncome.incomePerSecond * deltaTime;
+            coins.amount += passiveIncome.incomePerHour / 3600 * deltaTime;
         }
     }
 }
@@ -47,36 +47,43 @@ export class EnergySystem extends System {
     }
 }
 
-export class UpgradeSystem extends System {
-    update(deltaTime) {
-        if (this.entity.hasComponent(InputComponent) &&
-            this.entity.hasComponent(CoinsComponent)) {
-
-            const inputComponent = this.entity.getComponent(InputComponent);
-
-            while (inputComponent.hasInput('upgrade')) {
-                const upgradeInput = inputComponent.getAndRemoveInput('upgrade');
-                if (upgradeInput) {
-                    this.processUpgrade(entity, upgradeInput);
-                }
+export class LevelUpSystem extends System {
+    async update(deltaTime) {
+        const inputComponent = this.entity.getComponent(InputComponent);
+        const monstersComponent = this.entity.getComponent(MonstersComponent);
+        const userComponent = this.entity.getComponent(UserComponent);
+        const coinsComponent = this.entity.getComponent(CoinsComponent);
+        const passiveIncomeComponent = this.entity.getComponent(PassiveIncomeComponent);
+        while (inputComponent.hasInput('upgrade')) {
+            const upgrade = inputComponent.getAndRemoveInput('upgrade');
+            if (upgrade && upgrade.data) {
+                coinsComponent.amount -= upgrade.data.price;
+                const data = await this.processUpgrade(upgrade.data.monsterId, userComponent.user.id);
+                monstersComponent.updateItem(data.userMonster);
+                passiveIncomeComponent.calculate(monstersComponent.items);
+                // if (data.coins) {
+                //     coinsComponent.amount = data.coins;
+                // }
             }
         }
     }
 
-    processUpgrade(entity, input) {
-        // Implement upgrade logic here
-        console.log(`Processing upgrade at ${input.timestamp}`);
-        // Example: Upgrade click power
-        const clickPowerComponent = entity.getComponent(ClickPowerComponent);
-        const coinsComponent = entity.getComponent(CoinsComponent);
+    async processUpgrade(monsterId, userId) {
+        try {
+            const response = await fetch(`api/${userId}/monsters/upgrade/${monsterId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                json: monsterId,
+            });
 
-        const upgradeCost = 10 * (clickPowerComponent.power + 1);
-        if (coinsComponent.amount >= upgradeCost) {
-            coinsComponent.amount -= upgradeCost;
-            clickPowerComponent.power += 1;
-            console.log(`Upgraded click power to ${clickPowerComponent.power}`);
-        } else {
-            console.log('Not enough coins for upgrade');
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
+            return response.json();
+        } catch (error) {
+            console.error('Error saving state:', error);
         }
     }
 }
@@ -115,13 +122,13 @@ export class TelegramSystem extends System {
 }
 
 export class StorageSystem extends System {
-    constructor(tgUser) {
-        super(null);
+    constructor(entity, tgUser) {
+        super(entity);
         this.tgUser = tgUser;
         this.state = null;
         this.config = null;
         this.user = null;
-        this.timeToSave = 5;
+        this.timeToSave = 10;
         this.timer = 0;
     }
 
@@ -155,21 +162,22 @@ export class StorageSystem extends System {
     }
 
     async getMonsters() {
-        // try {
-        //     const response = await fetch('api/monsters', {
-        //         method: 'GET',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //     });
+        console.log('Trying to get monsters')
+        try {
+            const response = await fetch(`api/${this.tgUser.id}/monsters`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
 
-        //     if (!response.ok) {
-        //         throw new Error('Failed to save state');
-        //     }
-        //     return response.json();
-        // } catch (error) {
-        //     console.error('Error saving state:', error);
-        // }
+            return await response.json();
+        } catch (error) {
+            console.error('Error saving state:', error);
+        }
     }
 
     async saveState() {
@@ -237,9 +245,7 @@ export class StorageSystem extends System {
             this.timer = 0;
             this.saveState();
         }
-        // If you need any periodic state saving, you can implement it here
     }
-
 }
 
 export class UISystem extends System {
