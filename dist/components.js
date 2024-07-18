@@ -50,7 +50,7 @@ export class ShopComponent {
 }
 
 class MonsterData {
-    constructor(id, name, type, description, rarity, effect, image, level, baseIncomePerHour, basePrice) {
+    constructor(id, name, type, description, rarity, effect, image, level, incomePerLevel, basePrice) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -58,8 +58,12 @@ class MonsterData {
         this.rarity = rarity;
         this.effect = effect;
         this.image = image;
+        update(level, incomePerLevel, basePrice);
+    }
+
+    update(level, incomePerLevel, basePrice) {
         this.level = level;
-        this.incomePerHour = baseIncomePerHour * level;
+        this.incomePerHour = incomePerLevel * data.level;
         this.price = Math.round(basePrice * Math.pow(1.30, level));
     }
 }
@@ -88,18 +92,9 @@ export class MonstersComponent {
     updateItem(data) {
         this.items = this.items.map(existingItem => {
             if (existingItem.id === data.id) {
-                return new MonsterData(
-                    data.id,
-                    data.name,
-                    data.type,
-                    data.description,
-                    data.rarity,
-                    data.effect,
-                    data.image,
-                    data.userMonsters[0].level,
+                existingItem.update(data.level,
                     this.config.cardConfigs[data.rarity].incomePerLevel,
-                    this.config.cardConfigs[data.rarity].basePrice
-                );
+                    this.config.cardConfigs[data.rarity].basePrice);
             }
             return existingItem;
         });
