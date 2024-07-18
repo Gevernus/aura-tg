@@ -63,7 +63,7 @@ class MonsterData {
 
     update(level, incomePerLevel, basePrice) {
         this.level = level;
-        this.incomePerHour = incomePerLevel * data.level;
+        this.incomePerHour = incomePerLevel * level;
         this.price = Math.round(basePrice * Math.pow(1.30, level));
     }
 }
