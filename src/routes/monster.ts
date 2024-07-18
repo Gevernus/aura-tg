@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { Monster } from '../models/Monster';
 import { UserMonster } from '../models/UserMonster';
 import { config } from '../config/config';
-import { State } from '../models/State';
 
 const router = Router();
 
