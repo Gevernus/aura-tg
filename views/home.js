@@ -1,8 +1,10 @@
 
 export function init(entity) {
     const inputComponent = entity.getComponent('InputComponent');
-    const tapButton = document.getElementById('tap-button');
-    tapButton.replaceWith(tapButton.cloneNode(true));
+    let tapButton = document.getElementById('tap-button');
+    // const clone = tapButton.cloneNode(true)
+    // tapButton.replaceWith(clone);
+    // tapButton = clone;
     tapButton.addEventListener('click', () => {
         inputComponent.addInput("tap");
     });

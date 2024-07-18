@@ -35,7 +35,6 @@ function initializeBuyButtons(entity) {
     const monstersComponent = entity.getComponent(MonstersComponent);
 
     document.querySelectorAll('.buy-button').forEach(button => {
-        button.replaceWith(button.cloneNode(true));
         button.addEventListener('click', (e) => {
             const monsterId = e.target.getAttribute('data-id');
             const price = monstersComponent.getMonsterById(monsterId).price;
