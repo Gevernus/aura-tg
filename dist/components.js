@@ -93,8 +93,8 @@ export class MonstersComponent {
         this.items = this.items.map(existingItem => {
             if (existingItem.id === data.id) {
                 existingItem.update(data.level,
-                    this.config.cardConfigs[data.rarity].incomePerLevel,
-                    this.config.cardConfigs[data.rarity].basePrice);
+                    this.config.cardConfigs[data.monster.rarity].incomePerLevel,
+                    this.config.cardConfigs[data.monster.rarity].basePrice);
             }
             return existingItem;
         });
