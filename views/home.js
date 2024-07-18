@@ -1,7 +1,9 @@
 
 export function init(entity) {
     const inputComponent = entity.getComponent('InputComponent');
-    document.getElementById('tap-button').addEventListener('click', () => {
+    const tapButton = document.getElementById('tap-button');
+    tapButton.replaceWith(tapButton.cloneNode(true));
+    tapButton.addEventListener('click', () => {
         inputComponent.addInput("tap");
     });
     document.body.style.backgroundImage = `url(/images/${config.images[levelComponent.level - 1]})`;
