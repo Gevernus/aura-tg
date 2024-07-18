@@ -59,6 +59,8 @@ export class LevelUpSystem extends System {
             if (upgrade && upgrade.data) {
                 coinsComponent.amount -= upgrade.data.price;
                 const data = await this.processUpgrade(upgrade.data.monsterId, userComponent.user.id);
+                console.log(`Upgrade data`);
+                console.log(data.userMonster);
                 monstersComponent.updateItem(data.userMonster);
                 passiveIncomeComponent.calculate(monstersComponent.items);
                 // if (data.coins) {

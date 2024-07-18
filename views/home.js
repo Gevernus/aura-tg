@@ -2,6 +2,8 @@
 export function init(entity) {
     const inputComponent = entity.getComponent('InputComponent');
     let tapButton = document.getElementById('tap-button');
+    const configComponent = entity.getComponent('ConfigComponent');
+    const config = configComponent.config;
     // const clone = tapButton.cloneNode(true)
     // tapButton.replaceWith(clone);
     // tapButton = clone;
@@ -21,9 +23,8 @@ export function render(entity) {
     const coinsComponent = entity.getComponent('CoinsComponent');
     const passiveIncomeComponent = entity.getComponent('PassiveIncomeComponent');
     const configComponent = entity.getComponent('ConfigComponent');
-
-
     const config = configComponent.config;
+
     document.getElementById('levelName').textContent = config.levels[levelComponent.level - 1];
     document.getElementById('level').textContent = levelComponent.level;
     document.getElementById('levelProgress').style.width = `${(coinsComponent.amount / config.levelRequirements[levelComponent.level]) * 100}%`;
