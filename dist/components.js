@@ -31,6 +31,7 @@ export class PassiveIncomeComponent {
     }
 
     calculate(monsters) {
+        this.incomePerHour = 0;
         for (const monster of monsters) {
             this.incomePerHour += monster.incomePerHour;
         }

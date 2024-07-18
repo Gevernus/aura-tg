@@ -75,28 +75,22 @@ export function render(entity) {
 
     // Update monster items
     monsters.items.forEach(monster => {
-        const monsterElement = monstersContainer.querySelector(`.monster-item [data-id="${monster.id}"]`).closest('.monster-item');
+        const monsterElement = monstersContainer.querySelector(`.shop-item.monster-item:has([data-id="${monster.id}"])`);
+        console.log(monsterElement);
+
         if (monsterElement) {
             // Update level
-            const levelElement = monsterElement.querySelector('.monster-level');
-            if (levelElement) {
-                levelElement.textContent = `lvl ${monster.level}`;
-            }
+            monsterElement.querySelector('.monster-level').textContent = `lvl ${monster.level}`;
 
             // Update income
-            const incomeElement = monsterElement.querySelector('.monster-income');
-            if (incomeElement) {
-                incomeElement.textContent = `Profit per hour: ${monster.incomePerHour}`;
-            }
+            monsterElement.querySelector('.monster-income').textContent = `Profit per hour: ${monster.incomePerHour}`;
 
-            // Update price
+            // Update price and button state
             const buyButton = monsterElement.querySelector('.buy-button');
-            if (buyButton) {
-                buyButton.textContent = monster.price;
-                const canAfford = coins.amount >= monster.price;
-                buyButton.disabled = !canAfford;
-            }
+            buyButton.textContent = monster.price;
+            buyButton.disabled = coins.amount < monster.price;
         }
+
     });
 
     // Update coins and passive income display
