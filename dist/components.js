@@ -63,7 +63,6 @@ class MonsterData {
     }
 
     update(level, incomePerLevel, basePrice) {
-        console.log(`Update monster data ${level}, ${incomePerLevel * level}`);
         this.level = level;
         this.incomePerHour = incomePerLevel * level;
         this.price = Math.round(basePrice * Math.pow(1.30, level));
@@ -93,7 +92,7 @@ export class MonstersComponent {
 
     updateItem(data) {
         this.items = this.items.map(existingItem => {
-            if (existingItem.id == data.id) {
+            if (existingItem.id == data.monsterId) {
                 existingItem.update(data.level,
                     this.config.cardConfigs[data.monster.rarity].incomePerLevel,
                     this.config.cardConfigs[data.monster.rarity].basePrice);
@@ -103,9 +102,7 @@ export class MonstersComponent {
     }
 
     getMonsterById(id) {
-        const result = this.items.find(monster => monster.id == id);
-        console.log(`Result: ${result}`);
-        return result;
+        return this.items.find(monster => monster.id == id);
     }
 }
 
