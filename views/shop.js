@@ -78,6 +78,7 @@ export function render(entity) {
         const monsterElement = monstersContainer.querySelector(`.shop-item.monster-item:has([data-id="${monster.id}"])`);
 
         if (monsterElement) {
+            console.log(monsterElement.querySelector('.monster-level'));
             monsterElement.querySelector('.monster-level').textContent = `lvl ${monster.level}`;
             monsterElement.querySelector('p.monster-income').textContent = `Profit per hour: ${monster.incomePerHour}`;
             const buyButton = monsterElement.querySelector('.buy-button');

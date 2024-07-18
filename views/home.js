@@ -3,6 +3,7 @@ export function init(entity) {
     const inputComponent = entity.getComponent('InputComponent');
     let tapButton = document.getElementById('tap-button');
     const configComponent = entity.getComponent('ConfigComponent');
+    const levelComponent = entity.getComponent('LevelComponent');
     const config = configComponent.config;
     // const clone = tapButton.cloneNode(true)
     // tapButton.replaceWith(clone);
