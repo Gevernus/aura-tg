@@ -40,7 +40,7 @@ router.post('/:userId/monsters/upgrade/:monsterId', async (req, res) => {
             const cardConfig = config.cardConfigs[userMonster.monster.rarity]
             const price = Math.round(cardConfig.basePrice * Math.pow(1.30, userMonster.level))
             const state = await State.findOne({ where: { id: userId } })
-            if (state && state.coins >= price) {
+            if (state) {
                 userMonster.level += 1;
                 state.coins -= price;
                 await userMonster.save();
