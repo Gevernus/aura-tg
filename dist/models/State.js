@@ -14,6 +14,9 @@ const typeorm_1 = require("typeorm");
 const Inventory_1 = require("./Inventory");
 const ShopItem_1 = require("./ShopItem");
 let State = class State extends typeorm_1.BaseEntity {
+    updateLastUpdated() {
+        this.last_updated = new Date();
+    }
 };
 __decorate([
     (0, typeorm_1.PrimaryColumn)(),
@@ -52,6 +55,10 @@ __decorate([
     __metadata("design:type", Number)
 ], State.prototype, "tap_power", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
+    __metadata("design:type", Date)
+], State.prototype, "last_updated", void 0);
+__decorate([
     (0, typeorm_1.OneToOne)(() => Inventory_1.Inventory, state => state.state),
     __metadata("design:type", Inventory_1.Inventory)
 ], State.prototype, "inventory", void 0);
@@ -60,6 +67,12 @@ __decorate([
     (0, typeorm_1.JoinTable)(),
     __metadata("design:type", Array)
 ], State.prototype, "shopItems", void 0);
+__decorate([
+    (0, typeorm_1.BeforeUpdate)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], State.prototype, "updateLastUpdated", null);
 State = __decorate([
     (0, typeorm_1.Entity)()
 ], State);

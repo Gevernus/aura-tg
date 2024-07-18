@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryColumn, OneToOne, ManyToMany, JoinTable } from "typeorm"
+import { Entity, Column, BaseEntity, PrimaryColumn, OneToOne, ManyToMany, JoinTable, BeforeUpdate } from "typeorm"
 import { Inventory } from "./Inventory";
 import { ShopItem } from "./ShopItem";
 
@@ -31,11 +31,19 @@ export class State extends BaseEntity {
     @Column({ default: 1 })
     tap_power!: number
 
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    last_updated!: Date;
+
     @OneToOne(() => Inventory, state => state.state)
     inventory!: Inventory;
 
     @ManyToMany(() => ShopItem, shopItem => shopItem.states)
     @JoinTable()
     shopItems!: ShopItem[];
+
+    @BeforeUpdate()
+    updateLastUpdated() {
+        this.last_updated = new Date();
+    }
 }
 
