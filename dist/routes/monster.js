@@ -4,7 +4,6 @@ const express_1 = require("express");
 const Monster_1 = require("../models/Monster");
 const UserMonster_1 = require("../models/UserMonster");
 const config_1 = require("../config/config");
-const State_1 = require("../models/State");
 const router = (0, express_1.Router)();
 router.get('/:userId/monsters', async (req, res) => {
     try {
@@ -39,18 +38,21 @@ router.post('/:userId/monsters/upgrade/:monsterId', async (req, res) => {
         if (userMonster) {
             const cardConfig = config_1.config.cardConfigs[userMonster.monster.rarity];
             const price = Math.round(cardConfig.basePrice * Math.pow(1.30, userMonster.level));
-            const state = await State_1.State.findOne({ where: { id: userId } });
-            if (state && state.coins >= price) {
-                userMonster.level += 1;
-                state.coins -= price;
-                await userMonster.save();
-                await state.save();
-                console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);
-                res.status(200).json({ message: 'Monster upgraded successfully', userMonster, coins: state.coins });
-            }
-            else {
-                res.status(200).json({ message: 'Not enough coins to buy', userMonster });
-            }
+            // const state = await State.findOne({ where: { id: userId } })
+            userMonster.level += 1;
+            await userMonster.save();
+            console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);
+            res.status(200).json({ message: 'Monster upgraded successfully', userMonster });
+            // if (state) {
+            //     userMonster.level += 1;
+            //     state.coins -= price;
+            //     await userMonster.save();
+            //     await state.save();
+            //     console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);
+            //     res.status(200).json({ message: 'Monster upgraded successfully', userMonster, coins: state.coins });
+            // } else {
+            //     res.status(200).json({ message: 'Not enough coins to buy', userMonster });
+            // }
         }
         else {
             console.log(`UserMonster not found for userId: ${userId} and monsterId: ${monsterId}`);
