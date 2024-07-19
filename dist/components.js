@@ -84,7 +84,7 @@ export class MonstersComponent {
             item.rarity,
             item.effect,
             item.image,
-            item.userMonsters ? item.userMonsters[0].level : 0,
+            item.userMonsters[0] ? item.userMonsters[0].level : 0,
             this.config.cardConfigs[item.rarity].incomePerLevel,
             this.config.cardConfigs[item.rarity].basePrice,
         ));
