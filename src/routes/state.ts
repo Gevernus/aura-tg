@@ -50,6 +50,32 @@ router.post('/user', async (req, res) => {
         return res.status(500).json({ message: "Error saving user data" });
     }
 });
+
+router.get('/:userId/calculate_passive', async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const state = await State.findOne({ where: { id: userId } })
+        let passive_income = 0;
+        let shouldShowPopup = false;
+        if (state) {
+            const now = new Date();
+            const lastUpdated = new Date(state.last_updated);
+            const timeDiffInSeconds = Math.floor((now.getTime() - lastUpdated.getTime()) / 1000);
+            const maxAccumulationTime = Math.min(timeDiffInSeconds, 3 * 60 * 60);
+
+            // Check if elapsed time is more than 5 minutes (300 seconds)
+            shouldShowPopup = timeDiffInSeconds > 300;
+            console.log(`Time since last update in sec: ${timeDiffInSeconds}, should show popup: ${shouldShowPopup}`);
+
+            passive_income = Math.floor(state.passive_income/3600 * maxAccumulationTime);
+        }
+        return res.status(200).json({ passive_income, shouldShowPopup });
+    } catch (error) {
+        console.error(`Error calculating of passive income for: ${userId}`, error);
+        return res.status(500).json({ message: "Error calculating passive income" });
+    }
+});
+
 router.post('/state', async (req, res) => {
     const stateData: State = req.body;
     try {

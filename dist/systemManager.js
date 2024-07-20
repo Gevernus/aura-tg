@@ -45,6 +45,14 @@ export class SystemManager {
         }
     }
 
+    initAll() {
+        for (const system of this.systemsArray) {
+            if (typeof system.init === 'function') {
+                system.init();
+            }
+        }
+    }
+
     addEntityToAllSystems(entity) {
         for (const system of this.systemsArray) {
             if (typeof system.addEntity === 'function') {

@@ -26,6 +26,39 @@ export class ClickSystem extends System {
 }
 
 export class PassiveIncomeSystem extends System {
+    async init() {
+        try {
+            const userComponent = this.entity.getComponent(UserComponent);
+            const response = await fetch(`/api/${userComponent.user.id}/calculate_passive`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
+            const data = await response.json();
+            console.log(`Data is:`, data);
+            if (data.shouldShowPopup) {
+                const inputComponent = this.entity.getComponent(InputComponent);
+                const coinsComponent = this.entity.getComponent(CoinsComponent);
+
+                const callback = function () {
+                    coinsComponent.amount += data.passive_income;
+                }
+                const title = "Claim reward";
+                const message = `You earn ${data.passive_income} coins`;
+                inputComponent.addInput("showPopup", { title, message, callback });
+            } else {
+                console.log('Return less than a 5 minutes');
+            }
+        } catch (error) {
+            console.error('Error saving state:', error);
+        }
+    }
+
     update(deltaTime) {
         if (this.entity.hasComponent(CoinsComponent) && this.entity.hasComponent(PassiveIncomeComponent)) {
             let coins = this.entity.getComponent(CoinsComponent);
@@ -191,6 +224,7 @@ export class StorageSystem extends System {
         const coinsComponent = this.entity.getComponent(CoinsComponent);
         const clickPowerComponent = this.entity.getComponent(ClickPowerComponent);
         const energyComponent = this.entity.getComponent(EnergyComponent);
+        const passiveIncomeComponent = this.entity.getComponent(PassiveIncomeComponent);
 
         if (!coinsComponent || !clickPowerComponent || !energyComponent) {
             console.error('Entity is missing required components for saving state');
@@ -200,7 +234,7 @@ export class StorageSystem extends System {
 
         this.state.coins = Math.floor(coinsComponent.amount);
         this.state.energy = Math.floor(energyComponent.energy);
-        this.state.passive_income = energyComponent.passiveIncome;
+        this.state.passive_income = passiveIncomeComponent.incomePerHour;
 
         try {
             const response = await fetch('api/state', {
@@ -281,6 +315,57 @@ export class UISystem extends System {
     update() {
         if (this.currentView) {
             this.currentView.render(this.entity);
+        }
+    }
+}
+
+export class PopupSystem extends System {
+    constructor(entity) {
+        super(entity);
+        this.entity = entity;
+        this.popupElement = null;
+        this.callback = null;
+        this.initPopup();
+    }
+
+    initPopup() {
+        // Create popup HTML structure (same as before)
+        const popupHTML = `
+            <div id="popup" class="popup">
+                <div class="popup-content">
+                    <h2 id="popup-title"></h2>
+                    <p id="popup-message"></p>
+                    <button class="close-btn">Claim</button>
+                </div>
+            </div>
+        `;
+
+        // Add popup to the body
+        document.body.insertAdjacentHTML('beforeend', popupHTML);
+
+        // Get popup element
+        this.popupElement = document.getElementById('popup');
+
+        // Add event listener to close button
+        const closeBtn = this.popupElement.querySelector('.close-btn');
+        closeBtn.addEventListener('click', () => {
+            this.popupElement.style.display = 'none';
+            if (this.callback) {
+                this.callback();
+            }
+        });
+    }
+
+    update(deltaTime) {
+        const inputComponent = this.entity.getComponent('InputComponent');
+
+        // Handle show popup input
+        const showPopupInput = inputComponent.getAndRemoveInput('showPopup');
+        if (showPopupInput && showPopupInput.data) {
+            this.popupElement.style.display = 'flex';
+            this.callback = showPopupInput.data.callback;
+            document.getElementById('popup-title').textContent = showPopupInput.data.title;
+            document.getElementById('popup-message').textContent = showPopupInput.data.message;
         }
     }
 }

@@ -11,7 +11,6 @@ router.get('/:userId/monsters', async (req, res) => {
         const monsters = await Monster_1.Monster.createQueryBuilder("monster")
             .leftJoinAndSelect("monster.userMonsters", "userMonster", "userMonster.user_id = :userId", { userId })
             .getMany();
-        console.log(monsters);
         if (monsters) {
             res.json(monsters);
         }
