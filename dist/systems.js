@@ -18,6 +18,7 @@ export class ClickSystem extends System {
                     if (energyComponent.energy >= 1) {
                         coinsComponent.amount += clickPower;
                         energyComponent.energy--;
+                        inputComponent.addInput('save');
                     }
                 }
             }
@@ -277,7 +278,9 @@ export class StorageSystem extends System {
 
     update(deltaTime) {
         this.timer += deltaTime;
-        if (this.timer >= this.timeToSave) {
+        const inputComponent = this.entity.getComponent(InputComponent);
+        const save = inputComponent.getAndRemoveInput('save');
+        if (this.timer >= this.timeToSave || save) {
             this.timer = 0;
             this.saveState();
         }
