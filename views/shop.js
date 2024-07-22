@@ -109,7 +109,7 @@ function addPackEventListeners(entity) {
     openPackButtons.forEach(button => {
         button.addEventListener('click', async function () {
             const packId = this.getAttribute('data-id');
-            const state = await openPack(userComponent.user.id, packId, packItems, modal);
+            const state = await openPack(entity, userComponent.user.id, packId, packItems, modal);
             stars.amount = state.stars;
         });
     });
@@ -119,7 +119,7 @@ function addPackEventListeners(entity) {
     });
 }
 
-async function openPack(userId, packId, packItems, modal) {
+async function openPack(entity, userId, packId, packItems, modal) {
     const response = await fetch(`/api/${userId}/purchase/${packId}`, {
         method: 'POST',
         headers: {
