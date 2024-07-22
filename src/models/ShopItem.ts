@@ -1,5 +1,5 @@
-import { Entity, Column, BaseEntity, ManyToMany, PrimaryGeneratedColumn } from "typeorm"
-import { State } from "./State";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, OneToMany } from "typeorm"
+import { UserItem } from "./UserItem";
 
 @Entity()
 export class ShopItem extends BaseEntity {
@@ -15,19 +15,19 @@ export class ShopItem extends BaseEntity {
     @Column()
     rarity!: string
 
-    @Column({ default: 1 })
-    price!: number
+    @Column()
+    image!: string
 
-    @Column("decimal", { precision: 5, scale: 2, default: 0 })
+    @Column("float", { default: 0 })
     passive_bonus!: number
 
     @Column("int", { nullable: true, default: 0 })
     tap_bonus!: number
 
     @Column("int", { nullable: true, default: 0 })
-    stamina_bonus!: number
+    energy_bonus!: number
 
-    @ManyToMany(() => State, state => state.shopItems)
-    states!: State[];
+    @OneToMany(() => UserItem, userItem => userItem.item)
+    userItems!: UserItem[]
 }
 

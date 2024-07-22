@@ -4,9 +4,22 @@ export class CoinsComponent {
     }
 }
 
+export class StarsComponent {
+    constructor(amount = 0) {
+        this.amount = amount;
+    }
+}
+
 export class ClickPowerComponent {
-    constructor(power = 1) {
-        this.power = power;
+    constructor(items = []) {
+        this.calculate(items);
+    }
+
+    calculate(items) {
+        this.power = 1;
+        for (const item of items) {
+            this.power += item.item.tap_bonus;
+        }
     }
 }
 
@@ -17,30 +30,45 @@ export class LevelComponent {
 }
 
 export class EnergyComponent {
-    constructor(energy = 500, maxEnergy = 500, energyRestore = 1) {
+    constructor(energy = 500, maxEnergy = 500, energyRestore = 1, items = []) {
         this.energy = energy;
-        this.maxEnergy = maxEnergy;
+        this.baseMaxEnergy = maxEnergy;
         this.energyRestore = energyRestore;
+        this.calculate(items);
+    }
+    calculate(items) {
+        this.maxEnergy = this.baseMaxEnergy;
+        for (const item of items) {
+            this.maxEnergy += item.item.energy_bonus;
+        }
     }
 }
 
 export class PassiveIncomeComponent {
-    constructor(monsters = []) {
+    constructor(monsters = [], items = []) {
         this.incomePerHour = 0;
-        this.calculate(monsters);
+        this.calculate(monsters, items);
     }
 
-    calculate(monsters) {
+    calculate(monsters, items) {
         this.incomePerHour = 0;
         for (const monster of monsters) {
             this.incomePerHour += monster.incomePerHour;
+        }
+
+        for (const item of items) {
+            this.incomePerHour += item.item.passive_bonus;
         }
     }
 }
 
 export class InventoryComponent {
-    constructor(inventoryData = []) {
-        this.inventoryData = inventoryData;
+    constructor(items = []) {
+        this.items = items;
+    }
+    
+    addItems(newItems) {
+        this.items = [...this.items, ...newItems];
     }
 }
 
@@ -66,6 +94,12 @@ class MonsterData {
         this.level = level;
         this.incomePerHour = incomePerLevel * level;
         this.price = Math.round(basePrice * Math.pow(1.30, level));
+    }
+}
+
+export class PacksComponent {
+    constructor(items) {
+        this.items = items;
     }
 }
 

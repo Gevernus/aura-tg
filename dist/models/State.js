@@ -11,8 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.State = void 0;
 const typeorm_1 = require("typeorm");
-const Inventory_1 = require("./Inventory");
-const ShopItem_1 = require("./ShopItem");
 let State = class State extends typeorm_1.BaseEntity {
     updateLastUpdated() {
         this.last_updated = new Date();
@@ -43,6 +41,10 @@ __decorate([
     __metadata("design:type", Number)
 ], State.prototype, "coins", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: 100 }),
+    __metadata("design:type", Number)
+], State.prototype, "stars", void 0);
+__decorate([
     (0, typeorm_1.Column)({ default: 0 }),
     __metadata("design:type", Number)
 ], State.prototype, "passive_income", void 0);
@@ -58,15 +60,6 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
 ], State.prototype, "last_updated", void 0);
-__decorate([
-    (0, typeorm_1.OneToOne)(() => Inventory_1.Inventory, state => state.state),
-    __metadata("design:type", Inventory_1.Inventory)
-], State.prototype, "inventory", void 0);
-__decorate([
-    (0, typeorm_1.ManyToMany)(() => ShopItem_1.ShopItem, shopItem => shopItem.states),
-    (0, typeorm_1.JoinTable)(),
-    __metadata("design:type", Array)
-], State.prototype, "shopItems", void 0);
 __decorate([
     (0, typeorm_1.BeforeUpdate)(),
     __metadata("design:type", Function),

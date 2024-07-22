@@ -1,7 +1,7 @@
 import { ClickSystem, PassiveIncomeSystem, LevelUpSystem, StorageSystem, TelegramSystem, UISystem, EnergySystem, PopupSystem } from './systems.js';
 import { SystemManager } from './systemManager.js';
 import { Entity } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, StarsComponent, PacksComponent } from './components.js';
 
 let lastTime = 0;
 const targetFPS = 60;
@@ -19,22 +19,27 @@ async function initApp() {
     const config = await storageSystem.getConfig();
     const user = await storageSystem.getUser();
     const monsters = await storageSystem.getMonsters();
+    const packs = await storageSystem.getPacks();
+    const inventory = await storageSystem.getInventory();
+    console.log(inventory);
     const monsterComponent = new MonstersComponent(monsters, config);
 
     systemManager.addSystem(telegramSystem);
     systemManager.addSystem(storageSystem)
 
     gameEntity.addComponent(new CoinsComponent(state.coins));
-    gameEntity.addComponent(new ClickPowerComponent(state.tap_power));
-    gameEntity.addComponent(new EnergyComponent(state.energy, state.max_energy, state.energy_restore));
-    gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items));
+    gameEntity.addComponent(new StarsComponent(state.stars));
+    gameEntity.addComponent(new ClickPowerComponent(inventory));
+    gameEntity.addComponent(new EnergyComponent(state.energy, state.max_energy, state.energy_restore, inventory));
+    gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items, inventory));
     gameEntity.addComponent(new ConfigComponent(config));
     gameEntity.addComponent(new UserComponent(user));
     gameEntity.addComponent(new LevelComponent(state.level));
     gameEntity.addComponent(new InputComponent());
-    gameEntity.addComponent(new InventoryComponent(state.inventory));
+    gameEntity.addComponent(new InventoryComponent(inventory));
     gameEntity.addComponent(new ReferralsComponent(user.referrals));
     gameEntity.addComponent(monsterComponent);
+    gameEntity.addComponent(new PacksComponent(packs));
     // gameEntity.addComponent(new ShopComponent(state.shopItems));
 
     storageSystem.setEntity(gameEntity);

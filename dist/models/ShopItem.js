@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShopItem = void 0;
 const typeorm_1 = require("typeorm");
-const State_1 = require("./State");
+const UserItem_1 = require("./UserItem");
 let ShopItem = class ShopItem extends typeorm_1.BaseEntity {
 };
 __decorate([
@@ -31,11 +31,11 @@ __decorate([
     __metadata("design:type", String)
 ], ShopItem.prototype, "rarity", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 1 }),
-    __metadata("design:type", Number)
-], ShopItem.prototype, "price", void 0);
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], ShopItem.prototype, "image", void 0);
 __decorate([
-    (0, typeorm_1.Column)("decimal", { precision: 5, scale: 2, default: 0 }),
+    (0, typeorm_1.Column)("float", { default: 0 }),
     __metadata("design:type", Number)
 ], ShopItem.prototype, "passive_bonus", void 0);
 __decorate([
@@ -45,11 +45,11 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)("int", { nullable: true, default: 0 }),
     __metadata("design:type", Number)
-], ShopItem.prototype, "stamina_bonus", void 0);
+], ShopItem.prototype, "energy_bonus", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => State_1.State, state => state.shopItems),
+    (0, typeorm_1.OneToMany)(() => UserItem_1.UserItem, userItem => userItem.item),
     __metadata("design:type", Array)
-], ShopItem.prototype, "states", void 0);
+], ShopItem.prototype, "userItems", void 0);
 ShopItem = __decorate([
     (0, typeorm_1.Entity)()
 ], ShopItem);

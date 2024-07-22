@@ -1,4 +1,3 @@
-
 export function init(entity) {
     const inputComponent = entity.getComponent('InputComponent');
     let tapButton = document.getElementById('tap-button');
@@ -19,18 +18,18 @@ export function init(entity) {
 };
 
 export function render(entity) {
-    const levelComponent = entity.getComponent('LevelComponent');
-    const energyComponent = entity.getComponent('EnergyComponent');
-    const coinsComponent = entity.getComponent('CoinsComponent');
-    const passiveIncomeComponent = entity.getComponent('PassiveIncomeComponent');
-    const configComponent = entity.getComponent('ConfigComponent');
+    const levelComponent = entity.getComponent("LevelComponent");
+    const energyComponent = entity.getComponent("EnergyComponent");
+    const coinsComponent = entity.getComponent("CoinsComponent");
+    const passiveIncomeComponent = entity.getComponent("PassiveIncomeComponent");
+    const configComponent = entity.getComponent("ConfigComponent");
     const config = configComponent.config;
 
     document.getElementById('levelName').textContent = config.levels[levelComponent.level - 1];
     document.getElementById('level').textContent = levelComponent.level;
     document.getElementById('levelProgress').style.width = `${(coinsComponent.amount / config.levelRequirements[levelComponent.level]) * 100}%`;
 
-    document.getElementById('energy').textContent = Math.floor(energyComponent.energy);
+    document.getElementById('energy').textContent = `${Math.floor(energyComponent.energy)}/${Math.floor(energyComponent.maxEnergy)}`;
     document.getElementById('energyProgress').style.width = `${(energyComponent.energy / (500 * Math.pow(2, levelComponent.level - 1))) * 100}%`;
 
     document.getElementById('coins').textContent = Math.floor(coinsComponent.amount);

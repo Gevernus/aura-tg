@@ -1,5 +1,5 @@
 import { System } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent, MonstersComponent, ConfigComponent, UserComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent, MonstersComponent, ConfigComponent, UserComponent, InventoryComponent } from './components.js';
 
 export class ClickSystem extends System {
     update(deltaTime) {
@@ -85,6 +85,7 @@ export class LevelUpSystem extends System {
     async update(deltaTime) {
         const inputComponent = this.entity.getComponent(InputComponent);
         const monstersComponent = this.entity.getComponent(MonstersComponent);
+        const inventoryComponent = this.entity.getComponent(InventoryComponent);
         const userComponent = this.entity.getComponent(UserComponent);
         const coinsComponent = this.entity.getComponent(CoinsComponent);
         const passiveIncomeComponent = this.entity.getComponent(PassiveIncomeComponent);
@@ -96,7 +97,7 @@ export class LevelUpSystem extends System {
                 console.log(`Upgrade data`);
                 console.log(data.userMonster);
                 monstersComponent.updateItem(data.userMonster);
-                passiveIncomeComponent.calculate(monstersComponent.items);
+                passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items);
                 // if (data.coins) {
                 //     coinsComponent.amount = data.coins;
                 // }
@@ -216,6 +217,42 @@ export class StorageSystem extends System {
         }
     }
 
+    async getPacks() {
+        try {
+            const response = await fetch(`api/packs`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error saving state:', error);
+        }
+    }
+
+    async getInventory() {
+        try {
+            const response = await fetch(`api/${this.tgUser.id}/inventory`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error saving state:', error);
+        }
+    }
+
     async saveState() {
         if (!this.entity) {
             console.error('No entity provided to save state');
@@ -316,6 +353,11 @@ export class UISystem extends System {
     }
 
     update() {
+        const inputComponent = this.entity.getComponent('InputComponent');
+        const setViewInput = inputComponent.getAndRemoveInput('setView');
+        if (setViewInput && setViewInput.data) {
+            this.setView(setViewInput.data.view);
+        }
         if (this.currentView) {
             this.currentView.render(this.entity);
         }

@@ -1,5 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryColumn, OneToOne, ManyToMany, JoinTable, BeforeUpdate } from "typeorm"
-import { Inventory } from "./Inventory";
+import { Entity, Column, BaseEntity, PrimaryColumn, ManyToMany, JoinTable, BeforeUpdate } from "typeorm"
 import { ShopItem } from "./ShopItem";
 
 @Entity()
@@ -22,6 +21,9 @@ export class State extends BaseEntity {
     @Column({ default: 0 })
     coins!: number
 
+    @Column({ default: 100 })
+    stars!: number
+
     @Column({ default: 0 })
     passive_income!: number
 
@@ -33,13 +35,6 @@ export class State extends BaseEntity {
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     last_updated!: Date;
-
-    @OneToOne(() => Inventory, state => state.state)
-    inventory!: Inventory;
-
-    @ManyToMany(() => ShopItem, shopItem => shopItem.states)
-    @JoinTable()
-    shopItems!: ShopItem[];
 
     @BeforeUpdate()
     updateLastUpdated() {
