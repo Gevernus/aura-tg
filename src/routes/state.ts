@@ -95,7 +95,7 @@ router.post('/:userId/purchase/:packId', async (req, res) => {
                 stringifiedPayload,
                 "",
                 "XTR",
-                [{ label: pack.name, amount: 1 }],
+                [{ label: pack.name, amount: pack.price }],
             );
 
             return res.status(200).json({ invoiceLink, items: randomItems });
