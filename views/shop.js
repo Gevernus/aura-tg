@@ -175,9 +175,9 @@ function addItems(items, container) {
         itemElement.innerHTML = `
             <div class="card-item" id="card${index + 1}">
                 <div class="front"></div>
-                <div class="back" style="background-image: url('images/items/${item.item.image}');"></div>
+                <div class="back" style="background-image: url('images/items/${item.image}');"></div>
             </div>
-            <div class="description" id="desc${index + 1}">${item.item.name}</div>
+            <div class="description" id="desc${index + 1}">${item.name}</div>
         `;
         const cardItem = itemElement.querySelector('.card-item');
         cardItem.addEventListener('click', () => {
