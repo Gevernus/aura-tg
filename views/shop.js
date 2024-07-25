@@ -136,13 +136,13 @@ async function openPack(entity, userId, packId, packItems, modal) {
         inputComponent.addInput("openLink", {
             url: data.invoiceLink, callback: (status) => {
                 console.log(`Status of payment is ${status}`);
-                if (status == 'paid'){
+                if (status == "paid"){
                     const inventoryComponent = entity.getComponent(InventoryComponent);
                     const monstersComponent = entity.getComponent(MonstersComponent);
                     const energyComponent = entity.getComponent(EnergyComponent);
                     const passiveIncomeComponent = entity.getComponent(PassiveIncomeComponent);
                     const clickPowerComponent = entity.getComponent(ClickPowerComponent);
-
+                    console.log(`Received items`, data.items);
                     inventoryComponent.addItems(data.items);
                     energyComponent.calculate(inventoryComponent.items);
                     passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items);
@@ -162,6 +162,7 @@ async function openPack(entity, userId, packId, packItems, modal) {
 
 function addItems(items, container) {
     container.innerHTML = '';
+    
     items.forEach((item, index) => {
         console.log(item);
         const itemElement = document.createElement('div');
