@@ -148,7 +148,10 @@ async function openPack(entity, userId, packId, packItems, modal) {
                     passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items);
                     clickPowerComponent.calculate(inventoryComponent.items);
 
-                    addItems(data.items, packItems);
+                    this.addItems(data.items, packItems);
+                    
+                    const modal = document.getElementById('packModal');
+                    console.log(`Items added, trying to change modal style`, modal);
                     modal.style.display = 'block';
                 }
             }
@@ -162,7 +165,7 @@ async function openPack(entity, userId, packId, packItems, modal) {
 
 function addItems(items, container) {
     container.innerHTML = '';
-    
+
     items.forEach((item, index) => {
         console.log(item);
         const itemElement = document.createElement('div');
