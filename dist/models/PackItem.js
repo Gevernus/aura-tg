@@ -13,6 +13,7 @@ exports.PackItem = void 0;
 const typeorm_1 = require("typeorm");
 let PackItem = class PackItem extends typeorm_1.BaseEntity {
 };
+exports.PackItem = PackItem;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", String)
@@ -29,8 +30,7 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], PackItem.prototype, "image", void 0);
-PackItem = __decorate([
+exports.PackItem = PackItem = __decorate([
     (0, typeorm_1.Entity)()
 ], PackItem);
-exports.PackItem = PackItem;
 //# sourceMappingURL=PackItem.js.map

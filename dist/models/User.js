@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const Referral_1 = require("./Referral");
 let User = class User extends typeorm_1.BaseEntity {
 };
+exports.User = User;
 __decorate([
     (0, typeorm_1.PrimaryColumn)(),
     __metadata("design:type", String)
@@ -38,8 +39,7 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => Referral_1.Referral, referral => referral.inviter),
     __metadata("design:type", Array)
 ], User.prototype, "referrals", void 0);
-User = __decorate([
+exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);
-exports.User = User;
 //# sourceMappingURL=User.js.map

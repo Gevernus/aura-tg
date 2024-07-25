@@ -126,8 +126,8 @@ export class LevelUpSystem extends System {
 }
 
 export class TelegramSystem extends System {
-    constructor() {
-        super();
+    constructor(entity) {
+        super(entity);
         this.user = null;
         this.initTelegram();
     }
@@ -155,6 +155,14 @@ export class TelegramSystem extends System {
 
     getUserId() {
         return this.user ? this.user.id : null;
+    }
+
+    update(){
+        const inputComponent = this.entity.getComponent(InputComponent);
+        const link = inputComponent.getAndRemoveInput('openLink');
+        if (link?.data) {
+            window.Telegram.WebApp.openInvoice(link.data.url, link.data.callback);
+        }
     }
 }
 

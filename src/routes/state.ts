@@ -7,6 +7,7 @@ import { UserMonster } from '../models/UserMonster';
 import { PackItem } from '../models/PackItem';
 import { UserItem } from '../models/UserItem';
 import { ShopItem } from '../models/ShopItem';
+import { bot } from '../app';
 
 const router = Router();
 
@@ -78,34 +79,32 @@ router.post('/:userId/purchase/:packId', async (req, res) => {
     try {
         const state = await State.findOne({ where: { id: userId } })
         const pack = await PackItem.findOne({ where: { id: packId } })
-        if (state && pack && state.stars >= pack.price) {
-            state.stars -= pack.price;
-            state.save();
-
+        if (state && pack) {
             const randomItems = await ShopItem
                 .createQueryBuilder('starItem')
                 .orderBy('RANDOM()')
                 .limit(5)
                 .getMany();
 
-            const userItems = randomItems.map(item =>
-                UserItem.create({
-                    user_id: userId,
-                    item_id: item.id,
-                    item,
-                })
+            const itemIds = randomItems.map(item => item.id);
+            const stringifiedPayload = JSON.stringify({ itemIds, userId });
+
+            const invoiceLink = await bot.api.createInvoiceLink(
+                `Pack of various items: ${pack.name}`,
+                'Pack of various items',
+                stringifiedPayload,
+                "",
+                "XTR",
+                [{ label: pack.name, amount: 1 }],
             );
 
-            // Bulk save the created UserItems
-            const savedUserItems = await UserItem.save(userItems);
-
-            return res.status(200).json({ message: "Item purchased", state, items: savedUserItems });
+            return res.status(200).json({ invoiceLink, items: randomItems });
         } else {
-            return res.status(400).json({ message: "Not enough stars" });
+            return res.status(400).json({ message: "Error while creating invoice" });
         }
     } catch (error) {
-        console.error(`Error calculating of passive income for: ${userId}`, error);
-        return res.status(500).json({ message: "Error calculating passive income" });
+        console.error(`Error while creating invoice: ${userId}`, error);
+        return res.status(500).json({ message: "Error while creating invoice" });
     }
 });
 

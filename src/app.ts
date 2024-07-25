@@ -9,20 +9,23 @@ import userRoutes from './routes/user';
 import referralRoutes from './routes/referral';
 import stateRoutes from './routes/state';
 import monsterRoutes from './routes/monster';
+import telegramRoutes from './routes/telegram';
 import dbConfig from './config/database';
 import cors from 'cors';
 import mime from "mime";
 import { access } from 'fs/promises';
+import { Bot, webhookCallback } from "grammy";
 
 
 const app = express();
 const port = process.env.PORT || 8000;
+export const bot = new Bot(process.env.TELEGRAM_TOKEN || "");
 
 app.use(bodyParser.json());
 
 export const AppDataSource = new DataSource(dbConfig);
 
-AppDataSource.initialize().then(() => {
+AppDataSource.initialize().then(async () => {
     console.log('Connected to database');
     app.use(cors());
     app.use((req, res, next) => {
@@ -30,11 +33,13 @@ AppDataSource.initialize().then(() => {
         next();
     });
 
+
     // API Routes (should come before static and catch-all routes)
     app.use('/api', userRoutes);
     app.use('/api', referralRoutes);
     app.use('/api', stateRoutes);
     app.use('/api', monsterRoutes);
+    app.use('/', telegramRoutes);
     app.get('/dist/:fileName', async (req, res) => {
         const fileName = req.params.fileName;
         const filePath = path.join(__dirname, '../dist', fileName);
@@ -115,8 +120,12 @@ AppDataSource.initialize().then(() => {
         res.status(500).send('Something broke!');
     });
 
+    app.use(process.env.TELEGRAM_WEBHOOK_DOMAIN || "", webhookCallback(bot, 'express'));
+    bot.command('start', (ctx) => ctx.reply('Welcome! This bot is using webhooks.'));
+
     // Start the server
-    app.listen(port, () => {
+    app.listen(port, async () => {
+        await bot.api.setWebhook(`${process.env.TELEGRAM_WEBHOOK_DOMAIN}/telegram`);
         console.log(`Server running at http://localhost:${port}`);
     });
 

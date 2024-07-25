@@ -16,6 +16,7 @@ let State = class State extends typeorm_1.BaseEntity {
         this.last_updated = new Date();
     }
 };
+exports.State = State;
 __decorate([
     (0, typeorm_1.PrimaryColumn)(),
     __metadata("design:type", String)
@@ -66,8 +67,7 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], State.prototype, "updateLastUpdated", null);
-State = __decorate([
+exports.State = State = __decorate([
     (0, typeorm_1.Entity)()
 ], State);
-exports.State = State;
 //# sourceMappingURL=State.js.map

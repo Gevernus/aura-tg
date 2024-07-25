@@ -12,6 +12,7 @@ const UserMonster_1 = require("../models/UserMonster");
 const PackItem_1 = require("../models/PackItem");
 const UserItem_1 = require("../models/UserItem");
 const ShopItem_1 = require("../models/ShopItem");
+const app_1 = require("../app");
 const router = (0, express_1.Router)();
 router.post('/user', async (req, res) => {
     const userData = req.body;
@@ -81,30 +82,24 @@ router.post('/:userId/purchase/:packId', async (req, res) => {
     try {
         const state = await State_1.State.findOne({ where: { id: userId } });
         const pack = await PackItem_1.PackItem.findOne({ where: { id: packId } });
-        if (state && pack && state.stars >= pack.price) {
-            state.stars -= pack.price;
-            state.save();
+        if (state && pack) {
             const randomItems = await ShopItem_1.ShopItem
                 .createQueryBuilder('starItem')
                 .orderBy('RANDOM()')
                 .limit(5)
                 .getMany();
-            const userItems = randomItems.map(item => UserItem_1.UserItem.create({
-                user_id: userId,
-                item_id: item.id,
-                item,
-            }));
-            // Bulk save the created UserItems
-            const savedUserItems = await UserItem_1.UserItem.save(userItems);
-            return res.status(200).json({ message: "Item purchased", state, items: savedUserItems });
+            const itemIds = randomItems.map(item => item.id);
+            const stringifiedPayload = JSON.stringify({ itemIds, userId });
+            const invoiceLink = await app_1.bot.api.createInvoiceLink(`Pack of various items: ${pack.name}`, 'Pack of various items', stringifiedPayload, "", "XTR", [{ label: pack.name, amount: 1 }]);
+            return res.status(200).json({ invoiceLink, items: randomItems });
         }
         else {
-            return res.status(400).json({ message: "Not enough stars" });
+            return res.status(400).json({ message: "Error while creating invoice" });
         }
     }
     catch (error) {
-        console.error(`Error calculating of passive income for: ${userId}`, error);
-        return res.status(500).json({ message: "Error calculating passive income" });
+        console.error(`Error while creating invoice: ${userId}`, error);
+        return res.status(500).json({ message: "Error while creating invoice" });
     }
 });
 router.post('/state', async (req, res) => {

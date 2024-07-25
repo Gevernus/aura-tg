@@ -1,4 +1,4 @@
-import { CoinsComponent, MonstersComponent, InputComponent, PacksComponent, UserComponent, StarsComponent, InventoryComponent, EnergyComponent, PassiveIncomeComponent, ClickPowerComponent } from '../dist/components.js';
+import { CoinsComponent, MonstersComponent, InputComponent, PacksComponent, UserComponent, InventoryComponent, EnergyComponent, PassiveIncomeComponent, ClickPowerComponent } from '../dist/components.js';
 export function init(entity) {
     // Populate monsters tab
     populateMonsters(entity);
@@ -100,7 +100,6 @@ function renderPackItem(pack) {
 
 function addPackEventListeners(entity) {
     const userComponent = entity.getComponent(UserComponent);
-    const stars = entity.getComponent(StarsComponent);
     const openPackButtons = document.querySelectorAll('.open-pack');
     const modal = document.getElementById('packModal');
     const closeButton = modal.querySelector('.close-btn');
@@ -109,8 +108,7 @@ function addPackEventListeners(entity) {
     openPackButtons.forEach(button => {
         button.addEventListener('click', async function () {
             const packId = this.getAttribute('data-id');
-            const state = await openPack(entity, userComponent.user.id, packId, packItems, modal);
-            stars.amount = state.stars;
+            await openPack(entity, userComponent.user.id, packId, packItems, modal);
         });
     });
 
@@ -133,22 +131,38 @@ async function openPack(entity, userId, packId, packItems, modal) {
 
     const data = await response.json();
 
-    // Clear previous items
-    packItems.innerHTML = '';
+    if (data) {
+        const inputComponent = entity.getComponent(InputComponent);
+        inputComponent.addInput("openLink", {
+            url: data.invoiceLink, callback: (status) => {
+                console.log(`Status of payment is ${status}`);
+                if (status == 'paid'){
+                    const inventoryComponent = entity.getComponent(InventoryComponent);
+                    const monstersComponent = entity.getComponent(MonstersComponent);
+                    const energyComponent = entity.getComponent(EnergyComponent);
+                    const passiveIncomeComponent = entity.getComponent(PassiveIncomeComponent);
+                    const clickPowerComponent = entity.getComponent(ClickPowerComponent);
 
-    const inventoryComponent = entity.getComponent(InventoryComponent);
-    const monstersComponent = entity.getComponent(MonstersComponent);
-    const energyComponent = entity.getComponent(EnergyComponent);
-    const passiveIncomeComponent = entity.getComponent(PassiveIncomeComponent);
-    const clickPowerComponent = entity.getComponent(ClickPowerComponent);
+                    inventoryComponent.addItems(data.items);
+                    energyComponent.calculate(inventoryComponent.items);
+                    passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items);
+                    clickPowerComponent.calculate(inventoryComponent.items);
 
-    inventoryComponent.addItems(data.items);
-    energyComponent.calculate(inventoryComponent.items);
-    passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items);
-    clickPowerComponent.calculate(inventoryComponent.items);
+                    addItems(data.items, packItems);
+                    modal.style.display = 'block';
+                }
+            }
+        });
+        return;
+    }
 
-    // Add new items
-    data.items.forEach((item, index) => {
+    
+    return data.state;
+}
+
+function addItems(items, container) {
+    container.innerHTML = '';
+    items.forEach((item, index) => {
         console.log(item);
         const itemElement = document.createElement('div');
         itemElement.className = 'card-wrapper';
@@ -171,12 +185,8 @@ async function openPack(entity, userId, packId, packItems, modal) {
         // Add rarity class to the card-wrapper
         itemElement.classList.add(item.rarity);
 
-        packItems.appendChild(itemElement);
+        container.appendChild(itemElement);
     });
-
-    // Show the modal
-    modal.style.display = 'block';
-    return data.state;
 }
 
 export function render(entity) {
@@ -203,9 +213,7 @@ export function render(entity) {
 
     // Update coins and passive income display
     const coinsComponent = entity.getComponent('CoinsComponent');
-    const starsComponent = entity.getComponent('StarsComponent');
     const passiveIncomeComponent = entity.getComponent('PassiveIncomeComponent');
     document.getElementById('coins').textContent = Math.floor(coinsComponent.amount);
     document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerHour;
-    document.querySelector('.stars-amount').textContent = starsComponent.amount;
 }

@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const Monster_1 = require("./Monster");
 let UserMonster = class UserMonster extends typeorm_1.BaseEntity {
 };
+exports.UserMonster = UserMonster;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
@@ -35,8 +36,7 @@ __decorate([
     (0, typeorm_1.JoinColumn)({ name: "monster_id" }),
     __metadata("design:type", Monster_1.Monster)
 ], UserMonster.prototype, "monster", void 0);
-UserMonster = __decorate([
+exports.UserMonster = UserMonster = __decorate([
     (0, typeorm_1.Entity)()
 ], UserMonster);
-exports.UserMonster = UserMonster;
 //# sourceMappingURL=UserMonster.js.map

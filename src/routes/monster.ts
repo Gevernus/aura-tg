@@ -42,16 +42,6 @@ router.post('/:userId/monsters/upgrade/:monsterId', async (req, res) => {
             await userMonster.save();
             console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);
             res.status(200).json({ message: 'Monster upgraded successfully', userMonster });
-            // if (state) {
-            //     userMonster.level += 1;
-            //     state.coins -= price;
-            //     await userMonster.save();
-            //     await state.save();
-            //     console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);
-            //     res.status(200).json({ message: 'Monster upgraded successfully', userMonster, coins: state.coins });
-            // } else {
-            //     res.status(200).json({ message: 'Not enough coins to buy', userMonster });
-            // }
         } else {
             console.log(`UserMonster not found for userId: ${userId} and monsterId: ${monsterId}`);
             res.status(404).json({ error: 'UserMonster not found' });

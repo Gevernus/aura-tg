@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const ShopItem_1 = require("./ShopItem");
 let UserItem = class UserItem extends typeorm_1.BaseEntity {
 };
+exports.UserItem = UserItem;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
@@ -31,8 +32,7 @@ __decorate([
     (0, typeorm_1.JoinColumn)({ name: "item_id" }),
     __metadata("design:type", ShopItem_1.ShopItem)
 ], UserItem.prototype, "item", void 0);
-UserItem = __decorate([
+exports.UserItem = UserItem = __decorate([
     (0, typeorm_1.Entity)()
 ], UserItem);
-exports.UserItem = UserItem;
 //# sourceMappingURL=UserItem.js.map

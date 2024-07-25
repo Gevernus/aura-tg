@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppDataSource = void 0;
+exports.AppDataSource = exports.bot = void 0;
 require("reflect-metadata");
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
@@ -15,15 +15,18 @@ const user_1 = __importDefault(require("./routes/user"));
 const referral_1 = __importDefault(require("./routes/referral"));
 const state_1 = __importDefault(require("./routes/state"));
 const monster_1 = __importDefault(require("./routes/monster"));
+const telegram_1 = __importDefault(require("./routes/telegram"));
 const database_1 = __importDefault(require("./config/database"));
 const cors_1 = __importDefault(require("cors"));
 const mime_1 = __importDefault(require("mime"));
 const promises_1 = require("fs/promises");
+const grammy_1 = require("grammy");
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8000;
+exports.bot = new grammy_1.Bot(process.env.TELEGRAM_TOKEN || "");
 app.use(body_parser_1.default.json());
 exports.AppDataSource = new typeorm_1.DataSource(database_1.default);
-exports.AppDataSource.initialize().then(() => {
+exports.AppDataSource.initialize().then(async () => {
     console.log('Connected to database');
     app.use((0, cors_1.default)());
     app.use((req, res, next) => {
@@ -35,6 +38,7 @@ exports.AppDataSource.initialize().then(() => {
     app.use('/api', referral_1.default);
     app.use('/api', state_1.default);
     app.use('/api', monster_1.default);
+    app.use('/', telegram_1.default);
     app.get('/dist/:fileName', async (req, res) => {
         const fileName = req.params.fileName;
         const filePath = path_1.default.join(__dirname, '../dist', fileName);
@@ -105,8 +109,11 @@ exports.AppDataSource.initialize().then(() => {
         console.error(err.stack);
         res.status(500).send('Something broke!');
     });
+    app.use(process.env.TELEGRAM_WEBHOOK_DOMAIN || "", (0, grammy_1.webhookCallback)(exports.bot, 'express'));
+    exports.bot.command('start', (ctx) => ctx.reply('Welcome! This bot is using webhooks.'));
     // Start the server
-    app.listen(port, () => {
+    app.listen(port, async () => {
+        await exports.bot.api.setWebhook(`${process.env.TELEGRAM_WEBHOOK_DOMAIN}/telegram`);
         console.log(`Server running at http://localhost:${port}`);
     });
     console.log('App started');

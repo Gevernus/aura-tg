@@ -4,12 +4,6 @@ export class CoinsComponent {
     }
 }
 
-export class StarsComponent {
-    constructor(amount = 0) {
-        this.amount = amount;
-    }
-}
-
 export class ClickPowerComponent {
     constructor(items = []) {
         this.calculate(items);

@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const User_1 = require("./User");
 let Referral = class Referral extends typeorm_1.BaseEntity {
 };
+exports.Referral = Referral;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
@@ -30,8 +31,7 @@ __decorate([
     (0, typeorm_1.Column)({ default: 'pending' }),
     __metadata("design:type", String)
 ], Referral.prototype, "status", void 0);
-Referral = __decorate([
+exports.Referral = Referral = __decorate([
     (0, typeorm_1.Entity)()
 ], Referral);
-exports.Referral = Referral;
 //# sourceMappingURL=Referral.js.map

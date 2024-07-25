@@ -1,7 +1,7 @@
 import { ClickSystem, PassiveIncomeSystem, LevelUpSystem, StorageSystem, TelegramSystem, UISystem, EnergySystem, PopupSystem } from './systems.js';
 import { SystemManager } from './systemManager.js';
 import { Entity } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, StarsComponent, PacksComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, PacksComponent } from './components.js';
 
 let lastTime = 0;
 const targetFPS = 60;
@@ -13,7 +13,7 @@ async function initApp() {
     eruda.init();
     console.log('Trying to init app')
     const gameEntity = new Entity();
-    const telegramSystem = new TelegramSystem();
+    const telegramSystem = new TelegramSystem(gameEntity);
     const storageSystem = new StorageSystem(gameEntity, telegramSystem.getUser());
     const state = await storageSystem.getState();
     const config = await storageSystem.getConfig();
@@ -21,14 +21,12 @@ async function initApp() {
     const monsters = await storageSystem.getMonsters();
     const packs = await storageSystem.getPacks();
     const inventory = await storageSystem.getInventory();
-    console.log(inventory);
     const monsterComponent = new MonstersComponent(monsters, config);
 
     systemManager.addSystem(telegramSystem);
     systemManager.addSystem(storageSystem)
 
     gameEntity.addComponent(new CoinsComponent(state.coins));
-    gameEntity.addComponent(new StarsComponent(state.stars));
     gameEntity.addComponent(new ClickPowerComponent(inventory));
     gameEntity.addComponent(new EnergyComponent(state.energy, state.max_energy, state.energy_restore, inventory));
     gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items, inventory));

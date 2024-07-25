@@ -34,9 +34,7 @@ function createInventoryItemElement(item) {
 
 export function render(entity) {
     const coinsComponent = entity.getComponent("CoinsComponent");
-    const starsComponent = entity.getComponent("StarsComponent");
     const passiveIncomeComponent = entity.getComponent("PassiveIncomeComponent");
     document.getElementById('coins').textContent = Math.floor(coinsComponent.amount);
     document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerHour;
-    document.querySelector('.stars-amount').textContent = starsComponent.amount;
 }

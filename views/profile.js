@@ -1,4 +1,4 @@
-import { CoinsComponent, MonstersComponent, InputComponent, PacksComponent, UserComponent, StarsComponent, PassiveIncomeComponent } from '../dist/components.js';
+import { CoinsComponent, InputComponent, PassiveIncomeComponent } from '../dist/components.js';
 export function init(entity) {
     const inputComponent = entity.getComponent(InputComponent);
     const profile = document.querySelector('.profile-navigate');
@@ -12,9 +12,7 @@ export function init(entity) {
 
 export function render(entity) {
     const coinsComponent = entity.getComponent(CoinsComponent);
-    const starsComponent = entity.getComponent(StarsComponent);
     const passiveIncomeComponent = entity.getComponent(PassiveIncomeComponent);
     document.getElementById('coins').textContent = Math.floor(coinsComponent.amount);
     document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerHour;
-    document.querySelector('.stars-amount').textContent = starsComponent.amount;
 }
