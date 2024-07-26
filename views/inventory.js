@@ -13,7 +13,7 @@ function populateInventory(items) {
     }
 
     items.forEach(item => {
-        const itemElement = createInventoryItemElement(item.item);
+        const itemElement = createInventoryItemElement(item);
         container.appendChild(itemElement);
     });
 }
