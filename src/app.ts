@@ -22,6 +22,15 @@ const port = process.env.PORT || 8000;
 export const bot = new Bot(process.env.TELEGRAM_TOKEN || "");
 
 app.use(bodyParser.json());
+process.on('uncaughtException', (err) => {
+    console.error('There was an uncaught error', err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+});
 
 export const AppDataSource = new DataSource(dbConfig);
 

@@ -24,7 +24,7 @@ export class State extends BaseEntity {
     @Column({ default: 100 })
     stars!: number
 
-    @Column({ default: 0 })
+    @Column("float", { default: 0 })
     passive_income!: number
 
     @Column({ default: 0 })
