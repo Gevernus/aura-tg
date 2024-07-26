@@ -494,6 +494,32 @@ h1 {
     color: white;
 }
 
+/* Rarity-specific colors */
+.rarity-common {
+    color: #808080;
+    /* Серый оттенок (gray shade) */
+}
+
+.rarity-rare {
+    color: #007FFF;
+    /* Ярко синий (bright blue) */
+}
+
+.rarity-very-rare {
+    color: #FF8C00;
+    /* Оранжевый (orange) */
+}
+
+.rarity-epic {
+    color: #FF00FF;
+    /* Розовый оттенок фиолетового (pink-purple) */
+}
+
+.rarity-legendary {
+    color: #FFD700;
+    /* Желтый (yellow, similar to current) */
+}
+
 .pack-container {
     display: flex;
     gap: 10px;
@@ -623,8 +649,17 @@ h1 {
 
 .item-rarity {
     font-weight: bold;
-    color: #ffd700;
-    /* Gold color for rarity */
+}
+
+.income-increase {
+    color: #00ab00;
+    font-weight: bold;
+}
+
+.item-name {
+    font-size: 0.8rem;
+    margin: 0.3em 0;
+    font-weight: bold;
 }
 
 .item-bonus {

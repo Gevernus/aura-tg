@@ -21,10 +21,11 @@ function populateInventory(items) {
 function createInventoryItemElement(item) {
     const itemDiv = document.createElement('div');
     itemDiv.className = 'inventory-item';
+    const rarityClass = `rarity-${item.rarity == "Very Rare" ? "very-rare" : item.rarity.toLowerCase()}`;
     itemDiv.innerHTML = `
         <img src="images/items/${item.image}" alt="${item.name}" class="item-image">
-        <h4>${item.name}</h4>
-        <p class="item-rarity">${item.rarity}</p>
+        <h2 class="item-name">${item.name}</h2>
+        <p class="item-rarity ${rarityClass}">${item.rarity}</p>
         <p class="item-bonus">Passive Bonus: ${item.passive_bonus}</p>
         <p class="item-bonus">Tap Bonus: ${item.tap_bonus}</p>
         <p class="item-bonus">Energy Bonus: ${item.energy_bonus}</p>

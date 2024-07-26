@@ -60,7 +60,7 @@ export class InventoryComponent {
     constructor(items = []) {
         this.items = items;
     }
-    
+
     addItems(newItems) {
         this.items = [...this.items, ...newItems];
     }
@@ -87,6 +87,7 @@ class MonsterData {
     update(level, incomePerLevel, basePrice) {
         this.level = level;
         this.incomePerHour = incomePerLevel * level;
+        this.incomePerHourNext = (incomePerLevel * (level + 1)) - this.incomePerHour;
         this.price = Math.round(basePrice * Math.pow(1.30, level));
     }
 }
