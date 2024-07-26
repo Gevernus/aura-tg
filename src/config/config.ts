@@ -51,23 +51,23 @@ export const config: GameConfig = {
     ],
 
     cardConfigs: {
-        ["Обычное"]: {
+        ["Common"]: {
             basePrice: 100,
             incomePerLevel: 5
         },
-        ["Редкое"]: {
+        ["Rare"]: {
             basePrice: 500,
             incomePerLevel: 30
         },
-        ["ОченьРедкое"]: {
+        ["Very rare"]: {
             basePrice: 2000,
             incomePerLevel: 150
         },
-        ["Эпическое"]: {
+        ["Epic"]: {
             basePrice: 10000,
             incomePerLevel: 750
         },
-        ["Легендарное"]: {
+        ["Legendary"]: {
             basePrice: 50000,
             incomePerLevel: 3750
         }
