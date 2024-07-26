@@ -23,6 +23,7 @@ export function render(entity) {
     const coinsComponent = entity.getComponent("CoinsComponent");
     const passiveIncomeComponent = entity.getComponent("PassiveIncomeComponent");
     const configComponent = entity.getComponent("ConfigComponent");
+    const clickPowerComponent = entity.getComponent("ClickPowerComponent");
     const config = configComponent.config;
 
     document.getElementById('levelName').textContent = config.levels[levelComponent.level - 1];
@@ -33,7 +34,8 @@ export function render(entity) {
     document.getElementById('energyProgress').style.width = `${(energyComponent.energy / (500 * Math.pow(2, levelComponent.level - 1))) * 100}%`;
 
     document.getElementById('coins').textContent = Math.floor(coinsComponent.amount);
-    document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerHour;
+    document.getElementById('tapPower').textContent = clickPowerComponent.power;
+    document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerHour.toFixed(1);
 
     document.body.style.backgroundImage = `url(/images/${config.images[levelComponent.level - 1]})`;
 };

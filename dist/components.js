@@ -12,7 +12,7 @@ export class ClickPowerComponent {
     calculate(items) {
         this.power = 1;
         for (const item of items) {
-            this.power += item.item.tap_bonus;
+            this.power += item.tap_bonus;
         }
     }
 }
@@ -33,7 +33,7 @@ export class EnergyComponent {
     calculate(items) {
         this.maxEnergy = this.baseMaxEnergy;
         for (const item of items) {
-            this.maxEnergy += item.item.energy_bonus;
+            this.maxEnergy += item.energy_bonus;
         }
     }
 }
@@ -51,7 +51,7 @@ export class PassiveIncomeComponent {
         }
 
         for (const item of items) {
-            this.incomePerHour += item.item.passive_bonus;
+            this.incomePerHour += item.passive_bonus;
         }
     }
 }

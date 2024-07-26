@@ -90,7 +90,7 @@ router.post('/:userId/purchase/:packId', async (req, res) => {
                 .getMany();
             const itemIds = randomItems.map(item => item.id);
             const stringifiedPayload = JSON.stringify({ itemIds, userId });
-            const invoiceLink = await app_1.bot.api.createInvoiceLink(`Pack of various items: ${pack.name}`, 'Pack of various items', stringifiedPayload, "", "XTR", [{ label: pack.name, amount: 1 }]);
+            const invoiceLink = await app_1.bot.api.createInvoiceLink(`Pack of various items: ${pack.name}`, 'Pack of various items', stringifiedPayload, "", "XTR", [{ label: pack.name, amount: pack.price }]);
             return res.status(200).json({ invoiceLink, items: randomItems });
         }
         else {
@@ -134,11 +134,12 @@ router.get('/:userId/inventory', async (req, res) => {
     try {
         const userId = req.params.userId;
         const userItems = await UserItem_1.UserItem.createQueryBuilder("userItem")
-            .leftJoinAndSelect("userItem.item", "item")
+            .innerJoinAndSelect("userItem.item", "item")
             .where("userItem.user_id = :userId", { userId })
             .getMany();
         if (userItems && userItems.length > 0) {
-            res.json(userItems);
+            const inventory = userItems.map(item => item.item);
+            res.json(inventory);
         }
         else {
             res.status(404).json({ error: 'No items found in inventory' });

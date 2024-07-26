@@ -1,4 +1,4 @@
-import { CoinsComponent, InputComponent, PassiveIncomeComponent } from '../dist/components.js';
+import { ClickPowerComponent, CoinsComponent, InputComponent, PassiveIncomeComponent } from '../dist/components.js';
 export function init(entity) {
     const inputComponent = entity.getComponent(InputComponent);
     const profile = document.querySelector('.profile-navigate');
@@ -13,6 +13,8 @@ export function init(entity) {
 export function render(entity) {
     const coinsComponent = entity.getComponent(CoinsComponent);
     const passiveIncomeComponent = entity.getComponent(PassiveIncomeComponent);
+    const clickPowerComponent = entity.getComponent(ClickPowerComponent);
     document.getElementById('coins').textContent = Math.floor(coinsComponent.amount);
-    document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerHour;
+    document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerHour.toFixed(1);
+    document.getElementById('tapPower').textContent = clickPowerComponent.power;
 }

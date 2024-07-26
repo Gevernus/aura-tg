@@ -219,6 +219,8 @@ h1 {
 }
 
 .price {
+    font-size: 18px;
+    padding-left: 7px;
     font-weight: bold;
 }
 
@@ -478,6 +480,11 @@ h1 {
 }
 
 .rare {
+    background-color: #4b69ff;
+    color: white;
+}
+
+.very-rare {
     background-color: #4b69ff;
     color: white;
 }

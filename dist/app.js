@@ -25,6 +25,14 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 8000;
 exports.bot = new grammy_1.Bot(process.env.TELEGRAM_TOKEN || "");
 app.use(body_parser_1.default.json());
+process.on('uncaughtException', (err) => {
+    console.error('There was an uncaught error', err);
+    process.exit(1);
+});
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+});
 exports.AppDataSource = new typeorm_1.DataSource(database_1.default);
 exports.AppDataSource.initialize().then(async () => {
     console.log('Connected to database');

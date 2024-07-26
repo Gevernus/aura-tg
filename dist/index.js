@@ -22,19 +22,21 @@ async function initApp() {
     const packs = await storageSystem.getPacks();
     const inventory = await storageSystem.getInventory();
     const monsterComponent = new MonstersComponent(monsters, config);
+    const inventoryComponent = new InventoryComponent(inventory);
 
     systemManager.addSystem(telegramSystem);
     systemManager.addSystem(storageSystem)
 
     gameEntity.addComponent(new CoinsComponent(state.coins));
-    gameEntity.addComponent(new ClickPowerComponent(inventory));
-    gameEntity.addComponent(new EnergyComponent(state.energy, state.max_energy, state.energy_restore, inventory));
-    gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items, inventory));
+    gameEntity.addComponent(new ClickPowerComponent(inventoryComponent.items));
+    gameEntity.addComponent(inventoryComponent);
+    gameEntity.addComponent(new EnergyComponent(state.energy, state.max_energy, state.energy_restore, inventoryComponent.items));
+    gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items, inventoryComponent.items));
     gameEntity.addComponent(new ConfigComponent(config));
     gameEntity.addComponent(new UserComponent(user));
     gameEntity.addComponent(new LevelComponent(state.level));
     gameEntity.addComponent(new InputComponent());
-    gameEntity.addComponent(new InventoryComponent(inventory));
+    
     gameEntity.addComponent(new ReferralsComponent(user.referrals));
     gameEntity.addComponent(monsterComponent);
     gameEntity.addComponent(new PacksComponent(packs));
