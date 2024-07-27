@@ -1,4 +1,4 @@
-import { CoinsComponent, MonstersComponent, InputComponent, PacksComponent, UserComponent, InventoryComponent, EnergyComponent, PassiveIncomeComponent, ClickPowerComponent } from '../dist/components.js';
+import { CoinsComponent, MonstersComponent, InputComponent, PacksComponent, UserComponent, InventoryComponent, EnergyComponent, PassiveIncomeComponent, ClickPowerComponent, ReferralsComponent } from '../dist/components.js';
 export function init(entity) {
     // Populate monsters tab
     populateMonsters(entity);
@@ -134,9 +134,7 @@ async function openPack(entity, userId, packId, packItems) {
 
     if (data) {
         const inputComponent = entity.getComponent(InputComponent);
-
-
-        inputComponent.addInput("openLink", {
+        inputComponent.addInput("openInvoice", {
             url: data.invoiceLink, callback: (status) => {
                 try {
                     console.log(`Status of payment is ${status}`);
@@ -152,14 +150,15 @@ async function openPack(entity, userId, packId, packItems) {
                         const energyComponent = entity.getComponent(EnergyComponent);
                         const passiveIncomeComponent = entity.getComponent(PassiveIncomeComponent);
                         const clickPowerComponent = entity.getComponent(ClickPowerComponent);
+                        const referralsComponent = entity.getComponent(ReferralsComponent);
                         inventoryComponent.addItems(data.items);
                         energyComponent.calculate(inventoryComponent.items);
                         clickPowerComponent.calculate(inventoryComponent.items);
-                        passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items);
+                        passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items, referralsComponent.items);
 
                     }
                 } catch (error) {
-                    console.error("An error occurred in the openLink callback:", error);
+                    console.error("An error occurred in the openInvoice callback:", error);
                     // You can add additional error handling here if needed
                 }
             }

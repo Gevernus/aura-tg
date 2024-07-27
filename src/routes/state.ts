@@ -8,11 +8,13 @@ import { PackItem } from '../models/PackItem';
 import { UserItem } from '../models/UserItem';
 import { ShopItem } from '../models/ShopItem';
 import { bot } from '../app';
+import { Referral } from '../models/Referral';
 
 const router = Router();
 
 router.post('/user', async (req, res) => {
-    const userData: User = req.body;
+    const userData: User = req.body.user;
+    const inviterId = req.body.inviterId;
     try {
         let user;
         let state: State | null;
@@ -28,6 +30,16 @@ router.post('/user', async (req, res) => {
             state.id = user.id;
             state.energy = config.initialEnergy;
             state.passive_income = config.initialPassiveIncome;
+
+            if (inviterId) {
+                const referral = Referral.create();
+                referral.inviterId = inviterId;
+                referral.userId = user.id;
+                referral.bonus = 10;
+                referral.status = 'accepted';
+                await referral.save();
+            }
+
             await state.save();
         } else {
             user = await User.findOne({ where: { id: userData.id } });
@@ -139,7 +151,7 @@ router.get('/:userId/inventory', async (req, res) => {
             const inventory = userItems.map(item => item.item);
             res.json(inventory);
         } else {
-            res.status(404).json({ error: 'No items found in inventory' });
+            res.status(200).json([]);
         }
     } catch (error) {
         console.error('Error fetching inventory:', error);

@@ -39,12 +39,12 @@ export class EnergyComponent {
 }
 
 export class PassiveIncomeComponent {
-    constructor(monsters = [], items = []) {
+    constructor(monsters = [], items = [], referrals = []) {
         this.incomePerHour = 0;
-        this.calculate(monsters, items);
+        this.calculate(monsters, items, referrals);
     }
 
-    calculate(monsters, items) {
+    calculate(monsters, items, referrals) {
         this.incomePerHour = 0;
         for (const monster of monsters) {
             this.incomePerHour += monster.incomePerHour;
@@ -52,6 +52,10 @@ export class PassiveIncomeComponent {
 
         for (const item of items) {
             this.incomePerHour += item.passive_bonus;
+        }
+
+        for (const item of referrals) {
+            this.incomePerHour += item.bonus;
         }
     }
 }
@@ -98,6 +102,12 @@ export class PacksComponent {
     }
 }
 
+export class ReferralsComponent {
+    constructor(items) {
+        this.items = items;
+    }
+}
+
 export class MonstersComponent {
     constructor(data = [], config) {
         this.config = config;
@@ -132,12 +142,6 @@ export class MonstersComponent {
 
     getMonsterById(id) {
         return this.items.find(monster => monster.id == id);
-    }
-}
-
-export class ReferralsComponent {
-    constructor(referrals = []) {
-        this.referrals = referrals;
     }
 }
 

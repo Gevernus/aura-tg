@@ -1,13 +1,11 @@
 import { Router } from 'express';
-import { User } from '../models/User';
 import { Referral } from '../models/Referral';
 import { AppDataSource } from '../app';
-import { State } from '../models/State';
 
 const router = Router();
 
-router.get('/user/:id/referrals', async (req, res) => {
-    const userId = req.params.id;
+router.get('/:userId/referrals', async (req, res) => {
+    const userId = req.params.userId;
 
     try {
         const referrals = await Referral.find({
@@ -20,23 +18,15 @@ router.get('/user/:id/referrals', async (req, res) => {
     }
 });
 
-router.post('/user/:id/claim', async (req, res) => {
-    const userId = req.params.id;
-    const { referralId, bonus } = req.body;
+router.post('/:userId/claim', async (req, res) => {
+    const userId = req.params.userId;
+    const { referralId } = req.body;
 
     await AppDataSource.transaction(async transactionalEntityManager => {
-        const state = await State.findOne({ where: { id: userId } });
-        if (!state) {
-            throw new Error('State not found');
-        }
-
-        const referral = await Referral.findOne({ where: { id: referralId } });
+        const referral = await Referral.findOne({ where: { inviterId: userId, id: referralId } });
         if (!referral) {
             throw new Error('Referral not found');
         }
-
-        state.coins += parseInt(bonus, 10);
-        await state.save();
 
         referral.status = 'claimed';
         await referral.save();

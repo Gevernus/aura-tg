@@ -5,7 +5,7 @@ export function init(entity) {
     profile.querySelectorAll('.navigate').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            inputComponent.addInput("setView", { view: e.currentTarget.dataset.page })
+            inputComponent.addInput("setView", { view: e.currentTarget.dataset.page });
         });
     });
 };

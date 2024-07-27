@@ -24,6 +24,14 @@ __decorate([
     __metadata("design:type", String)
 ], Referral.prototype, "inviterId", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Referral.prototype, "userId", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Referral.prototype, "bonus", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => User_1.User, user => user.referrals),
     __metadata("design:type", User_1.User)
 ], Referral.prototype, "inviter", void 0);

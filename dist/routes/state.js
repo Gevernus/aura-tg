@@ -11,9 +11,11 @@ const PackItem_1 = require("../models/PackItem");
 const UserItem_1 = require("../models/UserItem");
 const ShopItem_1 = require("../models/ShopItem");
 const app_1 = require("../app");
+const Referral_1 = require("../models/Referral");
 const router = (0, express_1.Router)();
 router.post('/user', async (req, res) => {
-    const userData = req.body;
+    const userData = req.body.user;
+    const inviterId = req.body.inviterId;
     try {
         let user;
         let state;
@@ -29,6 +31,14 @@ router.post('/user', async (req, res) => {
             state.id = user.id;
             state.energy = config_1.default.initialEnergy;
             state.passive_income = config_1.default.initialPassiveIncome;
+            if (inviterId) {
+                const referral = Referral_1.Referral.create();
+                referral.inviterId = inviterId;
+                referral.userId = user.id;
+                referral.bonus = 10;
+                referral.status = 'accepted';
+                await referral.save();
+            }
             await state.save();
         }
         else {
@@ -131,7 +141,7 @@ router.get('/:userId/inventory', async (req, res) => {
             res.json(inventory);
         }
         else {
-            res.status(404).json({ error: 'No items found in inventory' });
+            res.status(200).json([]);
         }
     }
     catch (error) {

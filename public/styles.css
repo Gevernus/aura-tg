@@ -700,6 +700,23 @@ h1 {
     color: #a0a0a0;
 }
 
+#invite-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+#invite-btn {
+    width: 200px;
+    height: 60px;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media (min-aspect-ratio: 1/1) {
     #tap-button {
         width: 40vh;

@@ -135,6 +135,7 @@ export class TelegramSystem extends System {
     initTelegram() {
         if (window.Telegram && window.Telegram.WebApp) {
             this.user = window.Telegram.WebApp.initDataUnsafe.user || { id: 1, first_name: 'Test', last_name: 'User', username: 'test' };
+            this.inviterId = window.Telegram.WebApp.initDataUnsafe.start_param;
 
             // Listen for viewport changes, which include app closure
             window.Telegram.WebApp.onEvent('viewportChanged', async () => {
@@ -153,23 +154,34 @@ export class TelegramSystem extends System {
         return this.user;
     }
 
+    getInviter() {
+        return this.inviterId;
+    }
+
     getUserId() {
         return this.user ? this.user.id : null;
     }
 
-    update(){
+    update() {
         const inputComponent = this.entity.getComponent(InputComponent);
-        const link = inputComponent.getAndRemoveInput('openLink');
+
+        const link = inputComponent.getAndRemoveInput('openInvoice');
         if (link?.data) {
             window.Telegram.WebApp.openInvoice(link.data.url, link.data.callback);
+        }
+
+        const url = inputComponent.getAndRemoveInput('openLink');
+        if (url?.data) {
+            window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${url.data.url}`);
         }
     }
 }
 
 export class StorageSystem extends System {
-    constructor(entity, tgUser) {
+    constructor(entity, tgUser, inviter) {
         super(entity);
         this.tgUser = tgUser;
+        this.inviter = inviter;
         this.state = null;
         this.config = null;
         this.user = null;
@@ -257,6 +269,24 @@ export class StorageSystem extends System {
 
             return await response.json();
         } catch (error) {
+            console.error('Error getting inventory:', error);
+        }
+    }
+
+    async getReferrals() {
+        try {
+            const response = await fetch(`api/${this.tgUser.id}/referrals`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
+
+            return await response.json();
+        } catch (error) {
             console.error('Error saving state:', error);
         }
     }
@@ -307,7 +337,7 @@ export class StorageSystem extends System {
             const response = await fetch('/api/user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(this.tgUser),
+                body: JSON.stringify({ user: this.tgUser, inviterId: this.inviter }),
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

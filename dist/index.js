@@ -4,7 +4,7 @@ import { Entity } from './ecs.js';
 import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, PacksComponent } from './components.js';
 
 let lastTime = 0;
-const targetFPS = 60;
+const targetFPS = 5;
 const timeStep = 1000 / targetFPS;
 
 const systemManager = new SystemManager();
@@ -14,15 +14,17 @@ async function initApp() {
     console.log('Trying to init app')
     const gameEntity = new Entity();
     const telegramSystem = new TelegramSystem(gameEntity);
-    const storageSystem = new StorageSystem(gameEntity, telegramSystem.getUser());
+    const storageSystem = new StorageSystem(gameEntity, telegramSystem.getUser(), telegramSystem.getInviter());
     const state = await storageSystem.getState();
     const config = await storageSystem.getConfig();
     const user = await storageSystem.getUser();
     const monsters = await storageSystem.getMonsters();
     const packs = await storageSystem.getPacks();
     const inventory = await storageSystem.getInventory();
+    const referrals = await storageSystem.getReferrals();
     const monsterComponent = new MonstersComponent(monsters, config);
     const inventoryComponent = new InventoryComponent(inventory);
+    const referralsComponent = new ReferralsComponent(referrals);
 
     systemManager.addSystem(telegramSystem);
     systemManager.addSystem(storageSystem)
@@ -31,16 +33,14 @@ async function initApp() {
     gameEntity.addComponent(new ClickPowerComponent(inventoryComponent.items));
     gameEntity.addComponent(inventoryComponent);
     gameEntity.addComponent(new EnergyComponent(state.energy, state.max_energy, state.energy_restore, inventoryComponent.items));
-    gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items, inventoryComponent.items));
+    gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items, inventoryComponent.items, referralsComponent.items));
     gameEntity.addComponent(new ConfigComponent(config));
     gameEntity.addComponent(new UserComponent(user));
     gameEntity.addComponent(new LevelComponent(state.level));
     gameEntity.addComponent(new InputComponent());
-    
-    gameEntity.addComponent(new ReferralsComponent(user.referrals));
+    gameEntity.addComponent(referralsComponent);
     gameEntity.addComponent(monsterComponent);
     gameEntity.addComponent(new PacksComponent(packs));
-    // gameEntity.addComponent(new ShopComponent(state.shopItems));
 
     storageSystem.setEntity(gameEntity);
     const uiSystem = new UISystem(gameEntity);
@@ -81,8 +81,8 @@ function tick(currentTime) {
 
     // If enough time has passed, update the game
     if (deltaTime >= timeStep) {
-        systemManager.updateAll(deltaTime / 1000);
         lastTime = currentTime;
+        systemManager.updateAll(deltaTime / 1000);
     }
 }
 
