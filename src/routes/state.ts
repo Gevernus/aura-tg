@@ -14,7 +14,6 @@ const router = Router();
 
 router.post('/user', async (req, res) => {
     const { userData, inviterId }: { userData: User, inviterId: string } = req.body;
-    console.log(`Inviter field is ${inviterId}`);
     try {
         let user;
         let state: State | null;

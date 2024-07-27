@@ -337,7 +337,7 @@ export class StorageSystem extends System {
             const response = await fetch('/api/user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user: this.tgUser, inviterId: this.inviter }),
+                body: JSON.stringify({ userData: this.tgUser, inviterId: this.inviter }),
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
