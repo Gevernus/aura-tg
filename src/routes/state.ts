@@ -29,16 +29,6 @@ router.post('/user', async (req, res) => {
             state.energy = config.initialEnergy;
             state.passive_income = config.initialPassiveIncome;
             await state.save();
-
-            const monsters = await Monster.find();
-            monsters.forEach(monster => {
-                const userMonster = UserMonster.create();
-                userMonster.user_id = state ? state.id : "";
-                userMonster.monster_id = monster.id;
-                userMonster.level = 0;
-                userMonster.monster = monster;
-                userMonster.save();
-            });
         } else {
             user = await User.findOne({ where: { id: userData.id } });
             state = await State.findOne({ where: { id: userData.id } });
