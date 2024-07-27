@@ -162,6 +162,10 @@ export class TelegramSystem extends System {
         return this.user ? this.user.id : null;
     }
 
+    getUserName() {
+        return this.user ? this.user.username : null;
+    }
+
     update() {
         const inputComponent = this.entity.getComponent(InputComponent);
 
@@ -333,7 +337,6 @@ export class StorageSystem extends System {
 
     async loadState() {
         try {
-            console.log(`Load with user with inviter ${this.inviter}`, this.tgUser);
             const response = await fetch('/api/user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

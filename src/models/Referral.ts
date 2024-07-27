@@ -10,6 +10,9 @@ export class Referral extends BaseEntity {
     inviterId!: string
 
     @Column()
+    username!: string
+
+    @Column()
     userId!: string
 
     @Column()

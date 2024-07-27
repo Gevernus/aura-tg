@@ -34,6 +34,7 @@ router.post('/user', async (req, res) => {
                 const referral = Referral.create();
                 referral.inviterId = inviterId;
                 referral.userId = user.id;
+                referral.username = user.username;
                 referral.bonus = 10;
                 referral.status = 'accepted';
                 await referral.save();

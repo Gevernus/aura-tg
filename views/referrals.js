@@ -44,21 +44,23 @@ function getStatusText(status) {
     return statusMap[status] || status;
 }
 function addClaimListeners(entity) {
-    document.getElementById('referral-list').addEventListener('click', handleClaimClick);
+    document.getElementById('referral-list').addEventListener('click', (e) => {
+        handleClaimClick(e, entity);
+    });
     document.getElementById('invite-btn').addEventListener('click', (e) => {
         shareInviteLink(entity);
     });
 }
 
-function handleClaimClick(event) {
+function handleClaimClick(event, entity) {
     if (event.target.classList.contains('claim-btn')) {
         const li = event.target.closest('li');
         const referralId = li.dataset.referralId;
-        handleClaim(referralId);
+        handleClaim(entity, referralId);
     }
 }
 
-async function handleClaim(referralId) {
+async function handleClaim(entity, referralId) {
     const referralsComponent = entity.getComponent('ReferralsComponent');
     const userComponent = entity.getComponent('UserComponent');
     const referral = referralsComponent.items.find(r => r.id === referralId);
