@@ -211,7 +211,7 @@ export function render(entity) {
                 monsterElement.querySelector('.monster-level').textContent = `lvl ${monster.level}`;
             }
 
-            monsterElement.querySelector('p.monster-income').innerHTML = `Profit per hour: ${monster.incomePerHour.toFixed(1)}(<span class="income-increase">+${monster.incomePerHourNext.toFixed(1)}</span>)`;
+            monsterElement.querySelector('p.monster-income').innerHTML = `Profit per hour: ${monster.incomePerHour.toFixed(1)} (<span class="income-increase">+${monster.incomePerHourNext.toFixed(1)}</span>)`;
             const buyButton = monsterElement.querySelector('.buy-button');
             buyButton.textContent = monster.price;
             buyButton.disabled = coins.amount < monster.price;
