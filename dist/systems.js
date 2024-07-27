@@ -70,6 +70,31 @@ export class PassiveIncomeSystem extends System {
 }
 
 export class EnergySystem extends System {
+    async init() {
+        try {
+            const userComponent = this.entity.getComponent(UserComponent);
+            const energyComponent = this.entity.getComponent(EnergyComponent);
+            const response = await fetch(`/api/${userComponent.user.id}/calculate_passive`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
+            const data = await response.json();
+
+            energyComponent.energy = Math.min(
+                energyComponent.maxEnergy,
+                energyComponent.energy + data.energyRestored
+            );
+        } catch (error) {
+            console.error('Error saving state:', error);
+        }
+    }
+
     update(deltaTime) {
         if (this.entity.hasComponent(EnergyComponent)) {
             let energyComponent = this.entity.getComponent(EnergyComponent);

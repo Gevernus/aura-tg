@@ -59,16 +59,18 @@ router.get('/:userId/calculate_passive', async (req, res) => {
         const state = await State.findOne({ where: { id: userId } })
         let passive_income = 0;
         let shouldShowPopup = false;
+        let energyRestored = 0;
         if (state) {
             const now = new Date();
             const lastUpdated = new Date(state.last_updated);
             const timeDiffInSeconds = Math.floor((now.getTime() - lastUpdated.getTime()) / 1000);
             const maxAccumulationTime = Math.min(timeDiffInSeconds, 3 * 60 * 60);
             passive_income = Math.floor(state.passive_income / 3600 * maxAccumulationTime);
+            energyRestored = state.energy_restore * timeDiffInSeconds;
             shouldShowPopup = timeDiffInSeconds > 300 && passive_income > 0;
             console.log(`Time since last update in sec: ${timeDiffInSeconds}, should show popup: ${shouldShowPopup}`);
         }
-        return res.status(200).json({ passive_income, shouldShowPopup });
+        return res.status(200).json({ passive_income, shouldShowPopup, energyRestored });
     } catch (error) {
         console.error(`Error calculating of passive income for: ${userId}`, error);
         return res.status(500).json({ message: "Error calculating passive income" });
