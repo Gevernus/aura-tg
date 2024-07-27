@@ -22,13 +22,18 @@ export function render(entity) {
 
     referralsComponent.items.forEach(referral => {
         const li = document.createElement('li');
-        li.dataset.referralId = referral.id; // Store the referral id
+        li.dataset.referralId = referral.id;
+        li.className = 'referral-item';
         li.innerHTML = `
-                <span>${referral.name}</span>
-                <span>${getStatusText(referral.status)}</span>
-                <span>Bonus: ${referral.bonus}%</span>
-                ${referral.status === 'accepted' ? '<button class="claim-btn">Claim</button>' : ''}
-            `;
+        <div class="referral-info">
+            <span class="referral-name">${referral.username}</span>
+            <span class="referral-status ${referral.status}">${getStatusText(referral.status)}</span>
+        </div>
+        <div class="referral-bonus">
+            <span>Income Bonus: <strong>${referral.bonus}</strong></span>
+            ${referral.status === 'accepted' ? '<button class="claim-btn">Claim</button>' : ''}
+        </div>
+    `;
         referralList.appendChild(li);
     });
 
@@ -38,6 +43,7 @@ function getStatusText(status) {
     const statusMap = {
         'pending': 'Waiting',
         'accepted': 'Accepted',
+        'claimed': 'Claimed',
         'active': 'Active',
         'lost': 'Lost'
     };
@@ -63,8 +69,8 @@ function handleClaimClick(event, entity) {
 async function handleClaim(entity, referralId) {
     const referralsComponent = entity.getComponent('ReferralsComponent');
     const userComponent = entity.getComponent('UserComponent');
-    const referral = referralsComponent.items.find(r => r.id === referralId);
-    if (referral && referral.status === 'accepted') {
+    const referral = referralsComponent.items.find(r => r.id == referralId);
+    if (referral && referral.status == 'accepted') {
         try {
             const response = await fetch(`api/${userComponent.user.id}/claim`, {
                 method: 'POST',

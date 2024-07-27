@@ -168,7 +168,6 @@ export class InputComponent {
             timestamp: Date.now(),
             data,
         });
-        console.log("Input added:", inputType);
     }
 
     getAndRemoveInput(inputType) {

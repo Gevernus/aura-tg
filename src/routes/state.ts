@@ -30,7 +30,7 @@ router.post('/user', async (req, res) => {
             state.energy = config.initialEnergy;
             state.passive_income = config.initialPassiveIncome;
 
-            if (inviterId) {
+            if (inviterId && inviterId != user.id) {
                 const referral = Referral.create();
                 referral.inviterId = inviterId;
                 referral.userId = user.id;

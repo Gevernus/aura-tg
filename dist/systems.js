@@ -89,18 +89,14 @@ export class LevelUpSystem extends System {
         const userComponent = this.entity.getComponent(UserComponent);
         const coinsComponent = this.entity.getComponent(CoinsComponent);
         const passiveIncomeComponent = this.entity.getComponent(PassiveIncomeComponent);
+        const referralsComponent = entity.getComponent(ReferralsComponent);
         while (inputComponent.hasInput('upgrade')) {
             const upgrade = inputComponent.getAndRemoveInput('upgrade');
             if (upgrade && upgrade.data) {
                 coinsComponent.amount -= upgrade.data.price;
                 const data = await this.processUpgrade(upgrade.data.monsterId, userComponent.user.id);
-                console.log(`Upgrade data`);
-                console.log(data.userMonster);
                 monstersComponent.updateItem(data.userMonster);
-                passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items);
-                // if (data.coins) {
-                //     coinsComponent.amount = data.coins;
-                // }
+                passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items, referralsComponent.items);
             }
         }
     }
