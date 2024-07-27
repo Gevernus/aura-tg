@@ -60,7 +60,11 @@ function renderMonsterItem(monster) {
         <div class="shop-item monster-item">
             <img src="images/monsters/${monster.image}" alt="${monster.name}" class="monster-image">
             <h4>${monster.name}</h4>
-            <p class="monster-income">Profit per hour: ${monster.incomePerHour.toFixed(1)}(<span class="income-increase">+${monster.incomePerHourNext.toFixed(1)}</span>)</p>
+            <div class="monster-income">
+                <span class="profit-label">Profit per hour:</span>
+                <span class="profit-value">${monster.incomePerHour.toFixed(1)}</span>
+                <span class="income-increase">(+${monster.incomePerHourNext.toFixed(1)})</span>
+            </div>
             <div class="level-price-container">
                 <span class="monster-level">lvl ${monster.level}</span>
                 <button class="buy-button buy-monster" data-id="${monster.id}">${monster.price}</button>
@@ -211,7 +215,12 @@ export function render(entity) {
                 monsterElement.querySelector('.monster-level').textContent = `lvl ${monster.level}`;
             }
 
-            monsterElement.querySelector('p.monster-income').innerHTML = ` Profit per hour: ${monster.incomePerHour.toFixed(1)} (<span class="income-increase">+${monster.incomePerHourNext.toFixed(1)}</span>)`;
+            const incomeElement = monsterElement.querySelector('.monster-income');
+            incomeElement.innerHTML = `
+                <span class="profit-label">Profit per hour:</span>
+                <span class="profit-value">${monster.incomePerHour.toFixed(1)}</span>
+                <span class="income-increase">(+${monster.incomePerHourNext.toFixed(1)})</span>
+            `;
             const buyButton = monsterElement.querySelector('.buy-button');
             buyButton.textContent = monster.price;
             buyButton.disabled = coins.amount < monster.price;
