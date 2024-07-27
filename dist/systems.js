@@ -333,7 +333,7 @@ export class StorageSystem extends System {
 
     async loadState() {
         try {
-            console.log("Load with user: ", this.tgUser);
+            console.log(`Load with user with inviter ${this.inviter}`, this.tgUser);
             const response = await fetch('/api/user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

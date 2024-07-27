@@ -14,8 +14,8 @@ const app_1 = require("../app");
 const Referral_1 = require("../models/Referral");
 const router = (0, express_1.Router)();
 router.post('/user', async (req, res) => {
-    const userData = req.body.user;
-    const inviterId = req.body.inviterId;
+    const { userData, inviterId } = req.body;
+    console.log(`Inviter field is ${inviterId}`);
     try {
         let user;
         let state;
