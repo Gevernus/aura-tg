@@ -136,7 +136,7 @@ export class TelegramSystem extends System {
         if (window.Telegram && window.Telegram.WebApp) {
             this.user = window.Telegram.WebApp.initDataUnsafe.user || { id: 1, first_name: 'Test', last_name: 'User', username: 'test' };
             this.inviterId = window.Telegram.WebApp.initDataUnsafe.start_param;
-
+            console.log(`App opened with start_param: ${this.inviterId}`);
             // Listen for viewport changes, which include app closure
             window.Telegram.WebApp.onEvent('viewportChanged', async () => {
                 if (window.Telegram.WebApp.isExpanded === false) {
