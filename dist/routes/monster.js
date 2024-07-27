@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Monster_1 = require("../models/Monster");
 const UserMonster_1 = require("../models/UserMonster");
-const config_1 = require("../config/config");
 const router = (0, express_1.Router)();
 router.get('/:userId/monsters', async (req, res) => {
     try {
@@ -25,19 +24,29 @@ router.get('/:userId/monsters', async (req, res) => {
 });
 router.post('/:userId/monsters/upgrade/:monsterId', async (req, res) => {
     const userId = req.params.userId;
-    const monsterId = req.params.monsterId;
+    const monsterId = parseInt(req.params.monsterId);
     try {
-        const userMonster = await UserMonster_1.UserMonster
+        let userMonster = await UserMonster_1.UserMonster
             .createQueryBuilder("userMonster")
             .innerJoinAndSelect("userMonster.monster", "monster")
             .where("userMonster.user_id = :userId")
             .andWhere("userMonster.monster_id = :monsterId")
             .setParameters({ userId, monsterId })
             .getOne();
+        if (!userMonster) {
+            const monster = await Monster_1.Monster.findOne({ where: { id: monsterId } });
+            if (!monster) {
+                console.log(`Monster not found for monsterId: ${monsterId}`);
+                return res.status(404).json({ error: 'Monster not found' });
+            }
+            userMonster = UserMonster_1.UserMonster.create();
+            userMonster.user_id = userId;
+            userMonster.monster_id = monster.id;
+            userMonster.level = 0;
+            userMonster.monster = monster;
+            console.log(`Created new UserMonster: ${JSON.stringify(userMonster)}`);
+        }
         if (userMonster) {
-            const cardConfig = config_1.config.cardConfigs[userMonster.monster.rarity];
-            const price = Math.round(cardConfig.basePrice * Math.pow(1.30, userMonster.level));
-            // const state = await State.findOne({ where: { id: userId } })
             userMonster.level += 1;
             await userMonster.save();
             console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);

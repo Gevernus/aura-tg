@@ -7,8 +7,6 @@ const express_1 = require("express");
 const User_1 = require("../models/User");
 const config_1 = __importDefault(require("../config/config"));
 const State_1 = require("../models/State");
-const Monster_1 = require("../models/Monster");
-const UserMonster_1 = require("../models/UserMonster");
 const PackItem_1 = require("../models/PackItem");
 const UserItem_1 = require("../models/UserItem");
 const ShopItem_1 = require("../models/ShopItem");
@@ -32,15 +30,6 @@ router.post('/user', async (req, res) => {
             state.energy = config_1.default.initialEnergy;
             state.passive_income = config_1.default.initialPassiveIncome;
             await state.save();
-            const monsters = await Monster_1.Monster.find();
-            monsters.forEach(monster => {
-                const userMonster = UserMonster_1.UserMonster.create();
-                userMonster.user_id = state ? state.id : "";
-                userMonster.monster_id = monster.id;
-                userMonster.level = 0;
-                userMonster.monster = monster;
-                userMonster.save();
-            });
         }
         else {
             user = await User_1.User.findOne({ where: { id: userData.id } });
