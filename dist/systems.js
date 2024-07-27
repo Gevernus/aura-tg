@@ -1,5 +1,5 @@
 import { System } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent, MonstersComponent, ConfigComponent, UserComponent, InventoryComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent, MonstersComponent, ReferralsComponent, UserComponent, InventoryComponent, ConfigComponent, LevelComponent } from './components.js';
 
 export class ClickSystem extends System {
     update(deltaTime) {
@@ -18,7 +18,7 @@ export class ClickSystem extends System {
                     if (energyComponent.energy >= 1) {
                         coinsComponent.amount += clickPower;
                         energyComponent.energy--;
-                        inputComponent.addInput('save');
+                        // inputComponent.addInput('save');
                     }
                 }
             }
@@ -114,7 +114,7 @@ export class LevelUpSystem extends System {
         const userComponent = this.entity.getComponent(UserComponent);
         const coinsComponent = this.entity.getComponent(CoinsComponent);
         const passiveIncomeComponent = this.entity.getComponent(PassiveIncomeComponent);
-        const referralsComponent = entity.getComponent(ReferralsComponent);
+        const referralsComponent = this.entity.getComponent(ReferralsComponent);
         while (inputComponent.hasInput('upgrade')) {
             const upgrade = inputComponent.getAndRemoveInput('upgrade');
             if (upgrade && upgrade.data) {
@@ -210,7 +210,7 @@ export class StorageSystem extends System {
         this.state = null;
         this.config = null;
         this.user = null;
-        this.timeToSave = 10;
+        this.timeToSave = 5;
         this.timer = 0;
     }
 
@@ -326,6 +326,7 @@ export class StorageSystem extends System {
         const clickPowerComponent = this.entity.getComponent(ClickPowerComponent);
         const energyComponent = this.entity.getComponent(EnergyComponent);
         const passiveIncomeComponent = this.entity.getComponent(PassiveIncomeComponent);
+        const levelComponent = this.entity.getComponent(LevelComponent);
 
         if (!coinsComponent || !clickPowerComponent || !energyComponent) {
             console.error('Entity is missing required components for saving state');
@@ -336,6 +337,8 @@ export class StorageSystem extends System {
         this.state.coins = Math.floor(coinsComponent.amount);
         this.state.energy = Math.floor(energyComponent.energy);
         this.state.passive_income = passiveIncomeComponent.incomePerHour;
+        this.state.maxEnergy = energyComponent.baseMaxEnergy;
+        this.state.level = levelComponent.level;
 
         try {
             const response = await fetch('api/state', {
@@ -422,6 +425,36 @@ export class UISystem extends System {
         }
         if (this.currentView) {
             this.currentView.render(this.entity);
+        }
+    }
+}
+
+export class SoulLevelSystem extends System {
+    constructor(entity) {
+        super(entity);
+    }
+
+    update() {
+        const coinsComponent = this.entity.getComponent(CoinsComponent);
+        const configComponent = this.entity.getComponent(ConfigComponent);
+        const levelComponent = this.entity.getComponent(LevelComponent);
+        const energyComponent = this.entity.getComponent(EnergyComponent);
+
+        const coins = coinsComponent.amount;
+        const levelRequirements = configComponent.config.levelRequirements;
+
+        let newLevel = levelComponent.level;
+        for (let i = levelRequirements.length - 1; i >= 0; i--) {
+            if (coins >= levelRequirements[i]) {
+                newLevel = i + 1; // Adding 1 because array is 0-indexed, but levels start at 1
+                break;
+            }
+        }
+
+        // Only update if the new level is higher than the current level
+        if (newLevel > levelComponent.level) {
+            levelComponent.setLevel(newLevel);
+            energyComponent.maxEnergy = 500 * Math.pow(2, newLevel);
         }
     }
 }

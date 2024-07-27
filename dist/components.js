@@ -19,7 +19,11 @@ export class ClickPowerComponent {
 
 export class LevelComponent {
     constructor(level = 1) {
-        this.level = level;
+        this.setLevel(level);
+    }
+
+    setLevel(level) {
+        this.level = Math.min(Math.max(1, level), 7);
     }
 }
 

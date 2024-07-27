@@ -4,17 +4,10 @@ export function init(entity) {
     const configComponent = entity.getComponent('ConfigComponent');
     const levelComponent = entity.getComponent('LevelComponent');
     const config = configComponent.config;
-    // const clone = tapButton.cloneNode(true)
-    // tapButton.replaceWith(clone);
-    // tapButton = clone;
     tapButton.addEventListener('click', () => {
         inputComponent.addInput("tap");
     });
     document.body.style.backgroundImage = `url(/images/${config.images[levelComponent.level - 1]})`;
-    // document.body.style.backgroundSize = 'cover';  // equivalent to object-fit: cover;
-    // document.body.style.backgroundPosition = 'center';  // centers the image
-    // document.body.style.width = '100%';
-    // document.body.style.height = '100vh';
 };
 
 export function render(entity) {

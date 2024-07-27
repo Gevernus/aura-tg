@@ -1,4 +1,4 @@
-import { ClickSystem, PassiveIncomeSystem, LevelUpSystem, StorageSystem, TelegramSystem, UISystem, EnergySystem, PopupSystem } from './systems.js';
+import { ClickSystem, PassiveIncomeSystem, LevelUpSystem, StorageSystem, TelegramSystem, UISystem, EnergySystem, PopupSystem, SoulLevelSystem } from './systems.js';
 import { SystemManager } from './systemManager.js';
 import { Entity } from './ecs.js';
 import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, PacksComponent } from './components.js';
@@ -50,6 +50,7 @@ async function initApp() {
     systemManager.addSystem(new ClickSystem(gameEntity));
     systemManager.addSystem(new PassiveIncomeSystem(gameEntity));
     systemManager.addSystem(new LevelUpSystem(gameEntity));
+    systemManager.addSystem(new SoulLevelSystem(gameEntity));
     systemManager.addSystem(new EnergySystem(gameEntity));
     systemManager.addSystem(new PopupSystem(gameEntity));
     // systemManager.addSystem(new RenderSystem());
