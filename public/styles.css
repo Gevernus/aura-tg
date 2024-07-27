@@ -803,6 +803,30 @@ h1 {
     width: 80px;
 }
 
+.click-animation {
+    position: absolute;
+    font-size: 28px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ff6b6b, #f7d794);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    animation: fly-up 1s ease-out forwards;
+}
+
+@keyframes fly-up {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+
 @media (min-aspect-ratio: 1/1) {
     #tap-button {
         width: 40vh;

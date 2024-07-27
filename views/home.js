@@ -3,12 +3,31 @@ export function init(entity) {
     let tapButton = document.getElementById('tap-button');
     const configComponent = entity.getComponent('ConfigComponent');
     const levelComponent = entity.getComponent('LevelComponent');
+    const clickPowerComponent = entity.getComponent('ClickPowerComponent');
     const config = configComponent.config;
     tapButton.addEventListener('click', () => {
         inputComponent.addInput("tap");
+        showClickAnimation(tapButton, clickPowerComponent.power);
     });
     document.body.style.backgroundImage = `url(/images/${config.images[levelComponent.level - 1]})`;
 };
+
+function showClickAnimation(button, count) {
+    const animationElement = document.createElement('div');
+
+    animationElement.textContent = `+${count}`;
+    animationElement.className = 'click-animation';
+
+    const buttonRect = button.getBoundingClientRect();
+    animationElement.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
+    animationElement.style.top = `${buttonRect.top}px`;
+
+    document.body.appendChild(animationElement);
+
+    animationElement.addEventListener('animationend', () => {
+        animationElement.remove();
+    });
+}
 
 export function render(entity) {
     const levelComponent = entity.getComponent("LevelComponent");
