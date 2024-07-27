@@ -15,7 +15,6 @@ const Referral_1 = require("../models/Referral");
 const router = (0, express_1.Router)();
 router.post('/user', async (req, res) => {
     const { userData, inviterId } = req.body;
-    console.log(`Inviter field is ${inviterId}`);
     try {
         let user;
         let state;
@@ -35,6 +34,7 @@ router.post('/user', async (req, res) => {
                 const referral = Referral_1.Referral.create();
                 referral.inviterId = inviterId;
                 referral.userId = user.id;
+                referral.username = user.username;
                 referral.bonus = 10;
                 referral.status = 'accepted';
                 await referral.save();
