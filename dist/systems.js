@@ -1,5 +1,5 @@
 import { System } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent, MonstersComponent, ReferralsComponent, UserComponent, InventoryComponent, ConfigComponent, LevelComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent, MonstersComponent, ReferralsComponent, UserComponent, InventoryComponent, ConfigComponent, LevelComponent, TasksComponent } from './components.js';
 
 export class ClickSystem extends System {
     update(deltaTime) {
@@ -253,12 +253,12 @@ export class StorageSystem extends System {
                 },
             });
             if (!response.ok) {
-                throw new Error('Failed to save state');
+                throw new Error('Failed getting monsters');
             }
 
             return await response.json();
         } catch (error) {
-            console.error('Error saving state:', error);
+            console.error('Failed getting monsters:', error);
         }
     }
 
@@ -271,12 +271,12 @@ export class StorageSystem extends System {
                 },
             });
             if (!response.ok) {
-                throw new Error('Failed to save state');
+                throw new Error('Failed getting Packs');
             }
 
             return await response.json();
         } catch (error) {
-            console.error('Error saving state:', error);
+            console.error('Failed getting Packs:', error);
         }
     }
 
@@ -289,7 +289,7 @@ export class StorageSystem extends System {
                 },
             });
             if (!response.ok) {
-                throw new Error('Failed to save state');
+                throw new Error('Failed getting inventory');
             }
 
             return await response.json();
@@ -307,12 +307,12 @@ export class StorageSystem extends System {
                 },
             });
             if (!response.ok) {
-                throw new Error('Failed to save state');
+                throw new Error('Failed getting referrals');
             }
 
             return await response.json();
         } catch (error) {
-            console.error('Error saving state:', error);
+            console.error('Failed getting referrals:', error);
         }
     }
 
@@ -325,12 +325,30 @@ export class StorageSystem extends System {
                 },
             });
             if (!response.ok) {
-                throw new Error('Failed to save state');
+                throw new Error('Failed getting ratings');
             }
 
             return await response.json();
         } catch (error) {
-            console.error('Error saving state:', error);
+            console.error('Failed getting ratings:', error);
+        }
+    }
+
+    async getTasks() {
+        try {
+            const response = await fetch(`api/${this.tgUser.id}/tasks`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed getting tasks');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Failed getting tasks:', error);
         }
     }
 
@@ -524,6 +542,69 @@ export class PopupSystem extends System {
             this.callback = showPopupInput.data.callback;
             document.getElementById('popup-title').textContent = showPopupInput.data.title;
             document.getElementById('popup-message').textContent = showPopupInput.data.message;
+        }
+    }
+}
+
+export class ActionsSystem extends System {
+    constructor(entity) {
+        super(entity);
+    }
+
+    async update(deltaTime) {
+        const inputComponent = this.entity.getComponent(InputComponent);
+        const tasksComponent = this.entity.getComponent(TasksComponent);
+        const userComponent = this.entity.getComponent(UserComponent);
+
+        // Handle show popup input
+        const action = inputComponent.getAndRemoveInput('action');
+        if (action && action.data) {
+            console.log(`Action captured: `, action);
+            const actionName = action.data.name;
+            // Track Google Analytics event
+            this.trackActionEvent(actionName);
+
+            // Find and update matching tasks
+            const matchingTasks = this.findMatchingTasks(tasksComponent, actionName);
+            const tasks = await this.updateTaskProgress(matchingTasks, userComponent.user.id);
+            tasksComponent.tasks = tasks;
+        }
+    }
+
+    trackActionEvent(actionName) {
+        // Check if gtag is available
+        if (typeof gtag === 'function') {
+            gtag('event', 'user_action', {
+                'action_name': actionName,
+                // You can add more parameters here if needed
+            });
+        } else {
+            console.warn('Google Analytics not loaded. Unable to track event.');
+        }
+    }
+
+    findMatchingTasks(tasksComponent, actionName) {
+        return tasksComponent.tasks.filter(task => task.task_targetAction == actionName);
+    }
+
+    async updateTaskProgress(tasks, userId) {
+        for (const task of tasks) {
+            try {
+                const response = await fetch(`/api/${userId}/tasks/${task.task_id}/progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error(`Failed to update progress for task ${task.task_id}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error(`Error updating progress for task ${task.task_id}:`, error);
+            }
         }
     }
 }

@@ -118,6 +118,12 @@ export class RatingsComponent {
     }
 }
 
+export class TasksComponent {
+    constructor(tasks) {
+        this.tasks = tasks;
+    }
+}
+
 export class MonstersComponent {
     constructor(data = [], config) {
         this.config = config;

@@ -7,11 +7,14 @@ const express_1 = require("express");
 const User_1 = require("../models/User");
 const config_1 = __importDefault(require("../config/config"));
 const State_1 = require("../models/State");
+const Task_1 = require("../models/Task");
 const PackItem_1 = require("../models/PackItem");
 const UserItem_1 = require("../models/UserItem");
 const ShopItem_1 = require("../models/ShopItem");
 const app_1 = require("../app");
 const Referral_1 = require("../models/Referral");
+const UserTask_1 = require("../models/UserTask");
+const typeorm_1 = require("typeorm");
 const router = (0, express_1.Router)();
 router.post('/user', async (req, res) => {
     const { userData, inviterId } = req.body;
@@ -169,17 +172,6 @@ router.get('/ratings', async (req, res) => {
         ])
             .groupBy("user.id, user.username, userState.coins, userState.passive_income")
             .getRawMany();
-        console.log(ratings);
-        // const result = ratings.map(rating => ({
-        //     userId: rating.user_id,
-        //     username: rating.user_username,
-        //     coins: Number(rating.coins) || 0,
-        //     income: Number(rating.passive_income) || 0,
-        //     totalPassiveIncome: Number(rating.totalPassiveIncome) || 0,
-        //     friendsCount: Number(rating.friendsCount) || 0,
-        //     referralBonus: Number(rating.referralBonus) || 0,
-        //     averageSoulLevel: Number(rating.averageSoulLevel) || 1,
-        // }));
         res.status(200).json(ratings);
     }
     catch (error) {
@@ -187,5 +179,147 @@ router.get('/ratings', async (req, res) => {
         res.status(500).json({ error: 'Error fetching ratings' });
     }
 });
+router.get('/:userId/tasks', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        await removeExpiredDailyTasks(userId);
+        const tasks = await Task_1.Task.createQueryBuilder('task')
+            .leftJoinAndSelect('task.userTasks', 'userTask', 'userTask.user.id = :userId', { userId })
+            .select([
+            'task.id',
+            'task.name',
+            'task.description',
+            'task.image',
+            'task.targetAction',
+            'task.requiredActionCount',
+            'task.coins_bonus',
+            'userTask.claimed as claimed',
+            'userTask.completed as completed',
+            'COALESCE(userTask.progress, 0) as progress'
+        ])
+            .addSelect('CASE WHEN task.requiredActionCount = 0 THEN 0 ELSE COALESCE(userTask.progress, 0) * 100.0 / task.requiredActionCount END', 'completionPercentage')
+            .orderBy('task.id', 'ASC')
+            .getRawMany();
+        console.log(`Loaded tasks`, tasks);
+        res.status(200).json(tasks);
+    }
+    catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ error: 'An error occurred while fetching tasks' });
+    }
+});
+router.post('/:userId/tasks/:taskId/progress', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const taskId = parseInt(req.params.taskId);
+        let userTask = await UserTask_1.UserTask.findOne({
+            where: { user: { id: userId }, task: { id: taskId } },
+            relations: ['task', 'user'] // Explicitly load the task and user relations
+        });
+        if (!userTask) {
+            console.log(`Creating a task object: ${userId}:${taskId}`);
+            const user = await User_1.User.findOne({ where: { id: userId } });
+            const task = await Task_1.Task.findOne({ where: { id: taskId } });
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            if (!task) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
+            userTask = UserTask_1.UserTask.create();
+            userTask.user = user;
+            userTask.task = task;
+            userTask.progress = 0;
+            console.log(`User task created: ${userTask.id}`);
+        }
+        if (!userTask.completed) {
+            userTask.progress += 1;
+        }
+        if (userTask.progress >= userTask.task.requiredActionCount) {
+            userTask.completed = true;
+        }
+        // Save updated UserTask
+        await userTask.save();
+        const tasks = await Task_1.Task.createQueryBuilder('task')
+            .leftJoinAndSelect('task.userTasks', 'userTask', 'userTask.user.id = :userId', { userId })
+            .select([
+            'task.id',
+            'task.name',
+            'task.description',
+            'task.image',
+            'task.targetAction',
+            'task.requiredActionCount',
+            'task.coins_bonus',
+            'userTask.claimed as claimed',
+            'userTask.completed as completed',
+            'COALESCE(userTask.progress, 0) as progress'
+        ])
+            .addSelect('CASE WHEN task.requiredActionCount = 0 THEN 0 ELSE COALESCE(userTask.progress, 0) * 100.0 / task.requiredActionCount END', 'completionPercentage')
+            .orderBy('task.id', 'ASC')
+            .getRawMany();
+        console.log(`Updated tasks`, tasks);
+        res.status(200).json(tasks);
+    }
+    catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ error: 'An error occurred while fetching tasks' });
+    }
+});
+router.post('/:userId/tasks/:taskId/claim', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const taskId = parseInt(req.params.taskId);
+        let userTask = await UserTask_1.UserTask.findOne({
+            where: { user: { id: userId }, task: { id: taskId } },
+            relations: ['task', 'user'] // Explicitly load the task and user relations
+        });
+        if (!userTask) {
+            return res.status(404).json({ error: `UserTask not found: ${userId}:${taskId}` });
+        }
+        // Increment progress
+        userTask.claimed = true;
+        userTask.claimedAt = new Date();
+        // Save updated UserTask
+        await userTask.save();
+        const tasks = await Task_1.Task.createQueryBuilder('task')
+            .leftJoinAndSelect('task.userTasks', 'userTask', 'userTask.user.id = :userId', { userId })
+            .select([
+            'task.id',
+            'task.name',
+            'task.description',
+            'task.image',
+            'task.targetAction',
+            'task.requiredActionCount',
+            'task.coins_bonus',
+            'userTask.claimed as claimed',
+            'userTask.completed as completed',
+            'COALESCE(userTask.progress, 0) as progress'
+        ])
+            .addSelect('CASE WHEN task.requiredActionCount = 0 THEN 0 ELSE COALESCE(userTask.progress, 0) * 100.0 / task.requiredActionCount END', 'completionPercentage')
+            .orderBy('task.id', 'ASC')
+            .getRawMany();
+        console.log(`Updated tasks`, tasks);
+        res.status(200).json({ tasks, reward: userTask.task.coins_bonus });
+    }
+    catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ error: 'An error occurred while fetching tasks' });
+    }
+});
+async function removeExpiredDailyTasks(userId) {
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const expiredDailyTasks = await UserTask_1.UserTask.find({
+        where: {
+            user: { id: userId },
+            task: { daily: true },
+            claimed: true,
+            claimedAt: (0, typeorm_1.LessThan)(twentyFourHoursAgo)
+        },
+        relations: ['task']
+    });
+    for (const userTask of expiredDailyTasks) {
+        await UserTask_1.UserTask.remove(userTask);
+    }
+}
 exports.default = router;
 //# sourceMappingURL=state.js.map

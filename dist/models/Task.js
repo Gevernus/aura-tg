@@ -9,42 +9,49 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.Task = void 0;
 const typeorm_1 = require("typeorm");
-const Referral_1 = require("./Referral");
 const UserTask_1 = require("./UserTask");
-let User = class User extends typeorm_1.BaseEntity {
+let Task = class Task extends typeorm_1.BaseEntity {
 };
-exports.User = User;
+exports.Task = Task;
 __decorate([
-    (0, typeorm_1.PrimaryColumn)(),
-    __metadata("design:type", String)
-], User.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "first_name", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", String)
-], User.prototype, "last_name", void 0);
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    __metadata("design:type", Number)
+], Task.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "username", void 0);
+], Task.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "language_code", void 0);
+], Task.prototype, "description", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Referral_1.Referral, referral => referral.inviter),
-    __metadata("design:type", Array)
-], User.prototype, "referrals", void 0);
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Task.prototype, "image", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => UserTask_1.UserTask, userTask => userTask.user),
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Task.prototype, "targetAction", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Task.prototype, "requiredActionCount", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Task.prototype, "daily", void 0);
+__decorate([
+    (0, typeorm_1.Column)("int", { default: 0 }),
+    __metadata("design:type", Number)
+], Task.prototype, "coins_bonus", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => UserTask_1.UserTask, userTask => userTask.task),
     __metadata("design:type", Array)
-], User.prototype, "tasks", void 0);
-exports.User = User = __decorate([
+], Task.prototype, "userTasks", void 0);
+exports.Task = Task = __decorate([
     (0, typeorm_1.Entity)()
-], User);
-//# sourceMappingURL=User.js.map
+], Task);
+//# sourceMappingURL=Task.js.map

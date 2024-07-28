@@ -1,5 +1,6 @@
 import { Entity, Column, OneToMany, BaseEntity, PrimaryColumn } from "typeorm"
 import { Referral } from "./Referral"
+import { UserTask } from "./UserTask";
 
 @Entity()
 export class User extends BaseEntity {
@@ -20,4 +21,7 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Referral, referral => referral.inviter)
     referrals!: Referral[]
+
+    @OneToMany(() => UserTask, userTask => userTask.user)
+    tasks!: UserTask[];
 }

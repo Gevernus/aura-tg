@@ -1,7 +1,7 @@
-import { ClickSystem, PassiveIncomeSystem, LevelUpSystem, StorageSystem, TelegramSystem, UISystem, EnergySystem, PopupSystem, SoulLevelSystem } from './systems.js';
+import { ClickSystem, PassiveIncomeSystem, LevelUpSystem, StorageSystem, TelegramSystem, UISystem, EnergySystem, PopupSystem, SoulLevelSystem, ActionsSystem } from './systems.js';
 import { SystemManager } from './systemManager.js';
 import { Entity } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, PacksComponent, RatingsComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, PacksComponent, RatingsComponent, TasksComponent } from './components.js';
 
 let lastTime = 0;
 const targetFPS = 5;
@@ -14,6 +14,7 @@ async function initApp() {
     console.log('Trying to init app')
     const gameEntity = new Entity();
     const telegramSystem = new TelegramSystem(gameEntity);
+    gameEntity.addComponent(new InputComponent());
     const storageSystem = new StorageSystem(gameEntity, telegramSystem.getUser(), telegramSystem.getInviter());
     const state = await storageSystem.getState();
     const config = await storageSystem.getConfig();
@@ -23,10 +24,12 @@ async function initApp() {
     const inventory = await storageSystem.getInventory();
     const referrals = await storageSystem.getReferrals();
     const ratings = await storageSystem.getRatings();
+    const tasks = await storageSystem.getTasks();
     const monsterComponent = new MonstersComponent(monsters, config);
     const inventoryComponent = new InventoryComponent(inventory);
     const referralsComponent = new ReferralsComponent(referrals);
     const ratingsComponent = new RatingsComponent(ratings);
+    const tasksComponent = new TasksComponent(tasks);
 
     systemManager.addSystem(telegramSystem);
     systemManager.addSystem(storageSystem)
@@ -39,10 +42,10 @@ async function initApp() {
     gameEntity.addComponent(new ConfigComponent(config));
     gameEntity.addComponent(new UserComponent(user));
     gameEntity.addComponent(new LevelComponent(state.level));
-    gameEntity.addComponent(new InputComponent());
     gameEntity.addComponent(referralsComponent);
     gameEntity.addComponent(monsterComponent);
     gameEntity.addComponent(ratingsComponent);
+    gameEntity.addComponent(tasksComponent);
     gameEntity.addComponent(new PacksComponent(packs));
 
     storageSystem.setEntity(gameEntity);
@@ -56,6 +59,7 @@ async function initApp() {
     systemManager.addSystem(new SoulLevelSystem(gameEntity));
     systemManager.addSystem(new EnergySystem(gameEntity));
     systemManager.addSystem(new PopupSystem(gameEntity));
+    systemManager.addSystem(new ActionsSystem(gameEntity));
     // systemManager.addSystem(new RenderSystem());
 
     systemManager.initAll();
@@ -75,6 +79,9 @@ async function initApp() {
         tick(currentTime);
     });
     console.log('Frame requested')
+
+    const inputComponent = gameEntity.getComponent(InputComponent);
+    inputComponent.addInput("action", { name: "Login" });
 }
 
 function tick(currentTime) {

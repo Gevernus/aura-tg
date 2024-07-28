@@ -885,6 +885,97 @@ h1 {
     border-radius: 5px;
 }
 
+.task-card {
+    background-color: #1e2732;
+    border: 1px solid #2c3e50;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    max-height: 210px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #3498db;
+    border-radius: 50%;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.daily-task {
+    background-color: #e74c3c;
+}
+
+/* .task-content {
+    flex-grow: 1;
+} */
+
+.task-card h3 {
+    margin: 0 0 10px 0;
+    color: #ecf0f1;
+    font-size: 1.2em;
+}
+
+.task-card p {
+    margin: 0 0 15px 0;
+    color: #bdc3c7;
+    font-size: 0.9em;
+}
+
+.task-progress-bar {
+    background-color: #34495e;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.task-progress {
+    background-color: #2ecc71;
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+}
+
+.progress-text {
+    font-size: 0.8em;
+    color: #95a5a6;
+    margin-bottom: 15px;
+}
+
+.claim-reward-button {
+    background-color: #f1c40f;
+    color: #2c3e50;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.claim-reward-button:hover {
+    background-color: #f39c12;
+}
+
+.reward-amount {
+    text-align: center;
+}
+
+.reward-icon {
+    width: 20px;
+    height: 20px;
+    background-image: url('path/to/coin-icon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
 @keyframes fly-up {
     0% {
         opacity: 1;

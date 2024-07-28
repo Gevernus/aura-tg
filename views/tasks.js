@@ -1,27 +1,113 @@
-({
-    init: function (entity) {
-        const tasksList = document.getElementById('tasksList');
-        tasksList.innerHTML = '';
-    //     data.tasksData.forEach(task => {
-    //         const taskDiv = document.createElement('div');
-    //         taskDiv.classList.add('task-item');
-    //         taskDiv.innerHTML = `
-    //     <p>${task.description}</p>
-    //     <p>Reward: ${task.reward}</p>
-    //     <button class="completeButton" data-id="${task.id}">Complete</button>
-    //   `;
-    //         tasksList.appendChild(taskDiv);
-    //     });
+import { CoinsComponent, PassiveIncomeComponent, ClickPowerComponent, TasksComponent, UserComponent } from '../dist/components.js';
 
-        document.querySelectorAll('.completeButton').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const taskId = e.target.getAttribute('data-id');
-                console.log(`Completing task with ID: ${taskId}`);
-            });
+export function init(entity) {
+    // Add tab switching functionality
+    initializeTabs();
+    document.addEventListener('click', (event) => {
+        const claimButton = event.target.closest('.claim-reward-button');
+        if (claimButton) {
+            const taskId = claimButton.getAttribute('data-task-id');
+            claimReward(entity, taskId);
+        }
+    });
+};
+
+async function claimReward(entity, taskId) {
+    try {
+        const userComponent = entity.getComponent(UserComponent);
+        const tasksComponent = entity.getComponent(TasksComponent);
+        const coinsComponent = entity.getComponent(CoinsComponent);
+
+        const response = await fetch(`/api/${userComponent.user.id}/tasks/${taskId}/claim`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
         });
-    },
 
-    render: function (entity) {
+        if (!response.ok) {
+            console.error(`Failed to update progress for task ${taskId}`);
+        }
 
+        const { tasks, reward } = await response.json();
+        tasksComponent.tasks = tasks;
+        coinsComponent.amount += reward;
+
+    } catch (error) {
+        console.error(`Error updating progress for task ${taskId}:`, error);
     }
-})
+}
+
+function createTaskCard(task) {
+    const cardElement = document.createElement('div');
+    cardElement.className = 'task-card';
+    const progressPercentage = (task.progress / task.task_requiredActionCount) * 100;
+    cardElement.innerHTML = `
+        <div class="task-icon ${task.daily ? 'daily-task' : ''}"></div>
+        <div class="task-content">
+            <h3>${task.task_name}</h3>
+            <p>${task.task_description}</p>
+            <div class="task-progress-bar">
+                <div class="task-progress" style="width: ${progressPercentage}%"></div>
+            </div>
+            <p class="progress-text">Progress: ${task.progress}/${task.task_requiredActionCount}</p>
+            ${task.completed && !task.claimed
+            ? `<button class="claim-reward-button" data-task-id="${task.task_id}">
+                    <span class="reward-amount">Claim: ${task.task_coins_bonus}</span>
+                    <span class="reward-icon"></span>
+                   </button>`
+            : ''
+        }
+        </div>
+    `;
+    return cardElement;
+}
+
+function initializeTabs() {
+    const tabs = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.getAttribute('data-tab');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(`${tabName}-container`).classList.add('active');
+        });
+    });
+};
+
+export function render(entity) {
+    // Update coins and passive income display
+    const coinsComponent = entity.getComponent(CoinsComponent);
+    const passiveIncomeComponent = entity.getComponent(PassiveIncomeComponent);
+    const clickPowerComponent = entity.getComponent(ClickPowerComponent);
+    document.getElementById('coins').textContent = Math.floor(coinsComponent.amount);
+    document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerHour.toFixed(1);
+    document.getElementById('tapPower').textContent = clickPowerComponent.power;
+
+    // Assume you have a TaskComponent that stores the tasks
+    const tasksComponent = entity.getComponent(TasksComponent);
+    const activeTasks = tasksComponent.tasks.filter(task => !task.completed || !task.claimed);
+    const completedTasks = tasksComponent.tasks.filter(task => task.completed && task.claimed);
+
+    const activeContainer = document.getElementById('active-container');
+    const completedContainer = document.getElementById('completed-container');
+
+    // Clear existing content
+    activeContainer.innerHTML = '';
+    completedContainer.innerHTML = '';
+
+    // Render active tasks
+    activeTasks.forEach(task => {
+        activeContainer.appendChild(createTaskCard(task));
+    });
+
+    // Render completed tasks
+    completedTasks.forEach(task => {
+        completedContainer.appendChild(createTaskCard(task));
+    });
+}

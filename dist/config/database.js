@@ -12,6 +12,8 @@ const Monster_1 = require("../models/Monster");
 const UserMonster_1 = require("../models/UserMonster");
 const PackItem_1 = require("../models/PackItem");
 const UserItem_1 = require("../models/UserItem");
+const UserTask_1 = require("../models/UserTask");
+const Task_1 = require("../models/Task");
 // Load environment variables from .env file
 dotenv_1.default.config();
 const dbConfig = {
@@ -21,7 +23,7 @@ const dbConfig = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    entities: [User_1.User, Referral_1.Referral, State_1.State, PackItem_1.PackItem, UserItem_1.UserItem, ShopItem_1.ShopItem, Monster_1.Monster, UserMonster_1.UserMonster],
+    entities: [User_1.User, Referral_1.Referral, State_1.State, PackItem_1.PackItem, UserItem_1.UserItem, ShopItem_1.ShopItem, Monster_1.Monster, UserMonster_1.UserMonster, Task_1.Task, UserTask_1.UserTask],
     synchronize: process.env.NODE_ENV !== 'production',
     logging: process.env.NODE_ENV === 'development'
 };

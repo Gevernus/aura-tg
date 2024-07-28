@@ -38,6 +38,7 @@ function initializeBuyButtons(entity) {
             const monsterId = e.target.getAttribute('data-id');
             const price = monstersComponent.getMonsterById(monsterId).price;
             inputComponent.addInput("upgrade", { monsterId, price });
+            inputComponent.addInput("action", { name: "ItemBought" });
             console.log(`Buying monster with ID: ${monsterId}`);
         });
     });
@@ -101,6 +102,7 @@ function renderPackItem(pack) {
 
 function addPackEventListeners(entity) {
     const userComponent = entity.getComponent(UserComponent);
+    const inputComponent = entity.getComponent(InputComponent);
     const openPackButtons = document.querySelectorAll('.open-pack');
     const modal = document.getElementById('packModal');
     const closeButton = modal.querySelector('.close-btn');
@@ -110,6 +112,7 @@ function addPackEventListeners(entity) {
         button.addEventListener('click', async function () {
             const packId = this.getAttribute('data-id');
             await openPack(entity, userComponent.user.id, packId, packItems);
+            inputComponent.addInput("action", { name: "PackOpened" });
         });
     });
 
