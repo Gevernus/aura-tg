@@ -112,6 +112,12 @@ export class ReferralsComponent {
     }
 }
 
+export class RatingsComponent {
+    constructor(items) {
+        this.items = items;
+    }
+}
+
 export class MonstersComponent {
     constructor(data = [], config) {
         this.config = config;

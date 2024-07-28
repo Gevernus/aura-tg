@@ -151,5 +151,41 @@ router.get('/:userId/inventory', async (req, res) => {
         res.status(500).json({ error: 'Error fetching inventory' });
     }
 });
+router.get('/ratings', async (req, res) => {
+    try {
+        const ratings = await User_1.User
+            .createQueryBuilder("user")
+            .leftJoinAndSelect("user.referrals", "referral")
+            .leftJoinAndSelect("State", "userState", "userState.id = user.id")
+            .leftJoinAndSelect("State", "referralState", "referralState.id = referral.userId")
+            .select([
+            "user.id AS user_id",
+            "user.username AS user_username",
+            "userState.coins AS coins",
+            "userState.passive_income AS passive_income",
+            "COUNT(referral.id) AS friendsCount",
+            "SUM(DISTINCT COALESCE(referralState.passive_income, 0)) AS friendsPassiveIncome",
+            "AVG(DISTINCT COALESCE(referralState.level, 1)) AS friendsAverageLevel",
+        ])
+            .groupBy("user.id, user.username, userState.coins, userState.passive_income")
+            .getRawMany();
+        console.log(ratings);
+        // const result = ratings.map(rating => ({
+        //     userId: rating.user_id,
+        //     username: rating.user_username,
+        //     coins: Number(rating.coins) || 0,
+        //     income: Number(rating.passive_income) || 0,
+        //     totalPassiveIncome: Number(rating.totalPassiveIncome) || 0,
+        //     friendsCount: Number(rating.friendsCount) || 0,
+        //     referralBonus: Number(rating.referralBonus) || 0,
+        //     averageSoulLevel: Number(rating.averageSoulLevel) || 1,
+        // }));
+        res.status(200).json(ratings);
+    }
+    catch (error) {
+        console.error('Error fetching ratings:', error);
+        res.status(500).json({ error: 'Error fetching ratings' });
+    }
+});
 exports.default = router;
 //# sourceMappingURL=state.js.map

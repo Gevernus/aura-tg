@@ -1,7 +1,7 @@
 import { ClickSystem, PassiveIncomeSystem, LevelUpSystem, StorageSystem, TelegramSystem, UISystem, EnergySystem, PopupSystem, SoulLevelSystem } from './systems.js';
 import { SystemManager } from './systemManager.js';
 import { Entity } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, PacksComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, PacksComponent, RatingsComponent } from './components.js';
 
 let lastTime = 0;
 const targetFPS = 5;
@@ -22,9 +22,11 @@ async function initApp() {
     const packs = await storageSystem.getPacks();
     const inventory = await storageSystem.getInventory();
     const referrals = await storageSystem.getReferrals();
+    const ratings = await storageSystem.getRatings();
     const monsterComponent = new MonstersComponent(monsters, config);
     const inventoryComponent = new InventoryComponent(inventory);
     const referralsComponent = new ReferralsComponent(referrals);
+    const ratingsComponent = new RatingsComponent(ratings);
 
     systemManager.addSystem(telegramSystem);
     systemManager.addSystem(storageSystem)
@@ -40,6 +42,7 @@ async function initApp() {
     gameEntity.addComponent(new InputComponent());
     gameEntity.addComponent(referralsComponent);
     gameEntity.addComponent(monsterComponent);
+    gameEntity.addComponent(ratingsComponent);
     gameEntity.addComponent(new PacksComponent(packs));
 
     storageSystem.setEntity(gameEntity);

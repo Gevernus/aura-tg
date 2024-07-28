@@ -316,6 +316,24 @@ export class StorageSystem extends System {
         }
     }
 
+    async getRatings() {
+        try {
+            const response = await fetch(`api/ratings`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error saving state:', error);
+        }
+    }
+
     async saveState() {
         if (!this.entity) {
             console.error('No entity provided to save state');

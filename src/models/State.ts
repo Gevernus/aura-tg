@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryColumn, ManyToMany, JoinTable, BeforeUpdate } from "typeorm"
+import { Entity, Column, BaseEntity, PrimaryColumn, BeforeUpdate } from "typeorm"
 import { ShopItem } from "./ShopItem";
 
 @Entity()
@@ -20,9 +20,6 @@ export class State extends BaseEntity {
 
     @Column({ default: 0 })
     coins!: number
-
-    @Column({ default: 100 })
-    stars!: number
 
     @Column("float", { default: 0 })
     passive_income!: number
