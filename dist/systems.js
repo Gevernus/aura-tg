@@ -445,6 +445,7 @@ export class UISystem extends System {
         try {
             const view = await this.loadView(viewName);
             console.log("View is loaded: ", view);
+            this.entity.getComponent(InputComponent).addInput("action", { name: `${viewName}Opened` });
             this.currentView = view;
             document.getElementById('content').innerHTML = view.template;
             view.init(this.entity);
@@ -564,10 +565,11 @@ export class ActionsSystem extends System {
             // Track Google Analytics event
             this.trackActionEvent(actionName);
 
-            // Find and update matching tasks
-            const matchingTasks = this.findMatchingTasks(tasksComponent, actionName);
-            const tasks = await this.updateTaskProgress(matchingTasks, userComponent.user.id);
-            tasksComponent.tasks = tasks;
+            if (tasksComponent && tasksComponent.tasks) {
+                const matchingTasks = this.findMatchingTasks(tasksComponent, actionName);
+                const tasks = await this.updateTaskProgress(matchingTasks, userComponent.user.id);
+                tasksComponent.tasks = tasks;
+            }
         }
     }
 
