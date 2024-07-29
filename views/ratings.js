@@ -15,6 +15,9 @@ export function init(entity) {
         sortUsers(entity);
     });
 
+    const inputComponent = entity.getComponent(InputComponent);
+    inputComponent.addInput("updateRating");
+
     // Initially sort by passive income per hour
     sortUsers(entity);
 };

@@ -1,5 +1,5 @@
 import { System } from './ecs.js';
-import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent, MonstersComponent, ReferralsComponent, UserComponent, InventoryComponent, ConfigComponent, LevelComponent, TasksComponent } from './components.js';
+import { CoinsComponent, ClickPowerComponent, EnergyComponent, ViewComponent, InputComponent, PassiveIncomeComponent, MonstersComponent, ReferralsComponent, UserComponent, InventoryComponent, ConfigComponent, LevelComponent, TasksComponent, RatingsComponent } from './components.js';
 
 export class ClickSystem extends System {
     update(deltaTime) {
@@ -215,7 +215,9 @@ export class StorageSystem extends System {
         this.config = null;
         this.user = null;
         this.timeToSave = 5;
+        this.timeToUpdate = 5;
         this.timer = 0;
+        this.updateTimer = 0;
     }
 
     setEntity(entity) {
@@ -418,13 +420,22 @@ export class StorageSystem extends System {
         }
     }
 
-    update(deltaTime) {
+    async update(deltaTime) {
         this.timer += deltaTime;
+        this.updateTimer += deltaTime;
         const inputComponent = this.entity.getComponent(InputComponent);
         const save = inputComponent.getAndRemoveInputs('save');
         if (this.timer >= this.timeToSave || save && save.length > 0) {
             this.timer = 0;
             this.saveState();
+        }
+
+        const updateRating = inputComponent.getAndRemoveInputs('updateRating');
+        if (this.updateTimer >= this.timeToUpdate || updateRating && updateRating.length > 0) {
+            this.updateTimer = 0;
+            let ratingsComponent = this.entity.getComponent(RatingsComponent);
+            const ratings = await this.getRatings();
+            ratingsComponent.items = ratings;
         }
     }
 }
@@ -563,7 +574,7 @@ export class ActionsSystem extends System {
 
         // Handle show popup input
         const action = inputComponent.getAndRemoveInputs('action');
-        if (action && action.length>0 && action[0].data) {
+        if (action && action.length > 0 && action[0].data) {
             console.log(`Action captured: `, action);
             const actionName = action[0].data.name;
             // Track Google Analytics event
