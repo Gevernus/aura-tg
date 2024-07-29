@@ -41,14 +41,14 @@ function createInventoryItemElement(item) {
     function formatBonus(value, label) {
         const numValue = parseFloat(value);
         const color = numValue > 0 ? 'color: #4CAF50;' : ''; // Green color for positive values
-        return `<p class="item-bonus" style="${color}">${label}: ${value}</p>`;
+        return `<p class="item-bonus" style="${color}">${label}: +${value}</p>`;
     }
 
     itemDiv.innerHTML = `
         <img src="images/items/${item.image}" alt="${item.name}" class="item-image">
         <h2 class="item-name">${item.name}</h2>
         <p class="item-rarity ${rarityClass}">${item.rarity}</p>
-        ${formatBonus(item.passive_bonus, 'Passive Bonus')}
+        ${formatBonus(item.passive_bonus+"%", 'Passive Bonus')}
         ${formatBonus(item.tap_bonus, 'Tap Bonus')}
         ${formatBonus(item.energy_bonus, 'Energy Bonus')}
     `;

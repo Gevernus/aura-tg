@@ -59,10 +59,12 @@ export class PassiveIncomeComponent {
         }
 
         const nonItemsIncome = this.incomePerHour;
-
+        console.log(`Non item passive income: ${nonItemsIncome}`);
         for (const item of items) {
             this.incomePerHour += item.passive_bonus * nonItemsIncome / 100;
         }
+
+        console.log(`Resulting income: ${this.incomePerHour}`);
     }
 }
 
