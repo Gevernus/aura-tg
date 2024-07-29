@@ -215,9 +215,7 @@ export class StorageSystem extends System {
         this.config = null;
         this.user = null;
         this.timeToSave = 5;
-        this.timeToUpdate = 5;
         this.timer = 0;
-        this.updateTimer = 0;
     }
 
     setEntity(entity) {
@@ -431,8 +429,7 @@ export class StorageSystem extends System {
         }
 
         const updateRating = inputComponent.getAndRemoveInputs('updateRating');
-        if (this.updateTimer >= this.timeToUpdate || updateRating && updateRating.length > 0) {
-            this.updateTimer = 0;
+        if (updateRating && updateRating.length > 0) {
             let ratingsComponent = this.entity.getComponent(RatingsComponent);
             const ratings = await this.getRatings();
             ratingsComponent.items = ratings;
