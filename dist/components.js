@@ -120,7 +120,9 @@ export class RatingsComponent {
 
 export class TasksComponent {
     constructor(tasks) {
+        console.log(`Initialize tasks: `, tasks);
         this.tasks = tasks;
+        this.items = tasks;
     }
 }
 

@@ -282,8 +282,6 @@ router.post('/:userId/tasks/:taskId/progress', async (req, res) => {
             .orderBy('task.id', 'ASC')
             .getRawMany();
 
-        console.log(`Updated tasks`, tasks);
-
         res.status(200).json(tasks);
 
     } catch (error) {
@@ -331,8 +329,6 @@ router.post('/:userId/tasks/:taskId/claim', async (req, res) => {
             .orderBy('task.id', 'ASC')
             .getRawMany();
 
-        console.log(`Updated tasks`, tasks);
-
         res.status(200).json({ tasks, reward: userTask.task.coins_bonus });
 
     } catch (error) {
@@ -343,7 +339,6 @@ router.post('/:userId/tasks/:taskId/claim', async (req, res) => {
 
 async function removeExpiredDailyTasks(userId: string) {
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
     const expiredDailyTasks = await UserTask.find({
         where: {
             user: { id: userId },

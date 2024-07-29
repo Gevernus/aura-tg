@@ -257,7 +257,6 @@ router.post('/:userId/tasks/:taskId/progress', async (req, res) => {
             .addSelect('CASE WHEN task.requiredActionCount = 0 THEN 0 ELSE COALESCE(userTask.progress, 0) * 100.0 / task.requiredActionCount END', 'completionPercentage')
             .orderBy('task.id', 'ASC')
             .getRawMany();
-        console.log(`Updated tasks`, tasks);
         res.status(200).json(tasks);
     }
     catch (error) {
@@ -298,7 +297,6 @@ router.post('/:userId/tasks/:taskId/claim', async (req, res) => {
             .addSelect('CASE WHEN task.requiredActionCount = 0 THEN 0 ELSE COALESCE(userTask.progress, 0) * 100.0 / task.requiredActionCount END', 'completionPercentage')
             .orderBy('task.id', 'ASC')
             .getRawMany();
-        console.log(`Updated tasks`, tasks);
         res.status(200).json({ tasks, reward: userTask.task.coins_bonus });
     }
     catch (error) {

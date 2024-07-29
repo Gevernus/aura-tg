@@ -571,7 +571,9 @@ export class ActionsSystem extends System {
             if (tasksComponent && tasksComponent.tasks) {
                 const matchingTasks = this.findMatchingTasks(tasksComponent, actionName);
                 const tasks = await this.updateTaskProgress(matchingTasks, userComponent.user.id);
-                tasksComponent.tasks = tasks;
+                if (tasks) {
+                    tasksComponent.tasks = tasks;
+                }
             }
         }
     }
@@ -593,6 +595,7 @@ export class ActionsSystem extends System {
     }
 
     async updateTaskProgress(tasks, userId) {
+        let result = null;
         for (const task of tasks) {
             try {
                 const response = await fetch(`/api/${userId}/tasks/${task.task_id}/progress`, {
@@ -605,8 +608,12 @@ export class ActionsSystem extends System {
                 if (!response.ok) {
                     console.error(`Failed to update progress for task ${task.task_id}`);
                 }
+                const data = await response.json();
+                if (data) {
+                    result = data;
+                }
 
-                return await response.json();
+                return result;
             } catch (error) {
                 console.error(`Error updating progress for task ${task.task_id}:`, error);
             }

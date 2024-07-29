@@ -1,26 +1,47 @@
 export function init(entity) {
     const inputComponent = entity.getComponent('InputComponent');
-    let tapButton = document.getElementById('tap-button');
+    // let tapButton = document.getElementById('tap-button');
+    let tapButtonContainer = document.querySelector('.tap-button-container');
     const configComponent = entity.getComponent('ConfigComponent');
     const levelComponent = entity.getComponent('LevelComponent');
     const clickPowerComponent = entity.getComponent('ClickPowerComponent');
     const config = configComponent.config;
-    tapButton.addEventListener('click', () => {
+    // tapButton.addEventListener('click', () => {
+    //     inputComponent.addInput("tap");
+    //     showClickAnimation(tapButton, clickPowerComponent.power);
+    // });
+    tapButtonContainer.addEventListener('click', (event) => {
         inputComponent.addInput("tap");
-        showClickAnimation(tapButton, clickPowerComponent.power);
+        showClickAnimation(event.clientX, event.clientY, clickPowerComponent.power);
     });
     document.body.style.backgroundImage = `url(/images/${config.images[levelComponent.level - 1]})`;
 };
 
-function showClickAnimation(button, count) {
+// function showClickAnimation(button, count) {
+//     const animationElement = document.createElement('div');
+
+//     animationElement.textContent = `+${count}`;
+//     animationElement.className = 'click-animation';
+
+//     const buttonRect = button.getBoundingClientRect();
+//     animationElement.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
+//     animationElement.style.top = `${buttonRect.top}px`;
+
+//     document.body.appendChild(animationElement);
+
+//     animationElement.addEventListener('animationend', () => {
+//         animationElement.remove();
+//     });
+// }
+
+function showClickAnimation(x, y, count) {
     const animationElement = document.createElement('div');
 
     animationElement.textContent = `+${count}`;
     animationElement.className = 'click-animation';
 
-    const buttonRect = button.getBoundingClientRect();
-    animationElement.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
-    animationElement.style.top = `${buttonRect.top}px`;
+    animationElement.style.left = `${x}px`;
+    animationElement.style.top = `${y}px`;
 
     document.body.appendChild(animationElement);
 

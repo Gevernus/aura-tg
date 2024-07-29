@@ -2,10 +2,10 @@ import { ClickPowerComponent, CoinsComponent, InputComponent, PassiveIncomeCompo
 
 const FIELD_LABELS = {
     passive_income: 'Passive Income',
-    friendspassiveincome: 'Friends Passive Income',
+    // friendspassiveincome: 'Friends Passive Income',
     coins: 'Coins',
     friendscount: 'Number of Friends',
-    friendsaveragelevel: 'Friends Soul Level'
+    // friendsaveragelevel: 'Friends Soul Level'
 };
 
 export function init(entity) {
@@ -49,6 +49,34 @@ export function render(entity) {
     ratingsComponent.items.forEach((user, index) => {
         const card = document.createElement("div");
         card.className = "rating-card";
+        // card.innerHTML = `
+        //     <div class="rating-main">
+        //         <div class="rating-rank">#${index + 1}</div>
+        //         <div class="rating-username">${user.user_username || 'N/A'}</div>
+        //     </div>
+        //     <div class="rating-stats">
+        //         <div class="rating-stat">
+        //             <span class="stat-label">Passive Income:</span>
+        //             <span class="stat-value">${user.passive_income.toFixed(1)}</span>
+        //         </div>
+        //         <div class="rating-stat">
+        //             <span class="stat-label">Friends Passive Income:</span>
+        //             <span class="stat-value">${user.friendspassiveincome.toFixed(1)}</span>
+        //         </div>
+        //         <div class="rating-stat">
+        //             <span class="stat-label">Coins:</span>
+        //             <span class="stat-value">${Math.floor(user.coins)}</span>
+        //         </div>
+        //         <div class="rating-stat">
+        //             <span class="stat-label">Friends:</span>
+        //             <span class="stat-value">${user.friendscount}</span>
+        //         </div>
+        //         <div class="rating-stat">
+        //             <span class="stat-label">Soul Level:</span>
+        //             <span class="stat-value">${Math.floor(user.friendsaveragelevel)}</span>
+        //         </div>
+        //     </div>
+        // `;
         card.innerHTML = `
             <div class="rating-main">
                 <div class="rating-rank">#${index + 1}</div>
@@ -60,20 +88,12 @@ export function render(entity) {
                     <span class="stat-value">${user.passive_income.toFixed(1)}</span>
                 </div>
                 <div class="rating-stat">
-                    <span class="stat-label">Friends Passive Income:</span>
-                    <span class="stat-value">${user.friendspassiveincome.toFixed(1)}</span>
-                </div>
-                <div class="rating-stat">
                     <span class="stat-label">Coins:</span>
                     <span class="stat-value">${Math.floor(user.coins)}</span>
                 </div>
                 <div class="rating-stat">
                     <span class="stat-label">Friends:</span>
                     <span class="stat-value">${user.friendscount}</span>
-                </div>
-                <div class="rating-stat">
-                    <span class="stat-label">Soul Level:</span>
-                    <span class="stat-value">${Math.floor(user.friendsaveragelevel)}</span>
                 </div>
             </div>
         `;

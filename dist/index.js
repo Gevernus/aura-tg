@@ -4,7 +4,7 @@ import { Entity } from './ecs.js';
 import { CoinsComponent, ClickPowerComponent, EnergyComponent, ConfigComponent, LevelComponent, PassiveIncomeComponent, InputComponent, InventoryComponent, ReferralsComponent, MonstersComponent, UserComponent, PacksComponent, RatingsComponent, TasksComponent } from './components.js';
 
 let lastTime = 0;
-const targetFPS = 5;
+const targetFPS = 60;
 const timeStep = 1000 / targetFPS;
 
 const systemManager = new SystemManager();
@@ -25,6 +25,8 @@ async function initApp() {
     const referrals = await storageSystem.getReferrals();
     const ratings = await storageSystem.getRatings();
     const tasks = await storageSystem.getTasks();
+    console.log(tasks);
+
     const monsterComponent = new MonstersComponent(monsters, config);
     const inventoryComponent = new InventoryComponent(inventory);
     const referralsComponent = new ReferralsComponent(referrals);
