@@ -54,12 +54,14 @@ export class PassiveIncomeComponent {
             this.incomePerHour += monster.incomePerHour;
         }
 
-        for (const item of items) {
-            this.incomePerHour += item.passive_bonus;
-        }
-
         for (const item of referrals) {
             this.incomePerHour += item.bonus;
+        }
+
+        const nonItemsIncome = this.incomePerHour;
+
+        for (const item of items) {
+            this.incomePerHour += item.passive_bonus * nonItemsIncome / 100;
         }
     }
 }
