@@ -1,3 +1,7 @@
+const animationPool = [];
+const poolSize = 15; 
+let animationContainer;
+
 export function init(entity) {
     const inputComponent = entity.getComponent('InputComponent');
     let tapButton = document.getElementById('tap-button');
@@ -6,31 +10,13 @@ export function init(entity) {
     const levelComponent = entity.getComponent('LevelComponent');
     const clickPowerComponent = entity.getComponent('ClickPowerComponent');
     const config = configComponent.config;
-    // tapButton.addEventListener('click', () => {
-    //     inputComponent.addInput("tap");
-    //     showClickAnimation(tapButton, clickPowerComponent.power);
-    // });
-    // tapButtonContainer.addEventListener('click', (event) => {
-    //     console.log('Tapped');
-    //     inputComponent.addInput("tap");
-    //     showClickAnimation(event.clientX, event.clientY, clickPowerComponent.power);
-    // });
+    initializeAnimationPool();
     if (tapButtonContainer && tapButton) {
         tapButtonContainer.addEventListener('pointerdown', (event) => {
-            console.log('Container tapped at:', event.clientX, event.clientY);
             event.preventDefault();
-
-            // Trigger a click on the button
-            tapButton.click();
-
-            // Custom handling for animation
-            showClickAnimation(event.clientX, event.clientY, clickPowerComponent.power);
-        });
-
-        // Add a click event listener to the button for any button-specific handling
-        tapButton.addEventListener('click', (event) => {
-            console.log('Button clicked');
             inputComponent.addInput("tap");
+            animateButton(tapButton);
+            showClickAnimation(event.clientX, event.clientY, clickPowerComponent.power);
         });
     } else {
         console.error('Tap button or container not found');
@@ -38,36 +24,59 @@ export function init(entity) {
     document.body.style.backgroundImage = `url(/images/${config.images[levelComponent.level - 1]})`;
 };
 
-// function showClickAnimation(button, count) {
-//     const animationElement = document.createElement('div');
+function animateButton(button) {
+    button.style.transform = 'scale(1.03)';
+    button.style.filter = 'brightness(1.2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.7))';
 
-//     animationElement.textContent = `+${count}`;
-//     animationElement.className = 'click-animation';
+    setTimeout(() => {
+        button.style.transform = '';
+        button.style.filter = '';
+    }, 100); // Duration of the animation
+}
 
-//     const buttonRect = button.getBoundingClientRect();
-//     animationElement.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
-//     animationElement.style.top = `${buttonRect.top}px`;
+function initializeAnimationPool() {
+    animationContainer = document.createElement('div');
+    animationContainer.className = 'animation-container';
+    animationContainer.style.position = 'absolute';
+    animationContainer.style.top = '0';
+    animationContainer.style.left = '0';
+    animationContainer.style.pointerEvents = 'none'; // Ensure it doesn't interfere with clicks
+    document.body.appendChild(animationContainer);
 
-//     document.body.appendChild(animationElement);
-
-//     animationElement.addEventListener('animationend', () => {
-//         animationElement.remove();
-//     });
-// }
+    for (let i = 0; i < poolSize; i++) {
+        const animationElement = document.createElement('div');
+        animationElement.className = 'click-animation';
+        animationElement.style.display = 'none';
+        animationContainer.appendChild(animationElement);
+        animationPool.push(animationElement);
+    }
+}
 
 function showClickAnimation(x, y, count) {
-    const animationElement = document.createElement('div');
+    if (!animationContainer) {
+        initializeAnimationPool();
+    }
+
+    let animationElement = animationPool.find(el => el.style.display === 'none');
+    if (!animationElement) {
+        // If all elements are in use, reuse the oldest one
+        animationElement = animationPool.shift();
+        animationPool.push(animationElement);
+    }
 
     animationElement.textContent = `+${count}`;
-    animationElement.className = 'click-animation';
-
     animationElement.style.left = `${x}px`;
     animationElement.style.top = `${y}px`;
+    animationElement.style.display = 'block';
 
-    document.body.appendChild(animationElement);
+    // Reset the animation
+    animationElement.style.animation = 'none';
+    animationElement.offsetHeight; // Trigger reflow
+    animationElement.style.animation = null;
 
-    animationElement.addEventListener('animationend', () => {
-        animationElement.remove();
+    animationElement.addEventListener('animationend', function onAnimationEnd() {
+        animationElement.style.display = 'none';
+        animationElement.removeEventListener('animationend', onAnimationEnd);
     });
 }
 
