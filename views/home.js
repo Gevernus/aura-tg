@@ -1,6 +1,6 @@
 export function init(entity) {
     const inputComponent = entity.getComponent('InputComponent');
-    // let tapButton = document.getElementById('tap-button');
+    let tapButton = document.getElementById('tap-button');
     let tapButtonContainer = document.querySelector('.tap-button-container');
     const configComponent = entity.getComponent('ConfigComponent');
     const levelComponent = entity.getComponent('LevelComponent');
@@ -10,10 +10,31 @@ export function init(entity) {
     //     inputComponent.addInput("tap");
     //     showClickAnimation(tapButton, clickPowerComponent.power);
     // });
-    tapButtonContainer.addEventListener('click', (event) => {
-        inputComponent.addInput("tap");
-        showClickAnimation(event.clientX, event.clientY, clickPowerComponent.power);
-    });
+    // tapButtonContainer.addEventListener('click', (event) => {
+    //     console.log('Tapped');
+    //     inputComponent.addInput("tap");
+    //     showClickAnimation(event.clientX, event.clientY, clickPowerComponent.power);
+    // });
+    if (tapButtonContainer && tapButton) {
+        tapButtonContainer.addEventListener('pointerdown', (event) => {
+            console.log('Container tapped at:', event.clientX, event.clientY);
+            event.preventDefault();
+
+            // Trigger a click on the button
+            tapButton.click();
+
+            // Custom handling for animation
+            showClickAnimation(event.clientX, event.clientY, clickPowerComponent.power);
+        });
+
+        // Add a click event listener to the button for any button-specific handling
+        tapButton.addEventListener('click', (event) => {
+            console.log('Button clicked');
+            inputComponent.addInput("tap");
+        });
+    } else {
+        console.error('Tap button or container not found');
+    }
     document.body.style.backgroundImage = `url(/images/${config.images[levelComponent.level - 1]})`;
 };
 

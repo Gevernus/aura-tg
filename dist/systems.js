@@ -9,18 +9,17 @@ export class ClickSystem extends System {
             this.entity.hasComponent(EnergyComponent)) {
 
             const inputComponent = this.entity.getComponent(InputComponent);
-            while (inputComponent.hasInput('tap')) {
-                const tapInput = inputComponent.getAndRemoveInput('tap');
-                if (tapInput) {
-                    const clickPower = this.entity.getComponent(ClickPowerComponent).power;
-                    const coinsComponent = this.entity.getComponent(CoinsComponent);
-                    const energyComponent = this.entity.getComponent(EnergyComponent);
+            const tapInputs = inputComponent.getAndRemoveInputs('tap');
+            if (tapInputs) {
+                const clickPower = this.entity.getComponent(ClickPowerComponent).power;
+                const coinsComponent = this.entity.getComponent(CoinsComponent);
+                const energyComponent = this.entity.getComponent(EnergyComponent);
+                tapInputs.forEach(tapInput => {
                     if (energyComponent.energy >= 1) {
                         coinsComponent.amount += clickPower;
                         energyComponent.energy--;
-                        // inputComponent.addInput('save');
                     }
-                }
+                });
             }
         }
     }
@@ -115,15 +114,16 @@ export class LevelUpSystem extends System {
         const coinsComponent = this.entity.getComponent(CoinsComponent);
         const passiveIncomeComponent = this.entity.getComponent(PassiveIncomeComponent);
         const referralsComponent = this.entity.getComponent(ReferralsComponent);
-        while (inputComponent.hasInput('upgrade')) {
-            const upgrade = inputComponent.getAndRemoveInput('upgrade');
+        const upgradeInputs = inputComponent.getAndRemoveInputs('upgrade');
+        upgradeInputs.forEach(async (upgrade) => {
             if (upgrade && upgrade.data) {
                 coinsComponent.amount -= upgrade.data.price;
                 const data = await this.processUpgrade(upgrade.data.monsterId, userComponent.user.id);
                 monstersComponent.updateItem(data.userMonster);
                 passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items, referralsComponent.items);
             }
-        }
+        });
+
     }
 
     async processUpgrade(monsterId, userId) {
@@ -193,14 +193,15 @@ export class TelegramSystem extends System {
     update() {
         const inputComponent = this.entity.getComponent(InputComponent);
 
-        const link = inputComponent.getAndRemoveInput('openInvoice');
-        if (link?.data) {
-            window.Telegram.WebApp.openInvoice(link.data.url, link.data.callback);
+        const link = inputComponent.getAndRemoveInputs('openInvoice');
+
+        if (link && link.length > 0 && link[0].data) {
+            window.Telegram.WebApp.openInvoice(link[0].data.url, link[0].data.callback);
         }
 
-        const url = inputComponent.getAndRemoveInput('openLink');
-        if (url?.data) {
-            window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${url.data.url}`);
+        const url = inputComponent.getAndRemoveInputs('openLink');
+        if (url && url.length > 0 && url[0].data) {
+            window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${url[0].data.url}`);
         }
     }
 }
@@ -420,8 +421,8 @@ export class StorageSystem extends System {
     update(deltaTime) {
         this.timer += deltaTime;
         const inputComponent = this.entity.getComponent(InputComponent);
-        const save = inputComponent.getAndRemoveInput('save');
-        if (this.timer >= this.timeToSave || save) {
+        const save = inputComponent.getAndRemoveInputs('save');
+        if (this.timer >= this.timeToSave || save && save.length > 0) {
             this.timer = 0;
             this.saveState();
         }
@@ -459,9 +460,9 @@ export class UISystem extends System {
 
     update() {
         const inputComponent = this.entity.getComponent('InputComponent');
-        const setViewInput = inputComponent.getAndRemoveInput('setView');
-        if (setViewInput && setViewInput.data) {
-            this.setView(setViewInput.data.view);
+        const setViewInput = inputComponent.getAndRemoveInputs('setView');
+        if (setViewInput && setViewInput.length > 0 && setViewInput[0].data) {
+            this.setView(setViewInput[0].data.view);
         }
         if (this.currentView) {
             this.currentView.render(this.entity);
@@ -540,12 +541,12 @@ export class PopupSystem extends System {
         const inputComponent = this.entity.getComponent('InputComponent');
 
         // Handle show popup input
-        const showPopupInput = inputComponent.getAndRemoveInput('showPopup');
-        if (showPopupInput && showPopupInput.data) {
+        const showPopupInput = inputComponent.getAndRemoveInputs('showPopup');
+        if (showPopupInput && showPopupInput.length > 0 && showPopupInput[0].data) {
             this.popupElement.style.display = 'flex';
-            this.callback = showPopupInput.data.callback;
-            document.getElementById('popup-title').textContent = showPopupInput.data.title;
-            document.getElementById('popup-message').textContent = showPopupInput.data.message;
+            this.callback = showPopupInput[0].data.callback;
+            document.getElementById('popup-title').textContent = showPopupInput[0].data.title;
+            document.getElementById('popup-message').textContent = showPopupInput[0].data.message;
         }
     }
 }
@@ -561,10 +562,10 @@ export class ActionsSystem extends System {
         const userComponent = this.entity.getComponent(UserComponent);
 
         // Handle show popup input
-        const action = inputComponent.getAndRemoveInput('action');
-        if (action && action.data) {
+        const action = inputComponent.getAndRemoveInputs('action');
+        if (action && action.length>0 && action[0].data) {
             console.log(`Action captured: `, action);
-            const actionName = action.data.name;
+            const actionName = action[0].data.name;
             // Track Google Analytics event
             this.trackActionEvent(actionName);
 

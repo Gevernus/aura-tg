@@ -188,13 +188,17 @@ export class InputComponent {
         });
     }
 
-    getAndRemoveInput(inputType) {
-        const index = this.inputQueue.findIndex(input => input.type === inputType);
-        if (index !== -1) {
-            const result = this.inputQueue.splice(index, 1)[0];
-            return result;
+    getAndRemoveInputs(inputType) {
+        const removedInputs = [];
+        let i = 0;
+        while (i < this.inputQueue.length) {
+            if (this.inputQueue[i].type === inputType) {
+                removedInputs.push(...this.inputQueue.splice(i, 1));
+            } else {
+                i++;
+            }
         }
-        return null;
+        return removedInputs;
     }
 
     hasInput(inputType) {
