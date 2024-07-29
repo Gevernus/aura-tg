@@ -18,21 +18,6 @@ function populateInventory(items) {
     });
 }
 
-// function createInventoryItemElement(item) {
-//     const itemDiv = document.createElement('div');
-//     itemDiv.className = 'inventory-item';
-//     const rarityClass = `rarity-${item.rarity == "Very Rare" ? "very-rare" : item.rarity.toLowerCase()}`;
-//     itemDiv.innerHTML = `
-//         <img src="images/items/${item.image}" alt="${item.name}" class="item-image">
-//         <h2 class="item-name">${item.name}</h2>
-//         <p class="item-rarity ${rarityClass}">${item.rarity}</p>
-//         <p class="item-bonus">Passive Bonus: ${item.passive_bonus}</p>
-//         <p class="item-bonus">Tap Bonus: ${item.tap_bonus}</p>
-//         <p class="item-bonus">Energy Bonus: ${item.energy_bonus}</p>
-//     `;
-//     return itemDiv;
-// }
-
 function createInventoryItemElement(item) {
     const itemDiv = document.createElement('div');
     itemDiv.className = 'inventory-item';
@@ -40,8 +25,7 @@ function createInventoryItemElement(item) {
 
     function formatBonus(value, label) {
         const numValue = parseFloat(value);
-        const color = numValue > 0 ? 'color: #4CAF50;' : ''; // Green color for positive values
-        return `<p class="item-bonus" style="${color}">${label}: +${value}</p>`;
+        return numValue > 0 ? `<p class="item-bonus" style="color: #4CAF50;">${label}: +${value}</p>` : `<p class="item-bonus">${label}: ${value}</p>`;
     }
 
     itemDiv.innerHTML = `
