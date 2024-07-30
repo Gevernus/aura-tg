@@ -14,7 +14,8 @@ async function initApp() {
     console.log('Trying to init app')
     const gameEntity = new Entity();
     const telegramSystem = new TelegramSystem(gameEntity);
-    gameEntity.addComponent(new InputComponent());
+    const inputComponent = new InputComponent();
+    gameEntity.addComponent(inputComponent);
     const storageSystem = new StorageSystem(gameEntity, telegramSystem.getUser(), telegramSystem.getInviter());
     const state = await storageSystem.getState();
     const config = await storageSystem.getConfig();
@@ -83,8 +84,6 @@ async function initApp() {
         tick(currentTime);
     });
     console.log('Frame requested')
-
-    const inputComponent = gameEntity.getComponent(InputComponent);
     inputComponent.addInput("action", { name: "Login" });
 }
 
