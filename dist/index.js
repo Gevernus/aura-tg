@@ -84,7 +84,6 @@ async function initApp() {
         tick(currentTime);
     });
     console.log('Frame requested')
-    inputComponent.addInput("action", { name: "Login" });
 }
 
 function tick(currentTime) {
