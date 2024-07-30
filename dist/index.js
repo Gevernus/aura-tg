@@ -23,9 +23,11 @@ async function initApp() {
     const packs = await storageSystem.getPacks();
     const inventory = await storageSystem.getInventory();
     const referrals = await storageSystem.getReferrals();
+    if (referrals && referrals.length > 0) {
+        inputComponent.addInput("action", { name: "FriendInvited" });
+    }
     const ratings = await storageSystem.getRatings();
     const tasks = await storageSystem.getTasks();
-    console.log(tasks);
 
     const monsterComponent = new MonstersComponent(monsters, config);
     const inventoryComponent = new InventoryComponent(inventory);

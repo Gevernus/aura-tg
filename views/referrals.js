@@ -108,5 +108,4 @@ function shareInviteLink(entity) {
     inputComponent.addInput("openLink", {
         url: inviteLink
     });
-    inputComponent.addInput("action", { name: "FriendInvited" });
 }

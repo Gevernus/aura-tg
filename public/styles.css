@@ -889,7 +889,8 @@ h1 {
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 10px;
-    max-height: 210px;
+    max-height: 230px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -915,13 +916,13 @@ h1 {
 .task-card h3 {
     margin: 0 0 10px 0;
     color: #ecf0f1;
-    font-size: 1.2em;
+    font-size: 1.0em;
 }
 
 .task-card p {
     margin: 0 0 15px 0;
     color: #bdc3c7;
-    font-size: 0.9em;
+    font-size: 0.7em;
 }
 
 .task-progress-bar {

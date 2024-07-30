@@ -112,7 +112,6 @@ function addPackEventListeners(entity) {
         button.addEventListener('click', async function () {
             const packId = this.getAttribute('data-id');
             await openPack(entity, userComponent.user.id, packId, packItems);
-            inputComponent.addInput("action", { name: "PackOpened" });
         });
     });
 
@@ -142,6 +141,7 @@ async function openPack(entity, userId, packId, packItems) {
                 try {
                     console.log(`Status of payment is ${status}`);
                     if (status == "paid") {
+                        inputComponent.addInput("action", { name: "PackOpened" });
                         console.log(`Container of items`, packItems);
                         addItems(data.items, packItems);
 
