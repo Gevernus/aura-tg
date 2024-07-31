@@ -614,9 +614,11 @@ h1 {
 
 .description {
     color: white;
-    font-size: 0.7em;
+    font-size: 0.6em;
     text-align: center;
     transition: opacity 0.6s;
+    white-space: normal;
+    width: 110px;
     opacity: 0;
 }
 
