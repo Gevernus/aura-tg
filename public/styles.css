@@ -419,22 +419,22 @@ h1 {
 }
 
 .pack-title {
-    font-size: 1.2em;
-    margin: 10px 0;
+    font-size: 1.0em;
+    margin: 5px 0;
     color: #ffd700;
 }
 
 .pack-description {
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: #ffffff;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     max-width: 250px;
     white-space: pre-line;
     text-align: left;
 }
 
 .pack img {
-    max-width: 60%;
+    max-width: 55%;
     height: auto;
     border-radius: 5px;
 }
