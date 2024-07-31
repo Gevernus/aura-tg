@@ -37,7 +37,6 @@ function populateSortOptions() {
 function sortUsers(entity) {
     const ratingsComponent = entity.getComponent(RatingsComponent);
     const sortField = document.getElementById('filter-select').value;
-
     ratingsComponent.items.sort((a, b) => {
         if (a[sortField] === undefined || b[sortField] === undefined) return 0;
         return b[sortField] - a[sortField]; // Descending order
@@ -48,7 +47,7 @@ export function render(entity) {
     const ratingsComponent = entity.getComponent(RatingsComponent);
     const ratingsContainer = document.getElementById("ratings-container");
     ratingsContainer.innerHTML = "";
-
+    sortUsers(entity);
     ratingsComponent.items.forEach((user, index) => {
         const card = document.createElement("div");
         card.className = "rating-card";

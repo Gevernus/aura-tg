@@ -1,4 +1,30 @@
 import { CoinsComponent, PassiveIncomeComponent, ClickPowerComponent, TasksComponent, UserComponent } from '../dist/components.js';
+const taskCardMap = new Map();
+
+function updateTaskCard(task, cardElement) {
+    const progressPercentage = (task.progress / task.task_requiredActionCount) * 100;
+
+    cardElement.querySelector('h3').textContent = task.task_name;
+    cardElement.querySelector('p').textContent = task.task_description;
+    cardElement.querySelector('.task-progress').style.width = `${progressPercentage}%`;
+    cardElement.querySelector('.progress-text').textContent = `Progress: ${task.progress}/${task.task_requiredActionCount}`;
+
+    const claimButton = cardElement.querySelector('.claim-reward-button');
+    if (task.completed && !task.claimed) {
+        if (!claimButton) {
+            const newClaimButton = document.createElement('button');
+            newClaimButton.className = 'claim-reward-button';
+            newClaimButton.setAttribute('data-task-id', task.task_id);
+            newClaimButton.innerHTML = `
+                <span class="reward-amount">Claim: ${task.task_coins_bonus}</span>
+                <span class="reward-icon"></span>
+            `;
+            cardElement.querySelector('.task-content').appendChild(newClaimButton);
+        }
+    } else if (claimButton) {
+        claimButton.remove();
+    }
+}
 
 export function init(entity) {
     // Add tab switching functionality
@@ -41,25 +67,18 @@ async function claimReward(entity, taskId) {
 function createTaskCard(task) {
     const cardElement = document.createElement('div');
     cardElement.className = 'task-card';
-    const progressPercentage = (task.progress / task.task_requiredActionCount) * 100;
     cardElement.innerHTML = `
         <div class="task-icon ${task.daily ? 'daily-task' : ''}"></div>
         <div class="task-content">
-            <h3>${task.task_name}</h3>
-            <p>${task.task_description}</p>
+            <h3></h3>
+            <p></p>
             <div class="task-progress-bar">
-                <div class="task-progress" style="width: ${progressPercentage}%"></div>
+                <div class="task-progress"></div>
             </div>
-            <p class="progress-text">Progress: ${task.progress}/${task.task_requiredActionCount}</p>
-            ${task.completed && !task.claimed
-            ? `<button class="claim-reward-button" data-task-id="${task.task_id}">
-                    <span class="reward-amount">Claim: ${task.task_coins_bonus}</span>
-                    <span class="reward-icon"></span>
-                   </button>`
-            : ''
-        }
+            <p class="progress-text"></p>
         </div>
     `;
+    updateTaskCard(task, cardElement);
     return cardElement;
 }
 
@@ -89,7 +108,6 @@ export function render(entity) {
     document.getElementById('passiveIncome').textContent = passiveIncomeComponent.incomePerHour.toFixed(1);
     document.getElementById('tapPower').textContent = clickPowerComponent.power;
 
-    // Assume you have a TaskComponent that stores the tasks
     const tasksComponent = entity.getComponent(TasksComponent);
     const activeTasks = tasksComponent.tasks.filter(task => !task.completed || !task.claimed);
     const completedTasks = tasksComponent.tasks.filter(task => task.completed && task.claimed);
@@ -97,17 +115,43 @@ export function render(entity) {
     const activeContainer = document.getElementById('active-container');
     const completedContainer = document.getElementById('completed-container');
 
-    // Clear existing content
-    activeContainer.innerHTML = '';
-    completedContainer.innerHTML = '';
+    // Function to update or create a task card
+    function updateOrCreateTaskCard(task, container) {
+        let cardElement = taskCardMap.get(task.task_id);
+        if (!cardElement) {
+            cardElement = createTaskCard(task);
+            taskCardMap.set(task.task_id, cardElement);
+        } else {
+            updateTaskCard(task, cardElement);
+        }
 
-    // Render active tasks
-    activeTasks.forEach(task => {
-        activeContainer.appendChild(createTaskCard(task));
+        if (cardElement.parentElement !== container) {
+            container.appendChild(cardElement);
+        }
+    }
+
+    // Update or create active task cards
+    activeTasks.forEach(task => updateOrCreateTaskCard(task, activeContainer));
+
+    // Update or create completed task cards
+    completedTasks.forEach(task => updateOrCreateTaskCard(task, completedContainer));
+
+    // Remove any cards for tasks that no longer exist
+    taskCardMap.forEach((cardElement, taskId) => {
+        if (!tasksComponent.tasks.some(task => task.task_id === taskId)) {
+            cardElement.remove();
+            taskCardMap.delete(taskId);
+        }
     });
 
-    // Render completed tasks
-    completedTasks.forEach(task => {
-        completedContainer.appendChild(createTaskCard(task));
+    // Move any remaining cards to the correct container
+    taskCardMap.forEach((cardElement, taskId) => {
+        const task = tasksComponent.tasks.find(t => t.task_id === taskId);
+        if (task) {
+            const targetContainer = task.completed && task.claimed ? completedContainer : activeContainer;
+            if (cardElement.parentElement !== targetContainer) {
+                targetContainer.appendChild(cardElement);
+            }
+        }
     });
 }
