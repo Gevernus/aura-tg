@@ -410,7 +410,6 @@ h1 {
     flex-direction: column;
     gap: 10px;
     align-items: center;
-    width: 50%;
     max-width: 300px;
     text-align: center;
     padding: 10px;
@@ -419,8 +418,23 @@ h1 {
     background-color: #1e1e2e;
 }
 
+.pack-title {
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #ffd700;
+}
+
+.pack-description {
+    font-size: 0.9em;
+    color: #ffffff;
+    margin-bottom: 10px;
+    max-width: 250px;
+    white-space: pre-line;
+    text-align: left;
+}
+
 .pack img {
-    max-width: 100%;
+    max-width: 60%;
     height: auto;
     border-radius: 5px;
 }

@@ -23,6 +23,10 @@ __decorate([
     __metadata("design:type", String)
 ], PackItem.prototype, "name", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: "" }),
+    __metadata("design:type", String)
+], PackItem.prototype, "description", void 0);
+__decorate([
     (0, typeorm_1.Column)({ default: 100 }),
     __metadata("design:type", Number)
 ], PackItem.prototype, "price", void 0);

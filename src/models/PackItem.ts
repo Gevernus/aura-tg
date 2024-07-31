@@ -8,6 +8,9 @@ export class PackItem extends BaseEntity {
     @Column()
     name!: string;
 
+    @Column({ default: "" })
+    description!: string;
+
     @Column({ default: 100 })
     price!: number
 
