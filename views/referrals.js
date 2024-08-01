@@ -44,6 +44,7 @@ export function render(entity) {
     // Remove elements for referrals that no longer exist
     for (let [id, element] of referralElementMap) {
         if (!currentReferralIds.has(id)) {
+            console.log('remove element', element);
             element.remove();
             referralElementMap.delete(id);
         }
@@ -52,16 +53,46 @@ export function render(entity) {
 }
 
 function updateReferralElement(li, referral) {
-    li.innerHTML = `
-        <div class="referral-info">
-            <span class="referral-name">${referral.username}</span>
-            <span class="referral-status ${referral.status}">${getStatusText(referral.status)}</span>
-        </div>
-        <div class="referral-bonus">
-            <span>Income Bonus: <strong>${referral.bonus}</strong></span>
-            ${referral.status === 'accepted' ? '<button class="claim-btn">Claim</button>' : ''}
-        </div>
-    `;
+    // Ensure all necessary elements exist
+    if (!li.querySelector('.referral-info')) {
+        li.innerHTML = `
+            <div class="referral-info">
+                <span class="referral-name"></span>
+                <span class="referral-status"></span>
+            </div>
+            <div class="referral-bonus">
+                <span>Income Bonus: <strong></strong></span>
+            </div>
+        `;
+    }
+
+    // Update username
+    const nameElement = li.querySelector('.referral-name');
+    nameElement.textContent = referral.username;
+
+    // Update status
+    const statusElement = li.querySelector('.referral-status');
+    statusElement.textContent = getStatusText(referral.status);
+    statusElement.className = `referral-status ${referral.status}`;
+
+    // Update bonus
+    const bonusElement = li.querySelector('.referral-bonus strong');
+    bonusElement.textContent = referral.bonus;
+
+    // Update claim button
+    const bonusDiv = li.querySelector('.referral-bonus');
+    let claimBtn = bonusDiv.querySelector('.claim-btn');
+
+    if (referral.status === 'accepted') {
+        if (!claimBtn) {
+            claimBtn = document.createElement('button');
+            claimBtn.className = 'claim-btn';
+            claimBtn.textContent = 'Claim';
+            bonusDiv.appendChild(claimBtn);
+        }
+    } else if (claimBtn) {
+        claimBtn.remove();
+    }
 }
 
 function getStatusText(status) {
@@ -76,12 +107,7 @@ function getStatusText(status) {
 }
 function addClaimListeners(entity) {
     document.getElementById('referral-list').addEventListener('click', (e) => {
-        try {
-            handleClaimClick(e, entity);
-        } catch (error) {
-            console.error(error);
-        }
-
+        handleClaimClick(e, entity);
     });
     document.getElementById('invite-btn').addEventListener('click', (e) => {
         shareInviteLink(entity);
@@ -89,39 +115,49 @@ function addClaimListeners(entity) {
 }
 
 function handleClaimClick(event, entity) {
-    if (event.target.classList.contains('claim-btn')) {
-        const li = event.target.closest('li');
-        const referralId = li.dataset.referralId;
-        handleClaim(entity, referralId);
+    const claimBtn = event.target.closest('.claim-btn');
+    if (claimBtn) {
+        const li = claimBtn.closest('.referral-item');
+        if (li) {
+            const referralId = li.dataset.referralId;
+            claimBtn.disabled = true;
+            handleClaim(entity, referralId);
+        } else {
+            console.error('Referral item not found');
+        }
     }
 }
 
 async function handleClaim(entity, referralId) {
-    const referralsComponent = entity.getComponent('ReferralsComponent');
-    const userComponent = entity.getComponent('UserComponent');
-    const referral = referralsComponent.items.find(r => r.id == referralId);
-    if (referral && referral.status == 'accepted') {
-        try {
-            const response = await fetch(`api/${userComponent.user.id}/claim`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                json: { referralId: referral.id },
-            });
-            if (!response.ok) {
-                throw new Error('Failed to save state');
+    try {
+        console.log('Handling claim for referral ID:', referralId);
+        const referralsComponent = entity.getComponent('ReferralsComponent');
+        const userComponent = entity.getComponent('UserComponent');
+        const referral = referralsComponent.items.find(r => r.id == referralId);
+        if (referral && referral.status == 'accepted') {
+            try {
+                const response = await fetch(`api/${userComponent.user.id}/claim`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    json: { referralId: referral.id },
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to save state');
+                }
+                referral.status = 'claimed';
+            } catch (error) {
+                console.error('Error saving state:', error);
             }
-            referral.status = 'claimed';
-        } catch (error) {
-            console.error('Error saving state:', error);
-        }
 
-        const passiveIncomeComponent = entity.getComponent('PassiveIncomeComponent');
-        const inventoryComponent = entity.getComponent("InventoryComponent");
-        const monstersComponent = entity.getComponent("MonstersComponent");
-        inventoryComponent.addItems(data.items);
-        passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items, referralsComponent.items);
+            const passiveIncomeComponent = entity.getComponent('PassiveIncomeComponent');
+            const inventoryComponent = entity.getComponent("InventoryComponent");
+            const monstersComponent = entity.getComponent("MonstersComponent");
+            passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items, referralsComponent.items);
+        }
+    } catch (error) {
+        console.error(error);
     }
 }
 
