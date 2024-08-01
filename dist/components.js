@@ -113,7 +113,7 @@ export class PacksComponent {
 export class ReferralsComponent {
     constructor(items) {
         this.items = items;
-        
+        this.hasChanged = true;
     }
 }
 

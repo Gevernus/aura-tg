@@ -1,3 +1,4 @@
+const referralElementMap = new Map();
 
 export function init(entity) {
     addClaimListeners(entity);
@@ -13,18 +14,52 @@ export function render(entity) {
 
     const referralsComponent = entity.getComponent('ReferralsComponent');
     const referralList = document.getElementById('referral-list');
-    referralList.innerHTML = '';
+
+    // Check if referrals data has changed
+    if (!referralsComponent.hasChanged) {
+        return; // Skip updating if data hasn't changed
+    }
 
     if (!referralsComponent.items || referralsComponent.items.length === 0) {
         referralList.innerHTML = '<p>No referrals yet.</p>';
+        referralElementMap.clear();
         return;
     }
 
+    const currentReferralIds = new Set();
+
     referralsComponent.items.forEach(referral => {
-        const li = document.createElement('li');
-        li.dataset.referralId = referral.id;
-        li.className = 'referral-item';
-        li.innerHTML = `
+        currentReferralIds.add(referral.id);
+        let li = referralElementMap.get(referral.id);
+
+        if (!li) {
+            // Create new element if it doesn't exist
+            li = document.createElement('li');
+            li.dataset.referralId = referral.id;
+            li.className = 'referral-item';
+            referralList.appendChild(li);
+            referralElementMap.set(referral.id, li);
+        }
+
+        // Update the content of the element
+        updateReferralElement(li, referral);
+    });
+
+    // Remove elements for referrals that no longer exist
+    for (let [id, element] of referralElementMap) {
+        if (!currentReferralIds.has(id)) {
+            element.remove();
+            referralElementMap.delete(id);
+        }
+    }
+
+    // Reset the change flag
+    referralsComponent.hasChanged = false;
+
+}
+
+function updateReferralElement(li, referral) {
+    li.innerHTML = `
         <div class="referral-info">
             <span class="referral-name">${referral.username}</span>
             <span class="referral-status ${referral.status}">${getStatusText(referral.status)}</span>
@@ -34,9 +69,6 @@ export function render(entity) {
             ${referral.status === 'accepted' ? '<button class="claim-btn">Claim</button>' : ''}
         </div>
     `;
-        referralList.appendChild(li);
-    });
-
 }
 
 function getStatusText(status) {
