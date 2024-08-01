@@ -39,8 +39,12 @@ export class SystemManager {
 
     updateAll(deltaTime) {
         for (const system of this.systemsArray) {
-            if (typeof system.update === 'function') {
-                system.update(deltaTime);
+            try {
+                if (typeof system.update === 'function') {
+                    system.update(deltaTime);
+                }
+            } catch (error) {
+                console.error(error);
             }
         }
     }

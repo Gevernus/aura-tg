@@ -76,7 +76,12 @@ function getStatusText(status) {
 }
 function addClaimListeners(entity) {
     document.getElementById('referral-list').addEventListener('click', (e) => {
-        handleClaimClick(e, entity);
+        try {
+            handleClaimClick(e, entity);
+        } catch (error) {
+            console.error(error);
+        }
+
     });
     document.getElementById('invite-btn').addEventListener('click', (e) => {
         shareInviteLink(entity);
