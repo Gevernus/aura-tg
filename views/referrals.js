@@ -95,16 +95,17 @@ async function handleClaim(entity, referralId) {
     }
 }
 
-function generateInviteLink(userId) {
+function generateInviteLink(userId, appURL) {
     const params = `${userId}`;
-    return `https://t.me/Aura_tests_bot/Aura_th?startapp=${encodeURIComponent(params)}`;
+    return `${appURL}?startapp=${encodeURIComponent(params)}`;
 }
 
 function shareInviteLink(entity) {
     const userComponent = entity.getComponent('UserComponent');
     const inputComponent = entity.getComponent('InputComponent');
+    const configComponent = entity.getComponent('ConfigComponent');
     const userId = userComponent.user.id;
-    let inviteLink = generateInviteLink(userId);
+    let inviteLink = generateInviteLink(userId, configComponent.appURL);
     inputComponent.addInput("openLink", {
         url: inviteLink
     });
