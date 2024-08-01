@@ -2,6 +2,7 @@ const referralElementMap = new Map();
 
 export function init(entity) {
     addClaimListeners(entity);
+    referralElementMap.clear();
 };
 
 export function render(entity) {
@@ -14,11 +15,6 @@ export function render(entity) {
 
     const referralsComponent = entity.getComponent('ReferralsComponent');
     const referralList = document.getElementById('referral-list');
-
-    // Check if referrals data has changed
-    if (!referralsComponent.hasChanged) {
-        return; // Skip updating if data hasn't changed
-    }
 
     if (!referralsComponent.items || referralsComponent.items.length === 0) {
         referralList.innerHTML = '<p>No referrals yet.</p>';
@@ -52,9 +48,6 @@ export function render(entity) {
             referralElementMap.delete(id);
         }
     }
-
-    // Reset the change flag
-    referralsComponent.hasChanged = false;
 
 }
 
