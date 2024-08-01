@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 interface CardConfig {
     basePrice: number;
@@ -21,7 +25,7 @@ interface GameConfig {
 export const config: GameConfig = {
     initialEnergy: 500,
     initialPassiveIncome: 1,
-    appURL: process.env.TELEGRAM_WEBHOOK_DOMAIN || "",
+    appURL: process.env.TELEGRAM_APP_LINK || "",
     levels: [
         'Novice Soul',
         'Seeker Soul',

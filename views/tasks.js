@@ -8,6 +8,7 @@ function updateTaskCard(task, cardElement) {
     cardElement.querySelector('p').textContent = task.task_description;
     cardElement.querySelector('.task-progress').style.width = `${progressPercentage}%`;
     cardElement.querySelector('.progress-text').textContent = `Progress: ${task.progress}/${task.task_requiredActionCount}`;
+    cardElement.querySelector('.reward-text').textContent = `Reward: ${task.task_coins_bonus} coins`;
 
     const claimButton = cardElement.querySelector('.claim-reward-button');
     if (task.completed && !task.claimed) {
@@ -15,10 +16,7 @@ function updateTaskCard(task, cardElement) {
             const newClaimButton = document.createElement('button');
             newClaimButton.className = 'claim-reward-button';
             newClaimButton.setAttribute('data-task-id', task.task_id);
-            newClaimButton.innerHTML = `
-                <span class="reward-amount">Claim: ${task.task_coins_bonus}</span>
-                <span class="reward-icon"></span>
-            `;
+            newClaimButton.textContent = 'Claim';
             cardElement.querySelector('.task-content').appendChild(newClaimButton);
         }
     } else if (claimButton) {
@@ -76,6 +74,7 @@ function createTaskCard(task) {
                 <div class="task-progress"></div>
             </div>
             <p class="progress-text"></p>
+            <p class="reward-text"></p>
         </div>
     `;
     updateTaskCard(task, cardElement);

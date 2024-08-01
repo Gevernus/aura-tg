@@ -105,7 +105,7 @@ function shareInviteLink(entity) {
     const inputComponent = entity.getComponent('InputComponent');
     const configComponent = entity.getComponent('ConfigComponent');
     const userId = userComponent.user.id;
-    let inviteLink = generateInviteLink(userId, configComponent.appURL);
+    let inviteLink = generateInviteLink(userId, configComponent.config.appURL);
     inputComponent.addInput("openLink", {
         url: inviteLink
     });

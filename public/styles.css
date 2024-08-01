@@ -947,7 +947,6 @@ h1 {
 
 .task-card p {
     margin: 0 0 15px 0;
-    color: #bdc3c7;
     font-size: 0.7em;
 }
 
@@ -963,6 +962,12 @@ h1 {
     background-color: #2ecc71;
     height: 100%;
     transition: width 0.5s ease-in-out;
+}
+
+.reward-text {
+    font-size: 0.9em;
+    color: #ffd700;
+    margin-top: 5px;
 }
 
 .progress-text {
