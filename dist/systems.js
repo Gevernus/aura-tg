@@ -209,7 +209,7 @@ export class TelegramSystem extends System {
 
         const vibrate = inputComponent.getAndRemoveInputs('vibrate');
         if (vibrate && vibrate.length > 0) {
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('rigid');
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
             // window.Telegram.WebApp.HapticFeedback.notificationOccurred('warning');
         }
     }
