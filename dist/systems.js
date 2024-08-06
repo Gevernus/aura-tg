@@ -211,7 +211,7 @@ export class TelegramSystem extends System {
         if (vibrate && vibrate.length > 0) {
             // window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
             // window.Telegram.WebApp.HapticFeedback.selectionChanged();
-            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
         }
     }
 }
