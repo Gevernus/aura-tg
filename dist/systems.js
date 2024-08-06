@@ -163,7 +163,6 @@ export class TelegramSystem extends System {
             this.inviterId = window.Telegram.WebApp.initDataUnsafe.start_param;
             console.log(`App opened with start_param: ${this.inviterId}`);
             window.Telegram.WebApp.disableVerticalSwipes();
-            window.Telegram.WebApp.initHapticFeedback();
             window.Telegram.WebApp.expand();
             // Listen for viewport changes, which include app closure
             window.Telegram.WebApp.onEvent('viewportChanged', async () => {
