@@ -765,6 +765,8 @@ h1 {
 .referral-info {
     display: flex;
     flex-direction: column;
+    width: 40%;
+    overflow: hidden;
 }
 
 .referral-name {

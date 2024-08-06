@@ -10,7 +10,7 @@ const timeStep = 1000 / targetFPS;
 const systemManager = new SystemManager();
 
 async function initApp() {
-    eruda.init();
+    // eruda.init();
     console.log('Trying to init app')
     const gameEntity = new Entity();
     const telegramSystem = new TelegramSystem(gameEntity);
