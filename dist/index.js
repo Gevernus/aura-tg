@@ -82,6 +82,7 @@ async function initApp() {
             // Update the currentLink
             currentLink = e.currentTarget;
             console.log('Nav link clicked');
+            inputComponent.addInput("vibrate");
             uiSystem.setView(e.currentTarget.dataset.page || 'home');
         });
     });

@@ -16,6 +16,7 @@ export class ClickSystem extends System {
                 const energyComponent = this.entity.getComponent(EnergyComponent);
                 tapInputs.forEach(tapInput => {
                     if (energyComponent.energy >= 1) {
+                        inputComponent.addInput("vibrate");
                         coinsComponent.amount += clickPower;
                         energyComponent.energy--;
                     }
@@ -203,6 +204,11 @@ export class TelegramSystem extends System {
         const url = inputComponent.getAndRemoveInputs('openLink');
         if (url && url.length > 0 && url[0].data) {
             window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${url[0].data.url}`);
+        }
+
+        const vibrate = inputComponent.getAndRemoveInputs('vibrate');
+        if (vibrate && vibrate.length > 0) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }
     }
 }
