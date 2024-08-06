@@ -2,9 +2,15 @@ import { ClickPowerComponent, CoinsComponent, InputComponent, PassiveIncomeCompo
 export function init(entity) {
     const inputComponent = entity.getComponent(InputComponent);
     const profile = document.querySelector('.profile-navigate');
+    let currentLink = null;
     profile.querySelectorAll('.navigate').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
+            if (currentLink) {
+                currentLink.classList.remove('active');
+            }
+            e.currentTarget.classList.add('active');
+            inputComponent.addInput("vibrate");
             inputComponent.addInput("setView", { view: e.currentTarget.dataset.page });
         });
     });
