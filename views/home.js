@@ -94,7 +94,7 @@ export function render(entity) {
     document.getElementById('levelProgress').style.width = `${(coinsComponent.amount / config.levelRequirements[levelComponent.level]) * 100}%`;
 
     document.getElementById('energy').textContent = `${Math.floor(energyComponent.energy)}/${Math.floor(energyComponent.maxEnergy)}`;
-    document.getElementById('energyProgress').style.width = `${(energyComponent.energy / (500 * Math.pow(2, levelComponent.level - 1))) * 100}%`;
+    document.getElementById('energyProgress').style.width = `${(energyComponent.energy / energyComponent.maxEnergy) * 100}%`;
 
     document.getElementById('coins').textContent = Math.floor(coinsComponent.amount);
     document.getElementById('tapPower').textContent = clickPowerComponent.power;

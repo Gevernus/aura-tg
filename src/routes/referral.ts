@@ -21,8 +21,7 @@ router.get('/:userId/referrals', async (req, res) => {
 router.post('/:userId/claim', async (req, res) => {
     const userId = req.params.userId;
     const { referralId } = req.body;
-
-    await AppDataSource.transaction(async transactionalEntityManager => {
+    try {
         const referral = await Referral.findOne({ where: { inviterId: userId, id: referralId } });
         if (!referral) {
             throw new Error('Referral not found');
@@ -30,12 +29,11 @@ router.post('/:userId/claim', async (req, res) => {
 
         referral.status = 'claimed';
         await referral.save();
-    }).then(() => {
         res.send('Bonus claimed successfully');
-    }).catch(error => {
+    } catch (error) {
         console.error('Error claiming bonus:', error);
-        res.status(500).send(`Error claiming bonus: ${error.message}`);
-    });
+        res.status(500).send(`Error claiming bonus: ${error}`);
+    }
 });
 
 export default router;

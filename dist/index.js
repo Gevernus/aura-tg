@@ -76,9 +76,12 @@ async function initApp() {
             uiSystem.setView(e.currentTarget.dataset.page || 'home');
         });
     });
-
+    
     console.log('App inited')
     await uiSystem.setView('home');
+    
+    // Hide loading screen after initialization
+    hideLoadingScreen();
     requestAnimationFrame((currentTime) => {
         lastTime = currentTime;
         tick(currentTime);
@@ -96,6 +99,13 @@ function tick(currentTime) {
     if (deltaTime >= timeStep) {
         lastTime = currentTime;
         systemManager.updateAll(deltaTime / 1000);
+    }
+}
+
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.display = 'none';
     }
 }
 

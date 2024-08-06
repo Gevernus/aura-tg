@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Referral_1 = require("../models/Referral");
-const app_1 = require("../app");
 const router = (0, express_1.Router)();
 router.get('/:userId/referrals', async (req, res) => {
     const userId = req.params.userId;
@@ -20,19 +19,19 @@ router.get('/:userId/referrals', async (req, res) => {
 router.post('/:userId/claim', async (req, res) => {
     const userId = req.params.userId;
     const { referralId } = req.body;
-    await app_1.AppDataSource.transaction(async (transactionalEntityManager) => {
+    try {
         const referral = await Referral_1.Referral.findOne({ where: { inviterId: userId, id: referralId } });
         if (!referral) {
             throw new Error('Referral not found');
         }
         referral.status = 'claimed';
         await referral.save();
-    }).then(() => {
         res.send('Bonus claimed successfully');
-    }).catch(error => {
+    }
+    catch (error) {
         console.error('Error claiming bonus:', error);
-        res.status(500).send(`Error claiming bonus: ${error.message}`);
-    });
+        res.status(500).send(`Error claiming bonus: ${error}`);
+    }
 });
 exports.default = router;
 //# sourceMappingURL=referral.js.map
