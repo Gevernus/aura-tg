@@ -28,12 +28,19 @@ export class LevelComponent {
 }
 
 export class EnergyComponent {
-    constructor(energy = 500, maxEnergy = 500, energyRestore = 1, items = []) {
+    constructor(energy = 500, maxEnergy = 500, energyRestore = 1, items = [], level) {
         this.energy = energy;
-        this.baseMaxEnergy = maxEnergy;
+        this.baseMaxEnergy = maxEnergy * Math.pow(2, level);
         this.energyRestore = energyRestore;
+        this.items = items;
         this.calculate(items);
     }
+
+    setLevel(newLevel) {
+        this.baseMaxEnergy = 500 * Math.pow(2, newLevel);
+        this.calculate(this.items);
+    }
+
     calculate(items) {
         this.maxEnergy = this.baseMaxEnergy;
         for (const item of items) {

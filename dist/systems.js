@@ -504,7 +504,7 @@ export class SoulLevelSystem extends System {
         // Only update if the new level is higher than the current level
         if (newLevel > levelComponent.level) {
             levelComponent.setLevel(newLevel);
-            energyComponent.maxEnergy = 500 * Math.pow(2, newLevel);
+            energyComponent.setLevel(newLevel);
         }
     }
 }

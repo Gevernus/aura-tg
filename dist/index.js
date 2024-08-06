@@ -42,7 +42,7 @@ async function initApp() {
     gameEntity.addComponent(new CoinsComponent(state.coins));
     gameEntity.addComponent(new ClickPowerComponent(inventoryComponent.items));
     gameEntity.addComponent(inventoryComponent);
-    gameEntity.addComponent(new EnergyComponent(state.energy, state.max_energy, state.energy_restore, inventoryComponent.items));
+    gameEntity.addComponent(new EnergyComponent(state.energy, state.max_energy, state.energy_restore, inventoryComponent.items, state.level));
     gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items, inventoryComponent.items, referralsComponent.items));
     gameEntity.addComponent(new ConfigComponent(config));
     gameEntity.addComponent(new UserComponent(user));
@@ -85,10 +85,10 @@ async function initApp() {
             uiSystem.setView(e.currentTarget.dataset.page || 'home');
         });
     });
-    
+
     console.log('App inited')
     await uiSystem.setView('home');
-    
+
     // Hide loading screen after initialization
     hideLoadingScreen();
     requestAnimationFrame((currentTime) => {
