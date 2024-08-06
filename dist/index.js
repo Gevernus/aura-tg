@@ -68,10 +68,19 @@ async function initApp() {
     // systemManager.addSystem(new RenderSystem());
 
     systemManager.initAll();
-
+    let currentLink = null;
     document.querySelectorAll('.navigate').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
+            if (currentLink) {
+                currentLink.classList.remove('active');
+            }
+
+            // Add active class to the clicked link
+            e.currentTarget.classList.add('active');
+
+            // Update the currentLink
+            currentLink = e.currentTarget;
             console.log('Nav link clicked');
             uiSystem.setView(e.currentTarget.dataset.page || 'home');
         });

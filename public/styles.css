@@ -1065,3 +1065,7 @@ h1 {
         transform: rotate(360deg);
     }
 }
+
+.navigate.active {
+    background-color: rgb(121 170 222 / 10%);
+}
