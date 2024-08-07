@@ -164,6 +164,7 @@ router.get('/:userId/inventory', async (req, res) => {
 
 router.get('/ratings', async (req, res) => {
     try {
+        const excludedUsernames = ['farequest312', 'vvvvvvv300300'];
         const ratings = await User
             .createQueryBuilder("user")
             .leftJoinAndSelect("user.referrals", "referral")
@@ -178,6 +179,7 @@ router.get('/ratings', async (req, res) => {
                 "SUM(DISTINCT COALESCE(referralState.passive_income, 0)) AS friendsPassiveIncome",
                 "AVG(DISTINCT COALESCE(referralState.level, 1)) AS friendsAverageLevel",
             ])
+            .where("user.username NOT IN (:...excludedUsernames)", { excludedUsernames })
             .groupBy("user.id, user.username, userState.coins, userState.passive_income")
             .getRawMany();
 
