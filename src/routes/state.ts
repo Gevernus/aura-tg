@@ -164,7 +164,7 @@ router.get('/:userId/inventory', async (req, res) => {
 
 router.get('/ratings', async (req, res) => {
     try {
-        const excludedUsernames = ['farequest312', 'vvvvvvv300300'];
+        const excludedUsernames = ['farequest312', 'vvvvvvv300300', 'eeshishko'];
         const ratings = await User
             .createQueryBuilder("user")
             .leftJoinAndSelect("user.referrals", "referral")
