@@ -162,9 +162,10 @@ router.get('/:userId/inventory', async (req, res) => {
     }
 });
 
-router.get('/ratings/:sortField', async (req, res) => {
+router.get('/:userId/ratings/:sortField', async (req, res) => {
     try {
         const sortField = req.params.sortField;
+        const userId = req.params.userId;
         const excludedUsernames = ['farequest312', 'vvvvvvv300300', 'eeshishko'];
         const validSortFields = ['coins', 'passive_income', 'friendscount'];
         if (!validSortFields.includes(sortField)) {
@@ -188,7 +189,9 @@ router.get('/ratings/:sortField', async (req, res) => {
 
         // Extract IDs while preserving order
         const ids = topUserIds.map(user => user.id);
-
+        if (userId != null && !ids.some(id => id === userId)) {
+            ids.push(userId);
+        }
         // Second query: Get detailed information for the top users
         const ratings = await User
             .createQueryBuilder("user")

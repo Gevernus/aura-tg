@@ -330,7 +330,7 @@ export class StorageSystem extends System {
 
     async getRatings(sortField) {
         try {
-            const response = await fetch(`api/ratings/${sortField}`, {
+            const response = await fetch(`api/${this.tgUser.id}/ratings/${sortField}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

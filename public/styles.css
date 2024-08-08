@@ -1077,3 +1077,15 @@ h1 {
 .navigate.active {
     background-color: rgb(121 170 222 / 10%);
 }
+
+.sticky-card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    background-color: #292515;
+    margin: 10px
+}
+
+.current-user-card {
+    border: 2px solid #4CAF50;
+    background-color: #292515;
+}
