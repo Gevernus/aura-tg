@@ -48,7 +48,8 @@ export function render(entity) {
     const ratingsContainer = document.getElementById("ratings-container");
     ratingsContainer.innerHTML = "";
     sortUsers(entity);
-    ratingsComponent.items.forEach((user, index) => {
+    const limitedItems = ratingsComponent.items.slice(0, 100);
+    limitedItems.forEach((user, index) => {
         const card = document.createElement("div");
         card.className = "rating-card";
         card.innerHTML = `
