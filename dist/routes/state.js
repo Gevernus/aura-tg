@@ -173,6 +173,7 @@ router.get('/ratings', async (req, res) => {
         ])
             .where("user.username NOT IN (:...excludedUsernames)", { excludedUsernames })
             .groupBy("user.id, user.username, userState.coins, userState.passive_income")
+            .take(100)
             .getRawMany();
         res.status(200).json(ratings);
     }
