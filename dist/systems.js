@@ -461,13 +461,13 @@ export class UISystem extends System {
         return this.views[viewName];
     }
 
-    async setView(viewName) {
+    async setView(viewName, container = 'content') {
         try {
             const view = await this.loadView(viewName);
             console.log("View is loaded: ", view);
             this.entity.getComponent(InputComponent).addInput("action", { name: `${viewName}Opened` });
             this.currentView = view;
-            document.getElementById('content').innerHTML = view.template;
+            document.getElementById(container).innerHTML = view.template;
             view.init(this.entity);
         } catch (error) {
             console.error(`Error setting view ${viewName}:`, error);

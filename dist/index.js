@@ -14,8 +14,18 @@ async function initApp() {
     console.log('Trying to init app')
     const gameEntity = new Entity();
     const telegramSystem = new TelegramSystem(gameEntity);
+    const uiSystem = new UISystem(gameEntity);
     const inputComponent = new InputComponent();
     gameEntity.addComponent(inputComponent);
+    console.log(`User id is `, telegramSystem.getUserId());
+    if (telegramSystem.getUserId() == 1) {
+        console.log('Set default view');
+        uiSystem.setView('default', 'main');
+        hideLoadingScreen();
+        return;
+    }
+    systemManager.addSystem(uiSystem);
+    
     const storageSystem = new StorageSystem(gameEntity, telegramSystem.getUser(), telegramSystem.getInviter());
     const state = await storageSystem.getState();
     const config = await storageSystem.getConfig();
@@ -54,8 +64,7 @@ async function initApp() {
     gameEntity.addComponent(new PacksComponent(packs));
 
     storageSystem.setEntity(gameEntity);
-    const uiSystem = new UISystem(gameEntity);
-    systemManager.addSystem(uiSystem);
+
 
     // Initialize systems
     systemManager.addSystem(new ClickSystem(gameEntity));

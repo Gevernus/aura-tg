@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura Clicker</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #2D2D2D;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      text-align: center;
+      background-image: url('images/background.webp');
+    }
+
+    .header h1 {
+      margin-bottom: 20px;
+    }
+
+    #page-content {
+      background-image: url('images/default.jpg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 300px;
+      height: 400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    #page-content h2 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+
+    #play-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin-top: 370px;
+      cursor: pointer;
+      /* New styles to make it behave more like a button */
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    #play-button:hover {
+      background-color: #45a049;
+    }
+
+    #play-button:active {
+      background-color: #3e8e41;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div id="page-content">
+      <h2>Aura</h2>
+      <a id="play-button" href="https://t.me/aura_game_bot/app">Play</a>
+    </div>
+  </div>
+</body>
+
+</html>
