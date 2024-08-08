@@ -604,7 +604,6 @@ export class ActionsSystem extends System {
         if (typeof gtag === 'function') {
             gtag('event', 'user_action', {
                 'action_name': actionName,
-                // You can add more parameters here if needed
             });
         } else {
             console.warn('Google Analytics not loaded. Unable to track event.');

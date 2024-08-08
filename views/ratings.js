@@ -57,16 +57,17 @@ function sortUsers(entity) {
     });
 }
 
-function createUserCard(user, rank, entity) {
+function createUserCard(user, entity) {
     const card = document.createElement("div");
     const userComponent = entity.getComponent(UserComponent);
     card.className = "rating-card";
+    const sortField = document.getElementById('filter-select').value;
     if (user.user_id === userComponent.user.id) {
         card.classList.add('current-user-card');
     }
     card.innerHTML = `
         <div class="rating-main">
-            <div class="rating-rank">#${rank}</div>
+            <div class="rating-rank">#${user[`${sortField}_rank`]}</div>
             <div class="rating-username">${user.user_username || 'N/A'}</div>
         </div>
         <div class="rating-stats">
@@ -91,7 +92,6 @@ function createStickyUserCard(entity) {
     const ratingsComponent = entity.getComponent(RatingsComponent);
     const userComponent = entity.getComponent(UserComponent);
     const currentUser = ratingsComponent.items.find(user => user.user_id === userComponent.user.id);
-    const currentUserRank = ratingsComponent.items.findIndex(user => user.user_id === userComponent.user.id) + 1;
 
     if (!currentUser) return;
 
@@ -99,14 +99,14 @@ function createStickyUserCard(entity) {
 
     if (stickyCard) {
         // Update existing card
-        stickyCard.innerHTML = createUserCard(currentUser, currentUserRank, entity).innerHTML;
+        stickyCard.innerHTML = createUserCard(currentUser, entity).innerHTML;
     } else {
         // Create new card
         stickyCard = document.createElement("div");
         stickyCard.id = "sticky-user-card";
         stickyCard.className = "rating-card sticky-card";
         stickyCard.style.display = "none";
-        stickyCard.innerHTML = createUserCard(currentUser, currentUserRank, entity).innerHTML;
+        stickyCard.innerHTML = createUserCard(currentUser, entity).innerHTML;
 
         const content = document.getElementById("page-content");
         content.appendChild(stickyCard);
@@ -136,12 +136,13 @@ function renderOnce(entity) {
     ratingsContainer.innerHTML = "";
     sortUsers(entity);
     const limitedItems = ratingsComponent.items.slice(0, 100);
+    const sortField = document.getElementById('filter-select').value;
     limitedItems.forEach((user, index) => {
         const card = document.createElement("div");
         card.className = user.user_username == userComponent.user.username ? "rating-card current-user-card" : "rating-card";
         card.innerHTML = `
             <div class="rating-main">
-                <div class="rating-rank">#${index + 1}</div>
+                <div class="rating-rank">#${user[`${sortField}_rank`]}</div>
                 <div class="rating-username">${user.user_username || 'N/A'}</div>
             </div>
             <div class="rating-stats">
