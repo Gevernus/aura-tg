@@ -18,12 +18,12 @@ async function initApp() {
     const inputComponent = new InputComponent();
     gameEntity.addComponent(inputComponent);
     console.log(`User id is `, telegramSystem.getUserId());
-    if (telegramSystem.getUserId() == 1) {
-        console.log('Set default view');
-        uiSystem.setView('default', 'main');
-        hideLoadingScreen();
-        return;
-    }
+    // if (telegramSystem.getUserId() == 1) {
+    //     console.log('Set default view');
+    //     uiSystem.setView('default', 'main');
+    //     hideLoadingScreen();
+    //     return;
+    // }
     systemManager.addSystem(uiSystem);
     
     const storageSystem = new StorageSystem(gameEntity, telegramSystem.getUser(), telegramSystem.getInviter());
@@ -37,7 +37,7 @@ async function initApp() {
     if (referrals && referrals.length > 0) {
         inputComponent.addInput("action", { name: "FriendInvited" });
     }
-    const ratings = await storageSystem.getRatings();
+    const ratings = await storageSystem.getRatings('passive_income');
     const tasks = await storageSystem.getTasks();
 
     const monsterComponent = new MonstersComponent(monsters, config);

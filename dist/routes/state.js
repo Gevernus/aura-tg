@@ -154,25 +154,49 @@ router.get('/:userId/inventory', async (req, res) => {
         res.status(500).json({ error: 'Error fetching inventory' });
     }
 });
-router.get('/ratings', async (req, res) => {
+router.get('/ratings/:sortField', async (req, res) => {
     try {
+        const sortField = req.params.sortField;
         const excludedUsernames = ['farequest312', 'vvvvvvv300300', 'eeshishko'];
+        const validSortFields = ['coins', 'passive_income', 'friendscount'];
+        if (!validSortFields.includes(sortField)) {
+            return res.status(400).json({ error: 'Invalid sort field' });
+        }
+        // First query: Get top 99 user IDs
+        const topUserIds = await User_1.User
+            .createQueryBuilder("user")
+            .leftJoin("State", "state", "state.id = user.id")
+            .leftJoin("user.referrals", "referral")
+            .select("user.id", "id")
+            .addSelect("state.coins", "coins")
+            .addSelect("state.passive_income", "passive_income")
+            .addSelect("COUNT(DISTINCT referral.id)", "friendscount")
+            .where("user.username NOT IN (:...excludedUsernames)", { excludedUsernames })
+            .groupBy("user.id, state.coins, state.passive_income")
+            .orderBy(sortField === 'friendscount' ? "friendscount" : `state.${sortField}`, "DESC")
+            .limit(99)
+            .getRawMany();
+        // Extract IDs while preserving order
+        const ids = topUserIds.map(user => user.id);
+        // Second query: Get detailed information for the top users
         const ratings = await User_1.User
             .createQueryBuilder("user")
-            .leftJoinAndSelect("user.referrals", "referral")
-            .leftJoinAndSelect("State", "userState", "userState.id = user.id")
-            .leftJoinAndSelect("State", "referralState", "referralState.id = referral.userId")
+            .leftJoin("State", "state", "state.id = user.id")
+            .leftJoin("user.referrals", "referral")
+            .leftJoin("State", "referralState", "referralState.id = referral.userId")
             .select([
             "user.id AS user_id",
             "user.username AS user_username",
-            "userState.coins AS coins",
-            "userState.passive_income AS passive_income",
-            "COUNT(referral.id) AS friendsCount",
+            "state.coins AS coins",
+            "state.passive_income AS passive_income",
+            "COUNT(DISTINCT referral.id) AS friendscount",
             "SUM(DISTINCT COALESCE(referralState.passive_income, 0)) AS friendsPassiveIncome",
             "AVG(DISTINCT COALESCE(referralState.level, 1)) AS friendsAverageLevel",
         ])
-            .where("user.username NOT IN (:...excludedUsernames)", { excludedUsernames })
-            .groupBy("user.id, user.username, userState.coins, userState.passive_income")
+            .where("user.id IN (:...ids)", { ids })
+            .groupBy("user.id, user.username, state.coins, state.passive_income")
+            .orderBy(`CASE WHEN user.id = ANY(:ids) THEN array_position(:ids, user.id) END`)
+            .setParameter('ids', ids)
             .getRawMany();
         res.status(200).json(ratings);
     }

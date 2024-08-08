@@ -12,14 +12,25 @@ export function init(entity) {
     populateSortOptions();
     const filterSelect = document.getElementById("filter-select");
     filterSelect.addEventListener("change", (event) => {
-        sortUsers(entity);
+        const sortField = document.getElementById('filter-select').value;
+        inputComponent.addInput("updateRating", {
+            sortField, callback: () => {
+                renderOnce(entity);
+            }
+        });
     });
 
     const inputComponent = entity.getComponent(InputComponent);
-    inputComponent.addInput("updateRating");
+    const sortField = document.getElementById('filter-select').value;
+    inputComponent.addInput("updateRating", {
+        sortField, callback: () => {
+            renderOnce(entity);
+        }
+    });
 
     // Initially sort by passive income per hour
-    sortUsers(entity);
+    // sortUsers(entity);
+    renderOnce(entity);
 };
 
 function populateSortOptions() {
@@ -43,7 +54,7 @@ function sortUsers(entity) {
     });
 }
 
-export function render(entity) {
+function renderOnce(entity) {
     const ratingsComponent = entity.getComponent(RatingsComponent);
     const ratingsContainer = document.getElementById("ratings-container");
     ratingsContainer.innerHTML = "";
@@ -74,4 +85,8 @@ export function render(entity) {
         `;
         ratingsContainer.appendChild(card);
     });
+}
+
+export function render(entity) {
+
 }
