@@ -60,26 +60,25 @@ router.post('/user/:id/energy', async (req, res) => {
         res.status(500).json({ error: 'Error updating user energy' });
     }
 });
-router.post('/user/:id/update', async (req, res) => {
-    const userId = req.params.id;
-    const userData = req.body;
-    console.log('UserData is ', userData);
-    try {
-        const state = await State_1.State.findOne({ where: { id: userId } });
-        if (!state) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        state.coins = userData.coins;
-        state.tap_power = userData.tap_power;
-        state.energy = userData.energy;
-        await state.save();
-        res.json({ message: 'User data updated successfully' });
-    }
-    catch (error) {
-        console.error('Error updating user data:', error);
-        res.status(500).json({ error: 'Error updating user data' });
-    }
-});
+// router.post('/user/:id/update', async (req, res) => {
+//     const userId = req.params.id;
+//     const userData = req.body;
+//     console.log('UserData is ', userData)
+//     try {
+//         const state = await State.findOne({ where: { id: userId } });
+//         if (!state) {
+//             return res.status(404).json({ error: 'User not found' });
+//         }
+//         state.coins = userData.coins;
+//         state.tap_power = userData.tap_power;
+//         state.energy = userData.energy;
+//         await state.save();
+//         res.json({ message: 'User data updated successfully' });
+//     } catch (error) {
+//         console.error('Error updating user data:', error);
+//         res.status(500).json({ error: 'Error updating user data' });
+//     }
+// });
 // router.post('/user', async (req, res) => {
 //     const userData: User = req.body;
 //     try {

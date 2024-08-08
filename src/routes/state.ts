@@ -118,7 +118,7 @@ router.post('/state', async (req, res) => {
     try {
         const state = await State.findOne({ where: { id: stateData.id } })
         if (state) {
-            state.coins = stateData.coins;
+            state.coins = Math.abs(stateData.coins);
             state.energy = stateData.energy;
             state.tap_power = stateData.tap_power;
             state.passive_income = stateData.passive_income;
