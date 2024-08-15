@@ -508,6 +508,7 @@ export class SoulLevelSystem extends System {
         for (let i = levelRequirements.length - 1; i >= 0; i--) {
             if (coins >= levelRequirements[i]) {
                 newLevel = i + 1; // Adding 1 because array is 0-indexed, but levels start at 1
+                break;
             }
         }
 
