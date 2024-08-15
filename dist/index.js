@@ -17,12 +17,12 @@ async function initApp() {
     const uiSystem = new UISystem(gameEntity);
     const inputComponent = new InputComponent();
     gameEntity.addComponent(inputComponent);
-    // if (telegramSystem.getUserId() == 1) {
-    //     console.log('Set default view');
-    //     uiSystem.setView('default', 'main');
-    //     hideLoadingScreen();
-    //     return;
-    // }
+    if (telegramSystem.getUserId() == 1) {
+        console.log('Set default view');
+        uiSystem.setView('default', 'main');
+        hideLoadingScreen();
+        return;
+    }
     systemManager.addSystem(uiSystem);
     
     const storageSystem = new StorageSystem(gameEntity, telegramSystem.getUser(), telegramSystem.getInviter());
