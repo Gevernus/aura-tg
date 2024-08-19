@@ -30,8 +30,11 @@
       <span>Telegram News</span>
     </div>
   </div>
-  <script>
-    document.getElementById('telegramNewsButton').addEventListener('click', function() {
-      window.Telegram.WebApp.openLink('https://t.me/aura_tg_news');
-    });
-  </script>
+</div>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+  document.getElementById('telegramNewsButton').addEventListener('click', function() {
+      Telegram.WebApp.openTelegramLink('https://t.me/aura_tg_news');
+  });
+</script>
