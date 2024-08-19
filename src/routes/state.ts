@@ -122,6 +122,7 @@ router.post('/state', async (req, res) => {
             state.energy = stateData.energy;
             state.tap_power = stateData.tap_power;
             state.passive_income = stateData.passive_income;
+            state.level = stateData.level;
             state.save();
         }
         return res.status(200).json({ message: "State data saved successfully" });
