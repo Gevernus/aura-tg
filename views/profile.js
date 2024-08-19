@@ -16,8 +16,9 @@ export function init(entity) {
         });
     });
     tgChannelButton.addEventListener('click', function(e) {
-        e.preventDefault()
-        Telegram.WebApp.openTelegramLink('https://t.me/aura_tg_news');
+        e.stopPropagation();
+        e.preventDefault();
+        Telegram.WebApp.openTelegramLink('https://t.me/aura_game_official');
     });
 };
 
