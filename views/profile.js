@@ -2,6 +2,7 @@ import { ClickPowerComponent, CoinsComponent, InputComponent, PassiveIncomeCompo
 export function init(entity) {
     const inputComponent = entity.getComponent(InputComponent);
     const profile = document.querySelector('.profile-navigate');
+    const tgChannelButton = document.getElementById('telegramNewsButton');
     let currentLink = null;
     profile.querySelectorAll('.navigate').forEach(link => {
         link.addEventListener('click', (e) => {
@@ -13,6 +14,10 @@ export function init(entity) {
             inputComponent.addInput("vibrate");
             inputComponent.addInput("setView", { view: e.currentTarget.dataset.page });
         });
+    });
+    tgChannelButton.addEventListener('click', function(e) {
+        e.preventDefault()
+        Telegram.WebApp.openTelegramLink('https://t.me/aura_tg_news');
     });
 };
 
