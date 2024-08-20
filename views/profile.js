@@ -18,6 +18,7 @@ export function init(entity) {
     tgChannelButton.addEventListener('click', function(e) {
         e.stopPropagation();
         e.preventDefault();
+        inputComponent.addInput("action", { name: "TelegramNewsOpenned" });
         Telegram.WebApp.openTelegramLink('https://t.me/aura_game_official');
     });
 };
