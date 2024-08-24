@@ -1,6 +1,6 @@
 export class CoinsComponent {
-    constructor(amount = 0) {
-        this.amount = amount;
+    constructor(amount = 0, offlineEarned = 0) {
+        this.amount = amount + offlineEarned;
     }
 }
 
@@ -28,17 +28,24 @@ export class LevelComponent {
 }
 
 export class EnergyComponent {
-    constructor(energy = 500, maxEnergy = 500, energyRestore = 1, items = [], level) {
+    constructor(energy = 500, energyRestore = 1, items = [], level = 1, offlineRestored = 0) {
         this.energy = energy;
-        this.baseMaxEnergy = maxEnergy * Math.pow(2, level);
+        this.baseMaxEnergy = 500 * Math.pow(2, level);
         this.energyRestore = energyRestore;
         this.items = items;
         this.calculate(items);
+        this.calculateRestore(offlineRestored);
     }
 
     setLevel(newLevel) {
         this.baseMaxEnergy = 500 * Math.pow(2, newLevel);
         this.calculate(this.items);
+    }
+
+    calculateRestore(offlineRestored) {
+        const oldEnergy = this.energy;
+        this.energy = Math.min(this.maxEnergy, this.energy + offlineRestored);
+        this.offlineRestored = this.energy - oldEnergy;
     }
 
     calculate(items) {

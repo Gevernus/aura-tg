@@ -31,12 +31,12 @@ exports.config = {
     ],
     images: [
         'background.webp',
-        'seeker_soul.webp',
-        'seeker_soul.webp',
-        'seeker_soul.webp',
-        'seeker_soul.webp',
-        'seeker_soul.webp',
-        'seeker_soul.webp'
+        'background.webp',
+        'background.webp',
+        'background.webp',
+        'background.webp',
+        'background.webp',
+        'background.webp'
     ],
     cardConfigs: {
         ["Common"]: {

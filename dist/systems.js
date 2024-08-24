@@ -28,36 +28,7 @@ export class ClickSystem extends System {
 
 export class PassiveIncomeSystem extends System {
     async init() {
-        try {
-            const userComponent = this.entity.getComponent(UserComponent);
-            const response = await fetch(`/api/${userComponent.user.id}/calculate_passive`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to save state');
-            }
-            const data = await response.json();
-            console.log(`Data is:`, data);
-            if (data.shouldShowPopup) {
-                const inputComponent = this.entity.getComponent(InputComponent);
-                const coinsComponent = this.entity.getComponent(CoinsComponent);
-
-                const callback = function () {
-                    coinsComponent.amount += data.passive_income;
-                }
-                const title = "Claim reward";
-                const message = `You earn ${data.passive_income} coins`;
-                inputComponent.addInput("showPopup", { title, message, callback });
-            } else {
-                console.log('Return less than a 5 minutes');
-            }
-        } catch (error) {
-            console.error('Error saving state:', error);
-        }
+        
     }
 
     update(deltaTime) {
@@ -71,28 +42,7 @@ export class PassiveIncomeSystem extends System {
 
 export class EnergySystem extends System {
     async init() {
-        try {
-            const userComponent = this.entity.getComponent(UserComponent);
-            const energyComponent = this.entity.getComponent(EnergyComponent);
-            const response = await fetch(`/api/${userComponent.user.id}/calculate_passive`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to save state');
-            }
-            const data = await response.json();
-
-            energyComponent.energy = Math.min(
-                energyComponent.maxEnergy,
-                energyComponent.energy + data.energyRestored
-            );
-        } catch (error) {
-            console.error('Error saving state:', error);
-        }
+        
     }
 
     update(deltaTime) {
@@ -289,6 +239,25 @@ export class StorageSystem extends System {
             return await response.json();
         } catch (error) {
             console.error('Failed getting Packs:', error);
+        }
+    }
+
+    async getOffline() {
+        try {
+            const response = await fetch(`/api/${this.tgUser.id}/calculate_passive`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save state');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Failed getting Offline:', error);
         }
     }
 

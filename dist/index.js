@@ -17,14 +17,14 @@ async function initApp() {
     const uiSystem = new UISystem(gameEntity);
     const inputComponent = new InputComponent();
     gameEntity.addComponent(inputComponent);
-    if (telegramSystem.getUserId() == 1) {
-        console.log('Set default view');
-        uiSystem.setView('default', 'main');
-        hideLoadingScreen();
-        return;
-    }
+    // if (telegramSystem.getUserId() == 1) {
+    //     console.log('Set default view');
+    //     uiSystem.setView('default', 'main');
+    //     hideLoadingScreen();
+    //     return;
+    // }
     systemManager.addSystem(uiSystem);
-    
+
     const storageSystem = new StorageSystem(gameEntity, telegramSystem.getUser(), telegramSystem.getInviter());
     const state = await storageSystem.getState();
     const config = await storageSystem.getConfig();
@@ -36,6 +36,8 @@ async function initApp() {
     if (referrals && referrals.length > 0) {
         inputComponent.addInput("action", { name: "FriendInvited" });
     }
+
+    const offline = await storageSystem.getOffline();
     const ratings = await storageSystem.getRatings('passive_income');
     const tasks = await storageSystem.getTasks();
 
@@ -48,10 +50,11 @@ async function initApp() {
     systemManager.addSystem(telegramSystem);
     systemManager.addSystem(storageSystem)
 
-    gameEntity.addComponent(new CoinsComponent(state.coins));
+    gameEntity.addComponent(new CoinsComponent(state.coins, offline.passive_income));
     gameEntity.addComponent(new ClickPowerComponent(inventoryComponent.items));
     gameEntity.addComponent(inventoryComponent);
-    gameEntity.addComponent(new EnergyComponent(state.energy, state.max_energy, state.energy_restore, inventoryComponent.items, state.level));
+    const energyComponent = new EnergyComponent(state.energy, state.energy_restore, inventoryComponent.items, state.level, offline.energyRestored);
+    gameEntity.addComponent(energyComponent);
     gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items, inventoryComponent.items, referralsComponent.items));
     gameEntity.addComponent(new ConfigComponent(config));
     gameEntity.addComponent(new UserComponent(user));
@@ -97,7 +100,7 @@ async function initApp() {
 
     console.log('App inited')
     await uiSystem.setView('home');
-
+    showOfflinePopup(offline.shouldShowPopup, offline.passive_income, energyComponent.offlineRestored, inputComponent);
     // Hide loading screen after initialization
     hideLoadingScreen();
     requestAnimationFrame((currentTime) => {
@@ -105,6 +108,16 @@ async function initApp() {
         tick(currentTime);
     });
     console.log('Frame requested')
+}
+
+function showOfflinePopup(shouldShowPopup, passiveIncome, offlineRestored, inputComponent) {
+    if (shouldShowPopup) {
+        const title = "Claim reward";
+        const message = `You earn ${passiveIncome} coins and ${offlineRestored} energy`;
+        inputComponent.addInput("showPopup", { title, message });
+    } else {
+        console.log('Return less than a 5 minutes');
+    }
 }
 
 function tick(currentTime) {
