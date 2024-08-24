@@ -28,7 +28,7 @@ export class ClickSystem extends System {
 
 export class PassiveIncomeSystem extends System {
     async init() {
-        
+
     }
 
     update(deltaTime) {
@@ -42,7 +42,7 @@ export class PassiveIncomeSystem extends System {
 
 export class EnergySystem extends System {
     async init() {
-        
+
     }
 
     update(deltaTime) {
@@ -68,10 +68,12 @@ export class LevelUpSystem extends System {
         const upgradeInputs = inputComponent.getAndRemoveInputs('upgrade');
         upgradeInputs.forEach(async (upgrade) => {
             if (upgrade && upgrade.data) {
-                coinsComponent.amount -= upgrade.data.price;
-                const data = await this.processUpgrade(upgrade.data.monsterId, userComponent.user.id);
-                monstersComponent.updateItem(data.userMonster);
-                passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items, referralsComponent.items);
+                if (coinsComponent.amount >= upgrade.data.price) {
+                    coinsComponent.amount -= upgrade.data.price;
+                    const data = await this.processUpgrade(upgrade.data.monsterId, userComponent.user.id);
+                    monstersComponent.updateItem(data.userMonster);
+                    passiveIncomeComponent.calculate(monstersComponent.items, inventoryComponent.items, referralsComponent.items);
+                }
             }
         });
 

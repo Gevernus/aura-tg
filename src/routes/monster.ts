@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Monster } from '../models/Monster';
 import { UserMonster } from '../models/UserMonster';
+import { State } from '../models/State';
 import { config } from '../config/config';
 
 const router = Router();
@@ -49,9 +50,14 @@ router.post('/:userId/monsters/upgrade/:monsterId', async (req, res) => {
         }
 
         if (userMonster) {
-            userMonster.level += 1;
-            await userMonster.save();
-            console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);
+            const state = await State.findOne({ where: { id: userMonster.user_id } });
+            const basePrice = config.cardConfigs[userMonster.monster.rarity].basePrice;
+            const price = Math.round(basePrice * Math.pow(1.30, userMonster.level));
+            if (state && state.coins >= price){
+                userMonster.level += 1;
+                await userMonster.save();
+                console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);
+            }
             res.status(200).json({ message: 'Monster upgraded successfully', userMonster });
         } else {
             console.log(`UserMonster not found for userId: ${userId} and monsterId: ${monsterId}`);

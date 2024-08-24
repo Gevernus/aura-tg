@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Monster_1 = require("../models/Monster");
 const UserMonster_1 = require("../models/UserMonster");
+const State_1 = require("../models/State");
+const config_1 = require("../config/config");
 const router = (0, express_1.Router)();
 router.get('/:userId/monsters', async (req, res) => {
     try {
@@ -47,9 +49,14 @@ router.post('/:userId/monsters/upgrade/:monsterId', async (req, res) => {
             console.log(`Created new UserMonster: ${JSON.stringify(userMonster)}`);
         }
         if (userMonster) {
-            userMonster.level += 1;
-            await userMonster.save();
-            console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);
+            const state = await State_1.State.findOne({ where: { id: userMonster.user_id } });
+            const basePrice = config_1.config.cardConfigs[userMonster.monster.rarity].basePrice;
+            const price = Math.round(basePrice * Math.pow(1.30, userMonster.level));
+            if (state && state.coins >= price) {
+                userMonster.level += 1;
+                await userMonster.save();
+                console.log(`Upgraded UserMonster: ${JSON.stringify(userMonster)}`);
+            }
             res.status(200).json({ message: 'Monster upgraded successfully', userMonster });
         }
         else {
