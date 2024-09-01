@@ -10,8 +10,7 @@ export class ClickPowerComponent {
     }
 
     calculate(items) {
-        let defaultTapPower = 10; // Event: tap power increased
-        this.power = defaultTapPower;
+        this.power = 1;
         for (const item of items) {
             this.power += item.tap_bonus;
         }
