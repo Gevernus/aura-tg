@@ -67,7 +67,7 @@ router.get('/:userId/calculate_passive', async (req, res) => {
             const timeDiffInSeconds = Math.floor((now.getTime() - lastUpdated.getTime()) / 1000);
             const maxAccumulationTime = Math.min(timeDiffInSeconds, 3 * 60 * 60);
             passive_income = Math.floor(state.passive_income / 3600 * maxAccumulationTime);
-            energyRestored = state.energy_restore * 10 * timeDiffInSeconds;
+            energyRestored = state.energy_restore * timeDiffInSeconds;
             shouldShowPopup = timeDiffInSeconds > 300 && passive_income > 0;
             console.log(`Time since last update in sec: ${timeDiffInSeconds}, should show popup: ${shouldShowPopup}`);
         }

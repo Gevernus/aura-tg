@@ -53,7 +53,7 @@ async function initApp() {
     gameEntity.addComponent(new CoinsComponent(state.coins, offline.passive_income));
     gameEntity.addComponent(new ClickPowerComponent(inventoryComponent.items));
     gameEntity.addComponent(inventoryComponent);
-    const energyComponent = new EnergyComponent(state.energy, state.energy_restore * 10, inventoryComponent.items, state.level, offline.energyRestored);
+    const energyComponent = new EnergyComponent(state.energy, state.energy_restore, inventoryComponent.items, state.level, offline.energyRestored);
     gameEntity.addComponent(energyComponent);
     gameEntity.addComponent(new PassiveIncomeComponent(monsterComponent.items, inventoryComponent.items, referralsComponent.items));
     gameEntity.addComponent(new ConfigComponent(config));
