@@ -8,7 +8,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 // Load environment variables from .env file
 dotenv_1.default.config();
 exports.config = {
-    initialEnergy: 500,
+    initialEnergy: 1500,
     initialPassiveIncome: 1,
     appURL: process.env.TELEGRAM_APP_LINK || "",
     levels: [
