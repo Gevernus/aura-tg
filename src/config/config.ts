@@ -23,7 +23,7 @@ interface GameConfig {
 }
 
 export const config: GameConfig = {
-    initialEnergy: 1500,
+    initialEnergy: 500,
     initialPassiveIncome: 1,
     appURL: process.env.TELEGRAM_APP_LINK || "",
     levels: [
