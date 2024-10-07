@@ -101,6 +101,7 @@ async function initApp() {
     console.log('App inited')
     await uiSystem.setView('home');
     showOfflinePopup(offline.shouldShowPopup, offline.passive_income, energyComponent.offlineRestored, inputComponent);
+    
     // Hide loading screen after initialization
     hideLoadingScreen();
     requestAnimationFrame((currentTime) => {
@@ -112,12 +113,22 @@ async function initApp() {
 
 function showOfflinePopup(shouldShowPopup, passiveIncome, offlineRestored, inputComponent) {
     if (shouldShowPopup) {
-        const title = "Claim reward";
-        const message = `You earn ${passiveIncome} coins and ${offlineRestored} energy`;
-        inputComponent.addInput("showPopup", { title, message });
+        const title = "Claim your offline rewards";
+        const message = `You earned ${passiveIncome} coins and restored ${offlineRestored} energy while you were away!`;
+        const primaryCTA = "Claim Rewards";
+        
+        inputComponent.addInput("showPopup", {
+            title,
+            message,
+            primaryCTA,
+            callback: () => { console.log("Rewards claimed!"); }
+        });
     } else {
-        console.log('Return less than a 5 minutes');
+        console.log('Returned in less than 5 minutes, no rewards to claim.');
     }
+}
+
+function showChallengePopup(inputComponent) {
 }
 
 function tick(currentTime) {

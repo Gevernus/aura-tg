@@ -505,9 +505,13 @@ export class PopupSystem extends System {
         const popupHTML = `
             <div id="popup" class="popup">
                 <div class="popup-content">
+                    <img id="popup-image" class="popup-image" style="display: none;" />
                     <h2 id="popup-title"></h2>
                     <p id="popup-message"></p>
-                    <button class="close-btn">Claim</button>
+                    <div class="popup-buttons">
+                        <button id="popup-primary-btn" class="popup-btn primary-btn">Got it</button>
+                        <button id="popup-secondary-btn" class="popup-btn secondary-btn" style="display: none;">More Info</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -519,11 +523,20 @@ export class PopupSystem extends System {
         this.popupElement = document.getElementById('popup');
 
         // Add event listener to close button
-        const closeBtn = this.popupElement.querySelector('.close-btn');
-        closeBtn.addEventListener('click', () => {
+        const primaryBtn = document.getElementById('popup-primary-btn');
+        const secondaryBtn = document.getElementById('popup-secondary-btn');
+
+        primaryBtn.addEventListener('click', () => {
             this.popupElement.style.display = 'none';
             if (this.callback) {
                 this.callback();
+            }
+        });
+
+        secondaryBtn.addEventListener('click', () => {
+            this.popupElement.style.display = 'none';
+            if (this.secondaryCallback) {
+                this.secondaryCallback();
             }
         });
     }
@@ -534,10 +547,36 @@ export class PopupSystem extends System {
         // Handle show popup input
         const showPopupInput = inputComponent.getAndRemoveInputs('showPopup');
         if (showPopupInput && showPopupInput.length > 0 && showPopupInput[0].data) {
+            const data = showPopupInput[0].data;
             this.popupElement.style.display = 'flex';
-            this.callback = showPopupInput[0].data.callback;
-            document.getElementById('popup-title').textContent = showPopupInput[0].data.title;
-            document.getElementById('popup-message').textContent = showPopupInput[0].data.message;
+            
+            // Set title and message
+            document.getElementById('popup-title').textContent = data.title || '';
+            document.getElementById('popup-message').textContent = data.message || '';
+
+            // Set the primary CTA (default "Join the Challenge")
+            const primaryBtn = document.getElementById('popup-primary-btn');
+            primaryBtn.textContent = data.primaryCTA || 'Join the Challenge';
+            this.callback = data.callback || null;
+
+            // Set the secondary CTA (if provided)
+            const secondaryBtn = document.getElementById('popup-secondary-btn');
+            if (data.secondaryCTA) {
+                secondaryBtn.textContent = data.secondaryCTA;
+                secondaryBtn.style.display = 'inline-block';
+                this.secondaryCallback = data.secondaryCallback || null;
+            } else {
+                secondaryBtn.style.display = 'none';
+            }
+
+            // Set the image (if provided)
+            const imageElement = document.getElementById('popup-image');
+            if (data.imageUrl) {
+                imageElement.src = data.imageUrl;
+                imageElement.style.display = 'block';
+            } else {
+                imageElement.style.display = 'none';
+            }
         }
     }
 }
