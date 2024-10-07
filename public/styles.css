@@ -481,6 +481,13 @@ h1 {
     margin: 5px 0;
     color: #ffd700;
 }
+/* Image in the Popup */
+.popup-image {
+    max-width: 80%; /* Ensures the image does not exceed the container's width */
+    max-height: 30vh; /* Limits the height to 30% of the viewport height */
+    object-fit: contain; /* Ensures the image maintains its aspect ratio */
+    margin-bottom: 2vh; /* Adds some space below the image */
+}
 
 .pack-description {
     font-size: 0.8em;
