@@ -405,6 +405,48 @@ h1 {
     transition: background-color 0.3s;
 }
 
+/* Main CTA Button (Primary) */
+.popup-btn.primary-btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 2vh 4vw;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4vh 0;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
+
+.popup-btn.primary-btn:hover {
+    background-color: #45a049;
+}
+
+/* Secondary CTA Button */
+.popup-btn.secondary-btn {
+    background-color: rgb(180, 153, 4); /* Yellow color */
+    border: none;
+    color: white;
+    padding: 2vh 4vw;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4vh 0;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
+
+.popup-btn.secondary-btn:hover {
+    background-color: rgb(165, 140, 3);
+}
+
 .close-btn:hover,
 .close-btn:focus {
     background-color: #45a049;
