@@ -121,14 +121,24 @@ function showOfflinePopup(shouldShowPopup, passiveIncome, offlineRestored, input
             title,
             message,
             primaryCTA,
-            callback: () => { console.log("Rewards claimed!"); }
+            callback: () => { console.log("Rewards claimed!"); showChallengePopup(inputComponent); }
         });
     } else {
         console.log('Returned in less than 5 minutes, no rewards to claim.');
+        showChallengePopup(inputComponent)
     }
 }
 
 function showChallengePopup(inputComponent) {
+    inputComponent.addInput("showPopup", {
+        title: "The Trial of Souls",
+        message: "Earn as much aura as you can! The top 50 players in each rating and the top 50 aura earners this week will win truly unique, powerful items.",
+        primaryCTA: "Let's go!",
+        callback: () => { console.log("Primary CTA clicked!"); },
+        secondaryCTA: "More Info",
+        secondaryCallback: () => { Telegram.WebApp.openTelegramLink('https://t.me/aura_game_official'); },
+        imageUrl: "images/challenge_icon.jpg" // Optional image
+    });
 }
 
 function tick(currentTime) {
