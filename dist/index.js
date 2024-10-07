@@ -130,15 +130,24 @@ function showOfflinePopup(shouldShowPopup, passiveIncome, offlineRestored, input
 }
 
 function showChallengePopup(inputComponent) {
-    inputComponent.addInput("showPopup", {
-        title: "The Trial of Souls",
-        message: "Earn as much aura as you can! The top 50 players in each rating and the top 50 aura earners this week will win truly unique, powerful items.",
-        primaryCTA: "Let's go!",
-        callback: () => { console.log("Primary CTA clicked!"); },
-        secondaryCTA: "More Info",
-        secondaryCallback: () => { Telegram.WebApp.openTelegramLink('https://t.me/aura_game_official'); },
-        imageUrl: "images/challenge_icon.jpg" // Optional image
-    });
+    const popupKey = 'trialChallengePopupShownCount';
+    let popupShownCount = parseInt(localStorage.getItem(popupKey)) || 0;
+    if (popupShownCount < 3) {
+        inputComponent.addInput("showPopup", {
+            title: "The Trial of Souls",
+            message: "Earn as much aura as you can! The top 50 players in each rating and the top 50 aura earners this week will win truly unique, powerful items.",
+            primaryCTA: "Let's go!",
+            callback: () => { console.log("Primary CTA clicked!"); },
+            secondaryCTA: "More Info",
+            secondaryCallback: () => { Telegram.WebApp.openTelegramLink('https://t.me/aura_game_official'); },
+            imageUrl: "images/challenge_icon.jpg" // Optional image
+        });
+
+        popupShownCount++;
+        localStorage.setItem(popupKey, popupShownCount);
+    } else {
+        console.log('Popup already shown 3 times, not showing it again.');
+    }
 }
 
 function tick(currentTime) {
