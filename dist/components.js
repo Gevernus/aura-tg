@@ -107,13 +107,17 @@ class MonsterData {
         this.rarity = rarity;
         this.effect = effect;
         this.image = image;
-        this.update(level, incomePerLevel, basePrice);
+        this.update(level, incomePerLevel, basePrice, type);
     }
 
-    update(level, incomePerLevel, basePrice) {
+    update(level, incomePerLevel, basePrice, type) {
         this.level = level;
-        this.incomePerHour = incomePerLevel * level;
-        this.incomePerHourNext = (incomePerLevel * (level + 1)) - this.incomePerHour;
+        var basicIncomePerHour = incomePerLevel
+        if (type == 'Ghoul') {
+            basicIncomePerHour = basicIncomePerHour * 2 
+        }
+        this.incomePerHour = basicIncomePerHour * level;
+        this.incomePerHourNext = (basicIncomePerHour * (level + 1)) - this.incomePerHour;
         this.price = Math.round(basePrice * Math.pow(1.30, level));
     }
 }
@@ -171,7 +175,9 @@ export class MonstersComponent {
             if (existingItem.id == data.monster_id) {
                 existingItem.update(data.level,
                     this.config.cardConfigs[data.monster.rarity].incomePerLevel,
-                    this.config.cardConfigs[data.monster.rarity].basePrice);
+                    this.config.cardConfigs[data.monster.rarity].basePrice,
+                    existingItem.type
+                );
             }
             return existingItem;
         });

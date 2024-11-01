@@ -121,26 +121,26 @@ function showOfflinePopup(shouldShowPopup, passiveIncome, offlineRestored, input
             title,
             message,
             primaryCTA,
-            callback: () => { console.log("Rewards claimed!"); showChallengePopup(inputComponent); }
+            callback: () => { console.log("Rewards claimed!"); showHalloweenPopup(inputComponent); }
         });
     } else {
         console.log('Returned in less than 5 minutes, no rewards to claim.');
-        showChallengePopup(inputComponent)
+        showHalloweenPopup(inputComponent);
     }
 }
 
-function showChallengePopup(inputComponent) {
-    const popupKey = 'trialChallengePopupShownCount';
+function showHalloweenPopup(inputComponent) {
+    const popupKey = 'halloweenPopupShownCount';
     let popupShownCount = parseInt(localStorage.getItem(popupKey)) || 0;
     if (popupShownCount < 3) {
         inputComponent.addInput("showPopup", {
-            title: "The Trial of Souls",
-            message: "Earn as much aura as you can! The top 50 players in each rating and the top 50 aura earners this week will win truly unique, powerful items.",
-            primaryCTA: "Let's go!",
+            title: "The Halloween Mystery",
+            message: "Be cautious during Halloween Weekends but not afraid - Ghouls will bring you 2x wealth during the time!",
+            primaryCTA: "Treat or Trick!",
             callback: () => { console.log("Primary CTA clicked!"); },
             secondaryCTA: "More Info",
             secondaryCallback: () => { Telegram.WebApp.openTelegramLink('https://t.me/aura_game_official'); },
-            imageUrl: "images/challenge_icon.jpg" // Optional image
+            imageUrl: "images/halloween_onboarding.jpg"
         });
 
         popupShownCount++;
